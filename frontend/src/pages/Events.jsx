@@ -1,5 +1,6 @@
 import { Calendar, MapPin, Clock, ArrowRight, AlertCircle } from 'lucide-react';
 import { useState, useEffect } from 'react';
+import { API_URL } from '../api';
 
 export default function Events() {
     const [events, setEvents] = useState([]);
@@ -7,7 +8,7 @@ export default function Events() {
     const [error, setError] = useState(null);
 
     useEffect(() => {
-        fetch('http://localhost:8000/api/events/')
+        fetch(`${API_URL}/api/events/`)
             .then(res => {
                 if (!res.ok) throw new Error('Failed to fetch events');
                 return res.json();

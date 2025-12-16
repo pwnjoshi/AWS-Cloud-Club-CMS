@@ -1,7 +1,7 @@
 import { ArrowRight, Book, Calendar, Code, Users, Zap, AlertCircle } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { useState, useEffect } from 'react';
-import { getNews } from '../api';
+import { getNews, API_URL } from '../api';
 
 export default function Home() {
     const [events, setEvents] = useState([]);
@@ -22,7 +22,7 @@ export default function Home() {
             .catch(err => console.error("Failed to fetch news", err));
 
         // Fetch Events
-        fetch('http://localhost:8000/api/events/')
+        fetch(`${API_URL}/api/events/`)
             .then(res => res.json())
             .then(data => {
                 const upcoming = data.slice(0, 2);
@@ -31,7 +31,7 @@ export default function Home() {
             .catch(err => console.error("Failed to fetch events", err));
 
         // Fetch Highlights
-        fetch('http://localhost:8000/api/highlights/')
+        fetch(`${API_URL}/api/highlights/`)
             .then(res => res.json())
             .then(data => {
                 setHighlights(data.slice(0, 3)); // Show top 3
@@ -160,7 +160,7 @@ export default function Home() {
                         <h2 style={{ fontSize: '2rem', marginBottom: '3rem' }}>Recent Highlights</h2>
                         <div className="grid-auto">
                             {highlights.map(h => {
-                                const imgUrl = h.image.startsWith('http') ? h.image : `http://localhost:8000${h.image}`;
+                                const imgUrl = h.image.startsWith('http') ? h.image : `${API_URL}${h.image}`;
                                 return (
                                     <div key={h.id} className="highlight-card" style={{ backgroundImage: `url(${imgUrl})` }}>
                                         {h.title && (

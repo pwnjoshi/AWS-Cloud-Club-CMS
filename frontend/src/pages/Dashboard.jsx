@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { authenticatedFetch, logout } from '../api';
+import { authenticatedFetch, logout, API_URL } from '../api';
 import { useNavigate } from 'react-router-dom';
 import {
     Calendar,
@@ -337,7 +337,7 @@ function GalleryView() {
 
     const fetchHighlights = async () => {
         try {
-            const res = await fetch('http://localhost:8000/api/highlights/');
+            const res = await fetch(`${API_URL}/api/highlights/`);
             if (res.ok) {
                 setHighlights(await res.json());
             }
@@ -471,7 +471,7 @@ function GalleryView() {
                     ) : (
                         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(220px, 1fr))', gap: '1.5rem' }}>
                             {highlights.map(h => {
-                                const imgUrl = h.image.startsWith('http') ? h.image : `http://localhost:8000${h.image}`;
+                                const imgUrl = h.image.startsWith('http') ? h.image : `${API_URL}${h.image}`;
                                 return (
                                     <div key={h.id} style={{ background: '#1E293B', borderRadius: '12px', overflow: 'hidden', border: '1px solid rgba(255,255,255,0.05)', transition: 'transform 0.2s', cursor: 'pointer' }}
                                         onMouseEnter={(e) => e.currentTarget.style.transform = 'scale(1.02)'}
