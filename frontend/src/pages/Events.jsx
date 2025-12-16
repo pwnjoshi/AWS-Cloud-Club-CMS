@@ -8,20 +8,26 @@ export default function Events() {
     const [error, setError] = useState(null);
 
     useEffect(() => {
-        fetch(`${API_URL}/api/events/`)
-            .then(res => {
-                if (!res.ok) throw new Error('Failed to fetch events');
-                return res.json();
-            })
-            .then(data => {
+        const loadEvents = async () => {
+            try {
+                // Using API_URL directly from imports, matching existing pattern
+                const response = await fetch(`${API_URL}/api/events/`);
+                if (!response.ok) throw new Error('Failed to fetch events');
+
+                const data = await response.json();
+
+                // ✅ Empty array is VALID
                 setEvents(data);
-                setLoading(false);
-            })
-            .catch(err => {
-                console.error("Error fetching events:", err);
+                setError(null);
+            } catch (err) {
+                console.error("Failed to load events:", err);
                 setError(err.message);
+            } finally {
                 setLoading(false);
-            });
+            }
+        };
+
+        loadEvents();
     }, []);
 
     return (
@@ -51,8 +57,8 @@ export default function Events() {
                 {!loading && !error && events.length === 0 && (
                     <div style={{ textAlign: 'center', color: '#9CA3AF', padding: '4rem' }}>
                         <Calendar size={64} style={{ marginBottom: '1rem', opacity: 0.5 }} />
-                        <h3>No upcoming events scheduled.</h3>
-                        <p>Stay tuned for updates!</p>
+                        <h3>No upcoming events yet.</h3>
+                        <p>Stay tuned 🚀</p>
                     </div>
                 )}
 

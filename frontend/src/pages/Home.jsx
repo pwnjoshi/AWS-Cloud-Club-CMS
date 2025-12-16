@@ -22,13 +22,20 @@ export default function Home() {
             .catch(err => console.error("Failed to fetch news", err));
 
         // Fetch Events
-        fetch(`${API_URL}/api/events/`)
-            .then(res => res.json())
-            .then(data => {
-                const upcoming = data.slice(0, 2);
-                setEvents(upcoming);
-            })
-            .catch(err => console.error("Failed to fetch events", err));
+        const fetchEvents = async () => {
+            try {
+                const res = await fetch(`${API_URL}/api/events/`);
+                if (res.ok) {
+                    const data = await res.json();
+                    // Just take top 2, empty array is fine
+                    const upcoming = data.slice(0, 2);
+                    setEvents(upcoming);
+                }
+            } catch (err) {
+                console.error("Failed to fetch events", err);
+            }
+        };
+        fetchEvents();
 
         // Fetch Highlights
         fetch(`${API_URL}/api/highlights/`)
@@ -146,8 +153,8 @@ export default function Home() {
                     ) : (
                         <div style={{ textAlign: 'center', padding: '3rem', border: '1px dashed rgba(255,255,255,0.1)', borderRadius: '16px' }}>
                             <Calendar size={48} color="#9CA3AF" style={{ marginBottom: '1rem', opacity: 0.5 }} />
-                            <h3 style={{ color: 'white', marginBottom: '0.5rem' }}>No Upcoming Events</h3>
-                            <p style={{ color: 'var(--text-secondary)' }}>Check back later or join our Discord for updates.</p>
+                            <h3 style={{ color: 'white', marginBottom: '0.5rem' }}>No upcoming events yet</h3>
+                            <p style={{ color: 'var(--text-secondary)' }}>Stay tuned 🚀</p>
                         </div>
                     )}
                 </div>
