@@ -46,17 +46,32 @@ class HighlightViewSet(viewsets.ModelViewSet):
     def perform_create(self, serializer):
         serializer.save(uploaded_by=self.request.user)
 
+from .permissions import IsLeadOrFaculty, IsSelfOrAdmin
+from .serializers import EventSerializer, TaskSerializer, ResourceSerializer, UserSerializer, HighlightSerializer, NewsSerializer, UserCreateSerializer, UserUpdateSerializer
+from django.contrib.auth.models import User
+
+# ... (Previous ViewSets unchanged)
+
 class UserViewSet(viewsets.ModelViewSet):
     queryset = User.objects.all()
     
     def get_serializer_class(self):
         if self.action == 'create':
             return UserCreateSerializer
+        elif self.action in ['update', 'partial_update']:
+            return UserUpdateSerializer
         return UserSerializer
 
     def get_permissions(self):
-        if self.action in ['create', 'update', 'partial_update', 'destroy']:
+        if self.action == 'create':
+            # Only Admin can create users directly (via User Manager)
+            # Or allow public signup? For now, implementing Invite-only/Admin-create based on previous context.
+            # Assuming Admin-create.
             return [permissions.IsAuthenticated(), IsLeadOrFaculty()]
+        if self.action in ['update', 'partial_update', 'destroy']:
+            # Self or Admin can update/delete
+            return [permissions.IsAuthenticated(), IsSelfOrAdmin()]
+        # Read-only or List
         return [permissions.IsAuthenticated()]
 
     @action(detail=False, methods=['get'])

@@ -80,3 +80,21 @@ class UserCreateSerializer(serializers.ModelSerializer):
             UserProfile.objects.create(user=user, role=role)
             
         return user
+
+class UserUpdateSerializer(serializers.ModelSerializer):
+    password = serializers.CharField(write_only=True, required=False)
+    
+    class Meta:
+        model = User
+        fields = ['id', 'username', 'email', 'first_name', 'last_name', 'password']
+        read_only_fields = ['username'] # Prevent username changes if desired, or allow it
+
+    def update(self, instance, validated_data):
+        password = validated_data.pop('password', None)
+        instance = super().update(instance, validated_data)
+        
+        if password:
+            instance.set_password(password)
+            instance.save()
+            
+        return instance

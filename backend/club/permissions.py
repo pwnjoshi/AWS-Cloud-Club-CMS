@@ -11,11 +11,11 @@ class IsLeadOrFaculty(permissions.BasePermission):
         if request.method in permissions.SAFE_METHODS:
             return True
 
-        # Write permissions are only allowed to authenticated users who are Lead or Faculty.
-        if not request.user.is_authenticated:
-            return False
-            
-        try:
-            return request.user.profile.role in ['LEAD', 'FACULTY']
-        except:
-            return False
+
+class IsSelfOrAdmin(permissions.BasePermission):
+    def has_object_permission(self, request, view, obj):
+        # Allow admins (Lead/Faculty) to manage anyone
+        if request.user.is_authenticated and hasattr(request.user, 'profile') and request.user.profile.role in ['LEAD', 'FACULTY']:
+            return True
+        # Allow users to manage themselves
+        return obj == request.user
