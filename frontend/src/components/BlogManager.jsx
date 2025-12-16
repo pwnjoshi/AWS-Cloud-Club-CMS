@@ -77,12 +77,21 @@ export default function BlogManager() {
     };
 
     const handleDelete = async (id) => {
-        if (!confirm("Are you sure you want to delete this post?")) return;
+        console.log("Delete clicked for ID:", id);
+        // Browser confirm might be blocked, disabling for now.
+        // if (!window.confirm("Are you sure you want to delete this post?")) return;
+
         try {
-            await authenticatedFetch(`/api/blog/${id}/`, { method: 'DELETE' });
-            fetchPosts();
+            const res = await authenticatedFetch(`/api/blog/${id}/`, { method: 'DELETE' });
+            if (res.ok) {
+                fetchPosts();
+            } else {
+                const data = await res.json().catch(() => ({}));
+                alert(`Failed to delete post. ${data.detail || 'Server error.'}`);
+            }
         } catch (error) {
             console.error("Failed to delete post", error);
+            alert("An error occurred while deleting.");
         }
     };
 

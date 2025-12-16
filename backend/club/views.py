@@ -1,7 +1,7 @@
 from rest_framework import viewsets, permissions, filters
 from rest_framework.decorators import action, api_view, permission_classes
 from rest_framework.response import Response
-from .permissions import IsLeadOrFaculty
+from .permissions import IsLeadOrFaculty, IsSelfOrAdmin
 from .models import Event, Highlight, News, BlogPost
 from .serializers import EventSerializer, UserSerializer, HighlightSerializer, NewsSerializer, UserCreateSerializer, UserUpdateSerializer, BlogPostSerializer
 from django.contrib.auth.models import User
@@ -54,11 +54,20 @@ class UserViewSet(viewsets.ModelViewSet):
         return Response(serializer.data)
 
 class BlogPostViewSet(viewsets.ModelViewSet):
-    queryset = BlogPost.objects.filter(is_published=True).order_by('-created_at')
     serializer_class = BlogPostSerializer
     permission_classes = [permissions.IsAuthenticatedOrReadOnly]
     filter_backends = [filters.SearchFilter]
     search_fields = ['title', 'content']
+
+    def get_queryset(self):
+        user = self.request.user
+        # Check if user has permission to see drafts (Lead/Faculty)
+        is_lead = user.is_authenticated and hasattr(user, 'profile') and user.profile.role in ['LEAD', 'FACULTY']
+        
+        if is_lead or user.is_staff:
+            return BlogPost.objects.all().order_by('-created_at')
+        
+        return BlogPost.objects.filter(is_published=True).order_by('-created_at')
 
     def perform_create(self, serializer):
         serializer.save(author=self.request.user)

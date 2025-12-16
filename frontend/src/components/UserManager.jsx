@@ -147,13 +147,12 @@ export default function UserManager() {
                             <th style={{ padding: '1rem', color: '#9CA3AF' }}>User</th>
                             <th style={{ padding: '1rem', color: '#9CA3AF' }}>Role</th>
                             <th style={{ padding: '1rem', color: '#9CA3AF' }}>Email</th>
-                            <th style={{ padding: '1rem', color: '#9CA3AF' }}>Tasks</th>
                             <th style={{ padding: '1rem', color: '#9CA3AF' }}>Actions</th>
                         </tr>
                     </thead>
                     <tbody>
                         {loading ? (
-                            <tr><td colSpan="5" style={{ padding: '2rem', textAlign: 'center' }}>Loading users...</td></tr>
+                            <tr><td colSpan="4" style={{ padding: '2rem', textAlign: 'center' }}>Loading users...</td></tr>
                         ) : users.map(user => (
                             <tr key={user.id} style={{ borderTop: '1px solid rgba(255,255,255,0.05)' }}>
                                 <td style={{ padding: '1rem' }}>
@@ -180,7 +179,6 @@ export default function UserManager() {
                                     </span>
                                 </td>
                                 <td style={{ padding: '1rem', color: '#D1D5DB' }}>{user.email}</td>
-                                <td style={{ padding: '1rem', color: '#D1D5DB' }}>{user.task_stats?.completed || 0} / {user.task_stats?.total || 0}</td>
                                 <td style={{ padding: '1rem' }}>
                                     <button
                                         onClick={() => handleDelete(user.id)}

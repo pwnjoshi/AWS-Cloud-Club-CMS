@@ -18,7 +18,6 @@ export default function Footer() {
                         <SocialIcon href="https://www.instagram.com/awscloudclubgeu/" icon={<Instagram size={20} />} label="Instagram" />
                         <SocialIcon href="https://x.com/awscloudclubgeu" icon={<Twitter size={20} />} label="X" />
                         <SocialIcon href="https://www.linkedin.com/company/aws-cloud-club-geu/" icon={<Linkedin size={20} />} label="LinkedIn" />
-                        <SocialIcon href="https://github.com/pwnjoshi/AWS-Cloud-Club-CMS" icon={<Github size={20} />} label="GitHub" />
                     </div>
                 </div>
 
@@ -34,7 +33,6 @@ export default function Footer() {
                 <FooterColumn title="Resources">
                     <FooterLink href="https://www.meetup.com/aws-cloud-club-at-graphic-era/">Meetup</FooterLink>
                     <FooterLink href="https://chat.whatsapp.com/IvCnmpfmJ3BCI6etmQ1i5E">WhatsApp Group</FooterLink>
-                    <FooterLink href="https://github.com/pwnjoshi/AWS-Cloud-Club-CMS">GitHub Repo</FooterLink>
                 </FooterColumn>
 
                 <FooterColumn title="Contact">

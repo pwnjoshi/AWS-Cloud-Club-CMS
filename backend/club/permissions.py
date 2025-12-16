@@ -22,7 +22,9 @@ class IsLeadOrFaculty(permissions.BasePermission):
 class IsSelfOrAdmin(permissions.BasePermission):
     def has_object_permission(self, request, view, obj):
         # Allow admins (Lead/Faculty) to manage anyone
-        if request.user.is_authenticated and hasattr(request.user, 'profile') and request.user.profile.role in ['LEAD', 'FACULTY']:
+        # Use safe access to profile
+        profile = getattr(request.user, 'profile', None)
+        if request.user.is_authenticated and profile and profile.role in ['LEAD', 'FACULTY']:
             return True
         # Allow users to manage themselves
         return obj == request.user
