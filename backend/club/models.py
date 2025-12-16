@@ -51,6 +51,7 @@ class Event(models.Model):
     event_type = models.CharField(max_length=20, choices=EVENT_TYPES, default='SESSION')
     is_public = models.BooleanField(default=True)
     organizer = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, related_name='events')
+    registration_link = models.URLField(blank=True, null=True, help_text="Link to external registration (Google Forms, Luma, Meetup, etc.)")
     created_at = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):

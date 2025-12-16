@@ -13,9 +13,10 @@ import {
     Shield,
     User,
     FileText
+    // Calendar removed
 } from 'lucide-react';
 
-import EventWizard from '../components/EventWizard';
+import EventManager from '../components/EventManager';
 import NewsManager from '../components/NewsManager';
 import UserManager from '../components/UserManager';
 import BlogManager from '../components/BlogManager';
@@ -52,7 +53,7 @@ export default function Dashboard() {
 
     const renderContent = () => {
         switch (view) {
-            case 'event_wizard': return <EventWizard onCancel={() => setView('overview')} />;
+            case 'events': return <EventManager />; // Admin: Manage Events
             case 'gallery': return <GalleryView user={user} />;
             case 'news': return <NewsManager />;
             case 'blog': return <BlogManager />;
@@ -96,9 +97,14 @@ function Sidebar({ view, setView, user }) {
                 </div>
 
                 {isAdmin && (
-                    <div onClick={() => setView('users')}>
-                        <NavItem icon={<UserPlus size={20} />} label="Manage Team" active={view === 'users'} />
-                    </div>
+                    <>
+                        <div onClick={() => setView('users')}>
+                            <NavItem icon={<UserPlus size={20} />} label="Manage Team" active={view === 'users'} />
+                        </div>
+                        <div onClick={() => setView('events')}>
+                            <NavItem icon={<Settings size={20} />} label="Manage Events" active={view === 'events'} />
+                        </div>
+                    </>
                 )}
 
                 <div onClick={() => setView('gallery')}>
@@ -132,14 +138,10 @@ function MobileNav({ view, setView, user }) {
                 <LayoutDashboard size={24} />
                 <span>Home</span>
             </button>
-            <button className={`mobile-nav-item ${view === 'settings' ? 'active' : ''}`} onClick={() => setView('settings')}>
-                <Settings size={24} />
-                <span>Settings</span>
-            </button>
             {isAdmin && (
-                <button className={`mobile-nav-item ${view === 'users' ? 'active' : ''}`} onClick={() => setView('users')}>
-                    <UserPlus size={24} />
-                    <span>Team</span>
+                <button className={`mobile-nav-item ${view === 'events' ? 'active' : ''}`} onClick={() => setView('events')}>
+                    <Settings size={24} />
+                    <span>Manage</span>
                 </button>
             )}
             <button className={`mobile-nav-item ${['gallery', 'news', 'blog'].includes(view) ? 'active' : ''}`} onClick={() => setView('blog')}>
@@ -231,12 +233,14 @@ function DashboardContent({ setView, user }) {
 
                     <h4 style={{ color: '#9CA3AF', fontSize: '0.9rem', marginBottom: '1rem', textTransform: 'uppercase', letterSpacing: '0.05em' }}>Quick Actions</h4>
                     <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
-                        <button onClick={() => setView('gallery')} style={quickActionStyle}>
-                            <span>View Gallery</span> <ArrowRight size={16} />
-                        </button>
                         {['LEAD', 'FACULTY'].includes(user?.role) && (
                             <button onClick={() => setView('users')} style={{ ...quickActionStyle, color: '#FCD34D', borderColor: 'rgba(245, 158, 11, 0.2)' }}>
                                 <span>Manage Team</span> <ArrowRight size={16} />
+                            </button>
+                        )}
+                        {['LEAD', 'FACULTY'].includes(user?.role) && (
+                            <button onClick={() => setView('events')} style={{ ...quickActionStyle, color: '#34D399', borderColor: 'rgba(52, 211, 153, 0.2)' }}>
+                                <span>Manage Events</span> <ArrowRight size={16} />
                             </button>
                         )}
                     </div>

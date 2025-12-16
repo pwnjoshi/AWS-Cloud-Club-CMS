@@ -15,6 +15,12 @@
   --font-sans: 'Inter', system-ui, -apple-system, sans-serif;
 }
 
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
 body {
   margin: 0;
   padding: 0;
@@ -309,10 +315,14 @@ button {
   .ticker-row {
     flex-direction: column;
     align-items: flex-start;
+    gap: 1rem;
+    padding: 1.25rem 0;
   }
 
   .ticker-left {
     gap: 0.5rem;
+    flex-wrap: wrap;
+    width: 100%;
   }
 
   .nav-links {

@@ -1,4 +1,4 @@
-import { ArrowRight, Book, Calendar, Code, Users, Zap, AlertCircle } from 'lucide-react';
+import { ArrowRight, Book, Calendar, Code, Users, Zap, AlertCircle, Clock, MapPin } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { useState, useEffect } from 'react';
 import { getNews, API_URL } from '../api';
@@ -144,9 +144,11 @@ export default function Home() {
                                     key={evt.id}
                                     title={evt.title}
                                     // Format date manually or use logic
-                                    date={new Date(evt.start_time).toLocaleDateString('en-US', { month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' })}
+                                    date={new Date(evt.start_time).toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}
+                                    time={new Date(evt.start_time).toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' })}
                                     loc={evt.location}
                                     img="https://images.unsplash.com/photo-1544197150-b99a580bb7a8?auto=format&fit=crop&q=80&w=600"
+                                    link={evt.registration_link}
                                 />
                             ))}
                         </div>
@@ -199,17 +201,69 @@ function MissionCard({ icon, title, desc }) {
     );
 }
 
-function EventCard({ title, date, loc, img }) {
+function EventCard({ title, date, time, loc, img, link }) {
     return (
-        <div className="event-card">
-            <div className="event-image" style={{ backgroundImage: `url(${img})` }}></div>
-            <div className="event-content">
-                <div style={{ fontSize: '0.85rem', color: 'var(--aws-blue)', fontWeight: 'bold', marginBottom: '0.5rem' }}>{date}</div>
-                <h3 style={{ fontSize: '1.25rem', marginBottom: '0.5rem' }}>{title}</h3>
-                <p style={{ color: 'var(--text-secondary)', fontSize: '0.9rem', marginBottom: '1.5rem' }}>Some quick description about the event goes here.</p>
-                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                    <span style={{ fontSize: '0.85rem', color: '#9CA3AF' }}>{loc}</span>
-                    <button className="btn-primary" style={{ padding: '0.5rem 1rem', fontSize: '0.85rem' }}>Register</button>
+        <div className="event-card" style={{ display: 'flex', flexDirection: 'column', height: '100%', border: '1px solid rgba(255,255,255,0.08)', background: '#1E293B' }}>
+            <div className="event-image-container" style={{ height: '200px', position: 'relative', overflow: 'hidden' }}>
+                <img
+                    src={img}
+                    alt={title}
+                    style={{ width: '100%', height: '100%', objectFit: 'cover' }}
+                />
+                <div style={{
+                    position: 'absolute', top: '1rem', right: '1rem',
+                    background: 'rgba(15, 23, 42, 0.9)', padding: '0.35rem 0.85rem',
+                    borderRadius: '50px', backdropFilter: 'blur(4px)',
+                    border: '1px solid rgba(255,255,255,0.1)',
+                    color: '#fff', fontSize: '0.8rem', fontWeight: '600', zIndex: 2
+                }}>
+                    {date}
+                </div>
+            </div>
+
+            <div className="event-content" style={{ flex: 1, display: 'flex', flexDirection: 'column', padding: '1.5rem' }}>
+                <h3 style={{ fontSize: '1.35rem', marginBottom: '0.75rem', lineHeight: '1.4', color: 'white', fontWeight: '700' }}>{title}</h3>
+
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem', marginBottom: '1.5rem', color: '#94A3B8', fontSize: '0.9rem' }}>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}><Clock size={16} /> {time}</div>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}><MapPin size={16} /> {loc}</div>
+                </div>
+
+                <div style={{ marginTop: 'auto', display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
+                    {link ? (
+                        <a
+                            href={link.startsWith('http') ? link : `https://${link}`}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="btn-primary"
+                            style={{
+                                display: 'flex', justifyContent: 'center', alignItems: 'center', gap: '0.5rem',
+                                padding: '0.75rem', fontSize: '0.95rem', textDecoration: 'none', width: '100%',
+                                background: 'var(--aws-blue)',
+                                whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis'
+                            }}
+                        >
+                            Register Now <ArrowRight size={16} style={{ flexShrink: 0 }} />
+                        </a>
+                    ) : (
+                        <button disabled className="btn-primary" style={{ padding: '0.75rem', fontSize: '0.95rem', width: '100%', opacity: 0.5, cursor: 'not-allowed', background: 'var(--aws-blue)', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
+                            Registration Closed
+                        </button>
+                    )}
+
+                    <Link
+                        to="/events"
+                        className="btn-secondary"
+                        style={{
+                            display: 'flex', justifyContent: 'center', alignItems: 'center',
+                            padding: '0.75rem', fontSize: '0.95rem', width: '100%',
+                            border: '1px solid rgba(255,255,255,0.1)',
+                            whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis',
+                            textDecoration: 'none'
+                        }}
+                    >
+                        View Details
+                    </Link>
                 </div>
             </div>
         </div>
