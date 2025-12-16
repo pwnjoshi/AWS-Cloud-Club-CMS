@@ -55,32 +55,21 @@ class Event(models.Model):
     def __str__(self):
         return f"{self.title} ({self.start_time.date()})"
 
-class Task(models.Model):
-    STATUS_CHOICES = [
-        ('TODO', 'To Do'),
-        ('IN_PROGRESS', 'In Progress'),
-        ('DONE', 'Done'),
-    ]
 
+class BlogPost(models.Model):
     title = models.CharField(max_length=200)
-    description = models.TextField(blank=True)
-    assigned_to = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, related_name='tasks')
-    status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='TODO')
-    due_date = models.DateField(null=True, blank=True)
+    content = models.TextField()
+    author = models.ForeignKey(User, on_delete=models.CASCADE, related_name='blog_posts')
+    image = models.ImageField(upload_to='blog_images/', blank=True, null=True)
     created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+    is_published = models.BooleanField(default=True)
 
     def __str__(self):
         return self.title
 
-class Resource(models.Model):
-    title = models.CharField(max_length=200)
-    url = models.URLField()
-    description = models.TextField(blank=True)
-    added_by = models.ForeignKey(User, on_delete=models.SET_NULL, null=True)
-    created_at = models.DateTimeField(auto_now_add=True)
-
-    def __str__(self):
-        return self.title
+    class Meta:
+        ordering = ['-created_at']
 
 class News(models.Model):
     content = models.CharField(max_length=255)

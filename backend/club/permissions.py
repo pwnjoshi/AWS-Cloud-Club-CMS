@@ -10,6 +10,13 @@ class IsLeadOrFaculty(permissions.BasePermission):
         # so we'll always allow GET, HEAD or OPTIONS requests.
         if request.method in permissions.SAFE_METHODS:
             return True
+        
+        return (
+            request.user and 
+            request.user.is_authenticated and 
+            hasattr(request.user, 'profile') and 
+            request.user.profile.role in ['LEAD', 'FACULTY']
+        )
 
 
 class IsSelfOrAdmin(permissions.BasePermission):

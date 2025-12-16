@@ -1,20 +1,14 @@
 from rest_framework import serializers
 from django.contrib.auth.models import User
-from .models import Event, Task, Resource, Highlight, News
+from .models import Event, Highlight, News, BlogPost
 
 class UserSerializer(serializers.ModelSerializer):
-    task_stats = serializers.SerializerMethodField()
     role = serializers.SerializerMethodField()
 
     class Meta:
         model = User
-        fields = ['id', 'username', 'email', 'first_name', 'last_name', 'groups', 'task_stats', 'role']
+        fields = ['id', 'username', 'email', 'first_name', 'last_name', 'groups', 'role']
 
-    def get_task_stats(self, obj):
-        total = obj.tasks.count()
-        completed = obj.tasks.filter(status='DONE').count()
-        return {'total': total, 'completed': completed}
-    
     def get_role(self, obj):
         if hasattr(obj, 'profile'):
             return obj.profile.role
@@ -33,22 +27,14 @@ class HighlightSerializer(serializers.ModelSerializer):
         fields = '__all__'
         read_only_fields = ['uploaded_by', 'uploaded_at']
 
-class TaskSerializer(serializers.ModelSerializer):
-    assigned_to_name = serializers.ReadOnlyField(source='assigned_to.username')
+class BlogPostSerializer(serializers.ModelSerializer):
+    author_name = serializers.ReadOnlyField(source='author.username')
+    author_role = serializers.ReadOnlyField(source='author.profile.role')
 
     class Meta:
-        model = Task
-        fields = '__all__'
-        extra_kwargs = {
-            'assigned_to': {'required': False}
-        }
-
-class ResourceSerializer(serializers.ModelSerializer):
-    added_by_name = serializers.ReadOnlyField(source='added_by.username')
-
-    class Meta:
-        model = Resource
-        fields = '__all__'
+        model = BlogPost
+        fields = ['id', 'title', 'content', 'author', 'author_name', 'author_role', 'image', 'created_at', 'updated_at', 'is_published']
+        read_only_fields = ['author', 'created_at', 'updated_at']
 
 class NewsSerializer(serializers.ModelSerializer):
     class Meta:

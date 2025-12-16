@@ -22,11 +22,11 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/6.0/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-oko*o4_gwblmqa%y(veko&=+s5m$4h^ttsmwn(4*wegi8kmvs3'
+SECRET_KEY = os.environ.get('SECRET_KEY', 'django-insecure-oko*o4_gwblmqa%y(veko&=+s5m$4h^ttsmwn(4*wegi8kmvs3')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-# SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = os.environ.get('DEBUG', 'False') == 'True'
+DEBUG = os.environ.get('DEBUG', 'True') == 'True'
+
 
 ALLOWED_HOSTS = [
     "aws-cloud-club-backend.onrender.com",
@@ -161,3 +161,7 @@ REST_FRAMEWORK = {
         "rest_framework.permissions.IsAuthenticatedOrReadOnly",
     ],
 }
+
+# Fix for Windows Registry MIME type issue for CSS
+import mimetypes
+mimetypes.add_type("text/css", ".css", True)

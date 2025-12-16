@@ -1,9 +1,9 @@
-from rest_framework import viewsets, permissions
+from rest_framework import viewsets, permissions, filters
 from rest_framework.decorators import action, api_view, permission_classes
 from rest_framework.response import Response
 from .permissions import IsLeadOrFaculty
-from .models import Event, Task, Resource, Highlight, News
-from .serializers import EventSerializer, TaskSerializer, ResourceSerializer, UserSerializer, HighlightSerializer, NewsSerializer, UserCreateSerializer
+from .models import Event, Highlight, News, BlogPost
+from .serializers import EventSerializer, UserSerializer, HighlightSerializer, NewsSerializer, UserCreateSerializer, UserUpdateSerializer, BlogPostSerializer
 from django.contrib.auth.models import User
 
 class EventViewSet(viewsets.ModelViewSet):
@@ -14,29 +14,7 @@ class EventViewSet(viewsets.ModelViewSet):
     def perform_create(self, serializer):
         serializer.save(organizer=self.request.user)
 
-class TaskViewSet(viewsets.ModelViewSet):
-    queryset = Task.objects.all()
-    serializer_class = TaskSerializer
-    permission_classes = [permissions.IsAuthenticated]
 
-    def get_queryset(self):
-        user = self.request.user
-        # If user is staff/lead (superuser for now), return all.
-        if user.is_staff:
-            return Task.objects.all()
-        # Otherwise return tasks assigned to them or created by them (optional)
-        return Task.objects.filter(assigned_to=user)
-
-    def perform_create(self, serializer):
-        serializer.save(assigned_to=self.request.user)
-
-class ResourceViewSet(viewsets.ModelViewSet):
-    queryset = Resource.objects.all()
-    serializer_class = ResourceSerializer
-    permission_classes = [permissions.IsAuthenticated]
-
-    def perform_create(self, serializer):
-        serializer.save(added_by=self.request.user)
 
 class HighlightViewSet(viewsets.ModelViewSet):
     queryset = Highlight.objects.all().order_by('-uploaded_at')
@@ -46,11 +24,7 @@ class HighlightViewSet(viewsets.ModelViewSet):
     def perform_create(self, serializer):
         serializer.save(uploaded_by=self.request.user)
 
-from .permissions import IsLeadOrFaculty, IsSelfOrAdmin
-from .serializers import EventSerializer, TaskSerializer, ResourceSerializer, UserSerializer, HighlightSerializer, NewsSerializer, UserCreateSerializer, UserUpdateSerializer
-from django.contrib.auth.models import User
 
-# ... (Previous ViewSets unchanged)
 
 class UserViewSet(viewsets.ModelViewSet):
     queryset = User.objects.all()
@@ -78,6 +52,16 @@ class UserViewSet(viewsets.ModelViewSet):
     def me(self, request):
         serializer = self.get_serializer(request.user)
         return Response(serializer.data)
+
+class BlogPostViewSet(viewsets.ModelViewSet):
+    queryset = BlogPost.objects.filter(is_published=True).order_by('-created_at')
+    serializer_class = BlogPostSerializer
+    permission_classes = [permissions.IsAuthenticatedOrReadOnly]
+    filter_backends = [filters.SearchFilter]
+    search_fields = ['title', 'content']
+
+    def perform_create(self, serializer):
+        serializer.save(author=self.request.user)
 
 class NewsViewSet(viewsets.ModelViewSet):
     queryset = News.objects.all().order_by('-created_at')
