@@ -37,16 +37,6 @@ npm run dev
 
 The website will be available at [http://localhost:5173](http://localhost:5173). Vite may switch to another port automatically; backend CORS allows 5173 and 5174.
 
-## Login Credentials
-
-Default accounts are available for testing the secure dashboard:
-
-- **Lead:** `lead` / `awsclub123` (Full access)
-- **Faculty:** `faculty` / `awsclub123` (Can manage events, gallery, news)
-- **Core Member:** `core` / `awsclub123` (Limited access)
-
-Log in at [http://localhost:5173/login](http://localhost:5173/login).
-
 ## Features
 
 ### Public Landing Page
