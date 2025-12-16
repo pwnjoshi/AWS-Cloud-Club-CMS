@@ -1,4 +1,4 @@
-import { Github, Twitter, Linkedin, MessageCircle } from 'lucide-react';
+import { Github, Twitter, Linkedin, MessageCircle, Instagram } from 'lucide-react';
 
 export default function Footer() {
     return (
@@ -15,10 +15,10 @@ export default function Footer() {
                         Empowering students to build, deploy, and scale their ideas on the cloud. Join the revolution.
                     </p>
                     <div style={{ display: 'flex', gap: '1rem', marginTop: '1.5rem' }}>
-                        <SocialIcon href="https://www.instagram.com/awscloudclubgeu/" icon={<MessageCircle size={20} />} label="Instagram" />
+                        <SocialIcon href="https://www.instagram.com/awscloudclubgeu/" icon={<Instagram size={20} />} label="Instagram" />
                         <SocialIcon href="https://x.com/awscloudclubgeu" icon={<Twitter size={20} />} label="X" />
                         <SocialIcon href="https://www.linkedin.com/company/aws-cloud-club-geu/" icon={<Linkedin size={20} />} label="LinkedIn" />
-                        <SocialIcon href="https://github.com/" icon={<Github size={20} />} label="GitHub" />
+                        <SocialIcon href="https://github.com/pwnjoshi/AWS-Cloud-Club-CMS" icon={<Github size={20} />} label="GitHub" />
                     </div>
                 </div>
 
