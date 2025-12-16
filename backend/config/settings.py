@@ -33,6 +33,8 @@ ALLOWED_HOSTS = [
     "awsclubgeu.in",
     "www.awsclubgeu.in",
     "aws-cloud-club-cms.vercel.app",
+    "localhost",
+    "127.0.0.1",
 ]
 
 CORS_ALLOWED_ORIGINS = [
