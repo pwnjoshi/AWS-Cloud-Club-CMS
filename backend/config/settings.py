@@ -28,7 +28,12 @@ SECRET_KEY = 'django-insecure-oko*o4_gwblmqa%y(veko&=+s5m$4h^ttsmwn(4*wegi8kmvs3
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = os.environ.get('DEBUG', 'False') == 'True'
 
-ALLOWED_HOSTS = os.environ.get('ALLOWED_HOSTS', 'localhost,127.0.0.1').split(',')
+ALLOWED_HOSTS = [
+    "aws-cloud-club-backend.onrender.com",
+    "awsclubgeu.in",
+    "www.awsclubgeu.in",
+    "aws-cloud-club-cms.vercel.app",
+]
 
 CORS_ALLOWED_ORIGINS = [
     "http://localhost:5173",
