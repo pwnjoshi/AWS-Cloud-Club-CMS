@@ -47,24 +47,18 @@ export default function Home() {
         <main style={{ flex: 1 }}>
 
             {/* HERO SECTION */}
-            <section style={{
-                position: 'relative',
-                padding: '8rem 2rem 6rem',
-                textAlign: 'center',
-                background: 'radial-gradient(circle at center, #1A2332 0%, #0F1520 70%)',
-                overflow: 'hidden'
-            }}>
+            <section className="hero-section">
                 {/* Background decoration */}
-                <div style={{ position: 'absolute', top: '50%', left: '50%', transform: 'translate(-50%, -50%)', width: '800px', height: '800px', background: 'radial-gradient(circle, rgba(0,115,187,0.1) 0%, rgba(0,0,0,0) 70%)', borderRadius: '50%', pointerEvents: 'none' }}></div>
+                <div className="hero-bg-decoration"></div>
 
-                <div style={{ position: 'relative', zIndex: 1, maxWidth: '800px', margin: '0 auto' }}>
-                    <h1 style={{ fontSize: '4rem', fontWeight: '800', lineHeight: '1.1', marginBottom: '1.5rem', background: 'linear-gradient(to right, #fff, #94A3B8)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>
+                <div className="hero-content">
+                    <h1 className="hero-title">
                         Innovate with the Cloud
                     </h1>
-                    <p style={{ fontSize: '1.25rem', color: 'var(--text-secondary)', marginBottom: '3rem', maxWidth: '600px', margin: '0 auto 3rem' }}>
+                    <p className="hero-subtitle">
                         Build. Deploy. Scale. Join the largest community of student developers and cloud enthusiasts at Graphic Era Deemed to be University.
                     </p>
-                    <div style={{ display: 'flex', gap: '1rem', justifyContent: 'center' }}>
+                    <div className="cta-row">
                         <a href="https://www.meetup.com/aws-cloud-club-at-graphic-era/" target="_blank" rel="noopener noreferrer" className="btn-primary" style={{ fontSize: '1.1rem', padding: '1rem 2rem', textDecoration: 'none' }}>Join the Club</a>
                         <Link to="/events" className="btn-secondary" style={{ fontSize: '1.1rem', padding: '1rem 2rem', textDecoration: 'none' }}>View Events</Link>
                     </div>
@@ -73,9 +67,9 @@ export default function Home() {
 
             {/* BREAKING NEWS TICKER */}
             {news && (
-                <div style={{ borderTop: '1px solid rgba(255,255,255,0.05)', borderBottom: '1px solid rgba(255,255,255,0.05)', background: '#131B29' }}>
-                    <div style={{ maxWidth: '1200px', margin: '0 auto', padding: '1rem 2rem', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                        <div style={{ display: 'flex', alignItems: 'center', gap: '1rem', flex: 1 }}>
+                <div className="ticker">
+                    <div className="container ticker-row" style={{ padding: '1rem 0' }}>
+                        <div className="ticker-left">
                             <Zap size={20} color="var(--aws-smile-orange)" />
                             <span style={{ fontWeight: 'bold', color: 'white' }}>Breaking News</span>
                             <span style={{ width: '1px', height: '20px', background: 'rgba(255,255,255,0.1)' }}></span>
@@ -97,37 +91,39 @@ export default function Home() {
             )}
 
             {/* MISSION SECTION */}
-            <section style={{ padding: '6rem 2rem', maxWidth: '1200px', margin: '0 auto' }}>
-                <div style={{ textAlign: 'center', marginBottom: '4rem' }}>
-                    <h2 style={{ fontSize: '2.5rem', marginBottom: '1rem' }}>Our Mission</h2>
-                    <p style={{ color: 'var(--text-secondary)', maxWidth: '600px', margin: '0 auto' }}>
+            <section className="section-padding">
+                <div className="container section-header">
+                    <h2 className="section-title">Our Mission</h2>
+                    <p className="section-desc">
                         We aim to bridge the gap between academic learning and industry standards by providing hands-on experience with Amazon Web Services.
                     </p>
                 </div>
 
-                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: '2rem' }}>
-                    <MissionCard
-                        icon={<Book size={32} color="#0073BB" />}
-                        title="Learn"
-                        desc="Master core and advanced cloud concepts through expert-led workshops and seminars."
-                    />
-                    <MissionCard
-                        icon={<Code size={32} color="#0073BB" />}
-                        title="Build"
-                        desc="Apply your knowledge by working on real-world projects and competing in hackathons."
-                    />
-                    <MissionCard
-                        icon={<Users size={32} color="#0073BB" />}
-                        title="Connect"
-                        desc="Network with industry experts, alumni, and like-minded peers in the tech community."
-                    />
+                <div className="container">
+                    <div className="grid-auto">
+                        <MissionCard
+                            icon={<Book size={32} color="#0073BB" />}
+                            title="Learn"
+                            desc="Master core and advanced cloud concepts through expert-led workshops and seminars."
+                        />
+                        <MissionCard
+                            icon={<Code size={32} color="#0073BB" />}
+                            title="Build"
+                            desc="Apply your knowledge by working on real-world projects and competing in hackathons."
+                        />
+                        <MissionCard
+                            icon={<Users size={32} color="#0073BB" />}
+                            title="Connect"
+                            desc="Network with industry experts, alumni, and like-minded peers in the tech community."
+                        />
+                    </div>
                 </div>
             </section>
 
             {/* EVENTS PREVIEW */}
-            <section style={{ padding: '4rem 2rem', background: '#131B29' }}>
-                <div style={{ maxWidth: '1200px', margin: '0 auto' }}>
-                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '3rem' }}>
+            <section className="section-padding" style={{ background: '#131B29' }}>
+                <div className="container">
+                    <div className="events-header-row">
                         <h2 style={{ fontSize: '2rem' }}>Upcoming Events</h2>
                         <Link to="/events" style={{ color: 'var(--aws-blue)', textDecoration: 'none' }}>View All</Link>
                     </div>
@@ -135,7 +131,7 @@ export default function Home() {
                     {loading ? (
                         <div style={{ textAlign: 'center', color: '#9CA3AF' }}>Loading...</div>
                     ) : events.length > 0 ? (
-                        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(350px, 1fr))', gap: '2rem' }}>
+                        <div className="events-grid">
                             {events.map(evt => (
                                 <EventCard
                                     key={evt.id}
@@ -159,21 +155,23 @@ export default function Home() {
 
             {/* GALLERY / HIGHLIGHTS */}
             {highlights.length > 0 && (
-                <section style={{ padding: '6rem 2rem', maxWidth: '1200px', margin: '0 auto' }}>
-                    <h2 style={{ fontSize: '2rem', marginBottom: '3rem' }}>Recent Highlights</h2>
-                    <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: '1.5rem' }}>
-                        {highlights.map(h => {
-                            const imgUrl = h.image.startsWith('http') ? h.image : `http://localhost:8000${h.image}`;
-                            return (
-                                <div key={h.id} style={{ borderRadius: '12px', overflow: 'hidden', height: '300px', backgroundImage: `url(${imgUrl})`, backgroundSize: 'cover', backgroundPosition: 'center', position: 'relative' }}>
-                                    {h.title && (
-                                        <div style={{ position: 'absolute', bottom: 0, left: 0, right: 0, padding: '1rem', background: 'linear-gradient(transparent, rgba(0,0,0,0.8))' }}>
-                                            <p style={{ color: 'white', fontWeight: 'bold' }}>{h.title}</p>
-                                        </div>
-                                    )}
-                                </div>
-                            );
-                        })}
+                <section className="section-padding">
+                    <div className="container">
+                        <h2 style={{ fontSize: '2rem', marginBottom: '3rem' }}>Recent Highlights</h2>
+                        <div className="grid-auto">
+                            {highlights.map(h => {
+                                const imgUrl = h.image.startsWith('http') ? h.image : `http://localhost:8000${h.image}`;
+                                return (
+                                    <div key={h.id} className="highlight-card" style={{ backgroundImage: `url(${imgUrl})` }}>
+                                        {h.title && (
+                                            <div className="highlight-overlay">
+                                                <p style={{ color: 'white', fontWeight: 'bold' }}>{h.title}</p>
+                                            </div>
+                                        )}
+                                    </div>
+                                );
+                            })}
+                        </div>
                     </div>
                 </section>
             )}
@@ -184,8 +182,8 @@ export default function Home() {
 
 function MissionCard({ icon, title, desc }) {
     return (
-        <div style={{ background: '#1A2332', border: '1px solid rgba(255,255,255,0.05)', borderRadius: '16px', padding: '2.5rem' }}>
-            <div style={{ width: '48px', height: '48px', background: 'rgba(0, 115, 187, 0.1)', borderRadius: '12px', display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: '1.5rem' }}>
+        <div className="mission-card">
+            <div className="mission-icon-box">
                 {icon}
             </div>
             <h3 style={{ fontSize: '1.5rem', marginBottom: '1rem' }}>{title}</h3>
@@ -196,9 +194,9 @@ function MissionCard({ icon, title, desc }) {
 
 function EventCard({ title, date, loc, img }) {
     return (
-        <div style={{ display: 'flex', background: '#1E293B', border: '1px solid rgba(255,255,255,0.05)', borderRadius: '12px', overflow: 'hidden' }}>
-            <div style={{ width: '200px', backgroundImage: `url(${img})`, backgroundSize: 'cover', backgroundPosition: 'center' }}></div>
-            <div style={{ padding: '1.5rem', flex: 1 }}>
+        <div className="event-card">
+            <div className="event-image" style={{ backgroundImage: `url(${img})` }}></div>
+            <div className="event-content">
                 <div style={{ fontSize: '0.85rem', color: 'var(--aws-blue)', fontWeight: 'bold', marginBottom: '0.5rem' }}>{date}</div>
                 <h3 style={{ fontSize: '1.25rem', marginBottom: '0.5rem' }}>{title}</h3>
                 <p style={{ color: 'var(--text-secondary)', fontSize: '0.9rem', marginBottom: '1.5rem' }}>Some quick description about the event goes here.</p>

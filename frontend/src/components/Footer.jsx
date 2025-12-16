@@ -2,8 +2,8 @@ import { Github, Twitter, Linkedin, MessageCircle, Instagram } from 'lucide-reac
 
 export default function Footer() {
     return (
-        <footer style={{ background: '#0B0F17', padding: '4rem 2rem', borderTop: '1px solid rgba(255,255,255,0.05)' }}>
-            <div style={{ maxWidth: '1200px', margin: '0 auto', display: 'grid', gridTemplateColumns: '1.5fr 1fr 1fr 1fr', gap: '4rem' }}>
+        <footer style={{ background: '#0B0F17', padding: '4rem 0', borderTop: '1px solid rgba(255,255,255,0.05)' }}>
+            <div className="container footer-grid">
 
                 {/* Brand Column */}
                 <div>
@@ -24,33 +24,32 @@ export default function Footer() {
 
                 {/* Links Columns */}
                 <FooterColumn title="Explore">
-                    <FooterLink>Events</FooterLink>
-                    <FooterLink>Projects</FooterLink>
-                    <FooterLink>Blog</FooterLink>
-                    <FooterLink>Team</FooterLink>
+                    <FooterLink href="/events">Events</FooterLink>
+                    <FooterLink href="/gallery">Gallery</FooterLink>
+                    <FooterLink href="/resources">Resources</FooterLink>
+                    <FooterLink href="/team">Team</FooterLink>
+                    <FooterLink href="/blog">Blog</FooterLink>
                 </FooterColumn>
 
                 <FooterColumn title="Resources">
-                    <FooterLink>AWS Documentation</FooterLink>
-                    <FooterLink>Cloud Skills Boost</FooterLink>
+                    <FooterLink href="https://www.meetup.com/aws-cloud-club-at-graphic-era/">Meetup</FooterLink>
                     <FooterLink href="https://chat.whatsapp.com/IvCnmpfmJ3BCI6etmQ1i5E">WhatsApp Group</FooterLink>
-                    <FooterLink>GitHub Repo</FooterLink>
-                    <FooterLink>Discord Community</FooterLink>
+                    <FooterLink href="https://github.com/pwnjoshi/AWS-Cloud-Club-CMS">GitHub Repo</FooterLink>
                 </FooterColumn>
 
                 <FooterColumn title="Contact">
-                    <FooterLink>awscloudclub@geu.ac.in</FooterLink>
+                    <FooterLink href="mailto:awscloudclubgeu@gmail.com">awscloudclubgeu@gmail.com</FooterLink>
                     <p style={{ color: 'var(--text-secondary)', fontSize: '0.9rem', marginTop: '0.5rem' }}>
                         Graphic Era Deemed to be University, Dehradun
                     </p>
                 </FooterColumn>
             </div>
 
-            <div style={{ maxWidth: '1200px', margin: '3rem auto 0', paddingTop: '2rem', borderTop: '1px solid rgba(255,255,255,0.05)', display: 'flex', justifyContent: 'space-between', color: '#4B5563', fontSize: '0.9rem' }}>
+            <div className="container footer-bottom" style={{ marginTop: '3rem', paddingTop: '2rem', borderTop: '1px solid rgba(255,255,255,0.05)', color: '#4B5563', fontSize: '0.9rem' }}>
                 <span>© 2024 AWS Cloud Club GEU. All rights reserved.</span>
-                <div style={{ display: 'flex', gap: '2rem' }}>
-                    <span>Privacy Policy</span>
-                    <span>Terms of Service</span>
+                <div className="footer-legal">
+                    <a href="https://aws.amazon.com/privacy/" target="_blank" rel="noreferrer" style={{ color: 'var(--text-secondary)', textDecoration: 'none' }} className="hover:text-white">Privacy Policy</a>
+                    <a href="https://aws.amazon.com/events/terms/" target="_blank" rel="noreferrer" style={{ color: 'var(--text-secondary)', textDecoration: 'none' }} className="hover:text-white">Terms of Service</a>
                 </div>
             </div>
         </footer>

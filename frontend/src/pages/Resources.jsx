@@ -1,6 +1,110 @@
-import { Book, Video, FileText, ExternalLink, Code } from 'lucide-react';
+import { Compass, Layers, Library, PlayCircle, MonitorPlay, BookOpen, GraduationCap, Wrench, ShieldCheck, ExternalLink, Users } from 'lucide-react';
 
 export default function Resources() {
+    const sections = [
+        {
+            title: 'Start Here',
+            blurb: 'Get the foundations right and understand AWS fundamentals.',
+            items: [
+                {
+                    icon: <Compass size={28} color="#FF9900" />,
+                    title: 'Getting Started Center',
+                    desc: 'Guided intro with curated learning paths for newcomers.',
+                    link: 'https://aws.amazon.com/getting-started/',
+                    btnText: 'Explore Guide'
+                },
+                {
+                    icon: <BookOpen size={28} color="#FF9900" />,
+                    title: 'Skill Builder (Free Tier)',
+                    desc: 'Self-paced foundational courses with labs and quizzes.',
+                    link: 'https://skillbuilder.aws/',
+                    btnText: 'Start Learning'
+                },
+                {
+                    icon: <Library size={28} color="#FF9900" />,
+                    title: 'Architecture Center',
+                    desc: 'Reference architectures, patterns, and well-architected guidance.',
+                    link: 'https://aws.amazon.com/architecture/',
+                    btnText: 'View Patterns'
+                }
+            ]
+        },
+        {
+            title: 'Learn & Practice',
+            blurb: 'Hands-on resources to build real workloads.',
+            items: [
+                {
+                    icon: <Wrench size={28} color="#FF9900" />,
+                    title: 'AWS Workshops',
+                    desc: 'Step-by-step labs for services like Lambda, ECS, and AI.',
+                    link: 'https://workshops.aws/',
+                    btnText: 'Launch Workshop'
+                },
+                {
+                    icon: <Layers size={28} color="#FF9900" />,
+                    title: 'Builders Library',
+                    desc: 'Deep dives from Amazon engineers on scaling and reliability.',
+                    link: 'https://aws.amazon.com/builders-library/',
+                    btnText: 'Read Articles'
+                },
+                {
+                    icon: <MonitorPlay size={28} color="#FF9900" />,
+                    title: 'AWS Events YouTube',
+                    desc: 'Sessions from re:Invent, Summits, and tech talks.',
+                    link: 'https://www.youtube.com/@AWSEventsChannel',
+                    btnText: 'Watch Sessions'
+                }
+            ]
+        },
+        {
+            title: 'Cert Prep',
+            blurb: 'Prep for Cloud Practitioner and Associate certifications.',
+            items: [
+                {
+                    icon: <GraduationCap size={28} color="#FF9900" />,
+                    title: 'Exam Readiness',
+                    desc: 'Official readiness paths and sample questions.',
+                    link: 'https://aws.amazon.com/certification/prepare/',
+                    btnText: 'Plan Your Path'
+                },
+                {
+                    icon: <ShieldCheck size={28} color="#FF9900" />,
+                    title: 'Cloud Practitioner Guide',
+                    desc: 'Overview of domains, whitepapers, and FAQs for the CLF-C02.',
+                    link: 'https://aws.amazon.com/certification/certified-cloud-practitioner/',
+                    btnText: 'View Guide'
+                }
+            ]
+        },
+        {
+            title: 'Code & Community',
+            blurb: 'Ship faster with samples and community support.',
+            items: [
+                {
+                    icon: <PlayCircle size={28} color="#FF9900" />,
+                    title: 'Serverless Patterns',
+                    desc: 'Repo of battle-tested serverless blueprints.',
+                    link: 'https://serverlessland.com/patterns',
+                    btnText: 'Browse Patterns'
+                },
+                {
+                    icon: <Layers size={28} color="#FF9900" />,
+                    title: 'AWS Samples (GitHub)',
+                    desc: 'Official code samples across services and SDKs.',
+                    link: 'https://github.com/aws-samples',
+                    btnText: 'View Samples'
+                },
+                {
+                    icon: <Users size={28} color="#FF9900" />,
+                    title: 'Meetup & Community',
+                    desc: 'Join local meetups and our WhatsApp group for help.',
+                    link: 'https://www.meetup.com/aws-cloud-club-at-graphic-era/',
+                    btnText: 'Join Meetup'
+                }
+            ]
+        }
+    ];
+
     return (
         <main style={{ flex: 1 }}>
             {/* HERO */}
@@ -21,36 +125,30 @@ export default function Resources() {
             </section>
 
             {/* RESOURCES GRID */}
-            <section style={{ padding: '4rem 2rem', maxWidth: '1200px', margin: '0 auto' }}>
-                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(350px, 1fr))', gap: '2rem' }}>
-                    <ResourceCard
-                        icon={<Book size={32} color="#FF9900" />}
-                        title="AWS Documentation"
-                        desc="The official comprehensive guide to all AWS services."
-                        link="https://docs.aws.amazon.com/"
-                        btnText="Read Docs"
-                    />
-                    <ResourceCard
-                        icon={<Video size={32} color="#FF9900" />}
-                        title="AWS Youtube Channel"
-                        desc="Video tutorials, conference talks, and demos from the experts."
-                        link="https://www.youtube.com/user/AmazonWebServices"
-                        btnText="Watch Videos"
-                    />
-                    <ResourceCard
-                        icon={<Code size={32} color="#FF9900" />}
-                        title="AWS Workshops"
-                        desc="Hands-on workshops and labs to build real-world applications."
-                        link="https://workshops.aws/"
-                        btnText="Start Building"
-                    />
-                    <ResourceCard
-                        icon={<FileText size={32} color="#FF9900" />}
-                        title="Cloud Skills Boost"
-                        desc="Google's parallel learning path, good for general cloud concepts too."
-                        link="https://www.cloudskillsboost.google/"
-                        btnText="Learn More"
-                    />
+            <section style={{ padding: '4rem 0' }}>
+                <div className="container" style={{ display: 'grid', gap: '3.5rem' }}>
+                    {sections.map(section => (
+                        <div key={section.title} style={{ display: 'grid', gap: '1.5rem' }}>
+                            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', gap: '1rem', flexWrap: 'wrap' }}>
+                                <div>
+                                    <h2 style={{ margin: 0, fontSize: '1.75rem' }}>{section.title}</h2>
+                                    <p style={{ marginTop: '0.5rem', color: 'var(--text-secondary)' }}>{section.blurb}</p>
+                                </div>
+                            </div>
+                            <div className="grid-auto" style={{ gap: '1.75rem' }}>
+                                {section.items.map(item => (
+                                    <ResourceCard
+                                        key={item.title}
+                                        icon={item.icon}
+                                        title={item.title}
+                                        desc={item.desc}
+                                        link={item.link}
+                                        btnText={item.btnText}
+                                    />
+                                ))}
+                            </div>
+                        </div>
+                    ))}
                 </div>
             </section>
         </main>
