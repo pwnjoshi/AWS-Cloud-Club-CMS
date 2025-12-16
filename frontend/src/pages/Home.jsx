@@ -1,53 +1,27 @@
 import { ArrowRight, Book, Calendar, Code, Users, Zap, AlertCircle, Clock, MapPin } from 'lucide-react';
+import { useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import { useState, useEffect } from 'react';
-import { getNews, API_URL } from '../api';
+import { EVENTS, NEWS, HIGHLIGHTS } from '../data/mockData';
 
 export default function Home() {
-    const [events, setEvents] = useState([]);
-    const [highlights, setHighlights] = useState([]);
-    const [news, setNews] = useState(null);
-    const [loading, setLoading] = useState(true);
+    const events = EVENTS;
+    const highlights = HIGHLIGHTS;
+    const news = NEWS[0];
 
+    // Scroll Animation Logic
     useEffect(() => {
-        // Fetch News
-        getNews()
-            .then(data => {
-                // API returns an array directly, not paginated
-                const newsList = Array.isArray(data) ? data : (data.results || []);
-                if (newsList.length > 0) {
-                    setNews(newsList[0]); // Get the latest news
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('is-visible');
                 }
-            })
-            .catch(err => console.error("Failed to fetch news", err));
-
-        // Fetch Events
-        const fetchEvents = async () => {
-            try {
-                const res = await fetch(`${API_URL}/api/events/`);
-                if (res.ok) {
-                    const data = await res.json();
-                    // Just take top 2, empty array is fine
-                    const upcoming = data.slice(0, 2);
-                    setEvents(upcoming);
-                }
-            } catch (err) {
-                console.error("Failed to fetch events", err);
-            }
-        };
-        fetchEvents();
-
-        // Fetch Highlights
-        fetch(`${API_URL}/api/highlights/`)
-            .then(res => res.json())
-            .then(data => {
-                setHighlights(data.slice(0, 3)); // Show top 3
-                setLoading(false);
-            })
-            .catch(err => {
-                console.error("Failed to fetch highlights", err);
-                setLoading(false);
             });
+        }, { threshold: 0.1 });
+
+        const elements = document.querySelectorAll('.reveal-on-scroll');
+        elements.forEach(el => observer.observe(el));
+
+        return () => observer.disconnect();
     }, []);
 
     return (
@@ -59,13 +33,13 @@ export default function Home() {
                 <div className="hero-bg-decoration"></div>
 
                 <div className="hero-content">
-                    <h1 className="hero-title">
+                    <h1 className="hero-title animate-fade-in">
                         Innovate with the Cloud
                     </h1>
-                    <p className="hero-subtitle">
+                    <p className="hero-subtitle animate-fade-in delay-100">
                         Build. Deploy. Scale. Join the largest community of student developers and cloud enthusiasts at Graphic Era Deemed to be University.
                     </p>
-                    <div className="cta-row">
+                    <div className="cta-row animate-fade-in delay-200">
                         <a href="https://www.meetup.com/aws-cloud-club-at-graphic-era/" target="_blank" rel="noopener noreferrer" className="btn-primary" style={{ fontSize: '1.1rem', padding: '1rem 2rem', textDecoration: 'none' }}>Join the Club</a>
                         <Link to="/events" className="btn-secondary" style={{ fontSize: '1.1rem', padding: '1rem 2rem', textDecoration: 'none' }}>View Events</Link>
                     </div>
@@ -74,21 +48,22 @@ export default function Home() {
 
             {/* BREAKING NEWS TICKER */}
             {news && (
-                <div className="ticker">
-                    <div className="container ticker-row" style={{ padding: '1rem 0' }}>
+                <div className="ticker animate-fade-in delay-300">
+                    <div className="container ticker-row">
                         <div className="ticker-left">
-                            <Zap size={20} color="var(--aws-smile-orange)" />
-                            <span style={{ fontWeight: 'bold', color: 'white' }}>Breaking News</span>
-                            <span style={{ width: '1px', height: '20px', background: 'rgba(255,255,255,0.1)' }}></span>
-                            <span style={{ color: 'var(--text-secondary)' }}>{news.content}</span>
+                            <div className="ticker-badge">
+                                <Zap size={16} fill="white" color="white" />
+                                <span>Breaking News</span>
+                            </div>
+                            <span className="ticker-message">{news.content}</span>
                         </div>
                         {news.link_url && (
                             news.link_url.startsWith('http') ? (
-                                <a href={news.link_url} target="_blank" rel="noopener noreferrer" style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', color: 'var(--aws-blue)', textDecoration: 'none', fontWeight: '600', whiteSpace: 'nowrap' }}>
+                                <a href={news.link_url} target="_blank" rel="noopener noreferrer" className="ticker-btn">
                                     {news.link_text || 'Learn More'} <ArrowRight size={16} />
                                 </a>
                             ) : (
-                                <Link to={news.link_url} style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', color: 'var(--aws-blue)', textDecoration: 'none', fontWeight: '600', whiteSpace: 'nowrap' }}>
+                                <Link to={news.link_url} className="ticker-btn">
                                     {news.link_text || 'Learn More'} <ArrowRight size={16} />
                                 </Link>
                             )
@@ -99,7 +74,7 @@ export default function Home() {
 
             {/* MISSION SECTION */}
             <section className="section-padding">
-                <div className="container section-header">
+                <div className="container section-header reveal-on-scroll">
                     <h2 className="section-title">Our Mission</h2>
                     <p className="section-desc">
                         We aim to bridge the gap between academic learning and industry standards by providing hands-on experience with Amazon Web Services.
@@ -108,21 +83,27 @@ export default function Home() {
 
                 <div className="container">
                     <div className="grid-auto">
-                        <MissionCard
-                            icon={<Book size={32} color="#0073BB" />}
-                            title="Learn"
-                            desc="Master core and advanced cloud concepts through expert-led workshops and seminars."
-                        />
-                        <MissionCard
-                            icon={<Code size={32} color="#0073BB" />}
-                            title="Build"
-                            desc="Apply your knowledge by working on real-world projects and competing in hackathons."
-                        />
-                        <MissionCard
-                            icon={<Users size={32} color="#0073BB" />}
-                            title="Connect"
-                            desc="Network with industry experts, alumni, and like-minded peers in the tech community."
-                        />
+                        <div className="reveal-on-scroll delay-100" style={{ height: '100%' }}>
+                            <MissionCard
+                                icon={<Book size={32} color="#0073BB" />}
+                                title="Learn"
+                                desc="Master core and advanced cloud concepts through expert-led workshops and seminars."
+                            />
+                        </div>
+                        <div className="reveal-on-scroll delay-200" style={{ height: '100%' }}>
+                            <MissionCard
+                                icon={<Code size={32} color="#0073BB" />}
+                                title="Build"
+                                desc="Apply your knowledge by working on real-world projects and competing in hackathons."
+                            />
+                        </div>
+                        <div className="reveal-on-scroll delay-300" style={{ height: '100%' }}>
+                            <MissionCard
+                                icon={<Users size={32} color="#0073BB" />}
+                                title="Connect"
+                                desc="Network with industry experts, alumni, and like-minded peers in the tech community."
+                            />
+                        </div>
                     </div>
                 </div>
             </section>
@@ -130,14 +111,12 @@ export default function Home() {
             {/* EVENTS PREVIEW */}
             <section className="section-padding" style={{ background: '#131B29' }}>
                 <div className="container">
-                    <div className="events-header-row">
+                    <div className="events-header-row reveal-on-scroll">
                         <h2 style={{ fontSize: '2rem' }}>Upcoming Events</h2>
                         <Link to="/events" style={{ color: 'var(--aws-blue)', textDecoration: 'none' }}>View All</Link>
                     </div>
 
-                    {loading ? (
-                        <div style={{ textAlign: 'center', color: '#9CA3AF' }}>Loading...</div>
-                    ) : events.length > 0 ? (
+                    {events.length > 0 ? (
                         <div className="events-grid">
                             {events.map(evt => (
                                 <EventCard
@@ -147,7 +126,7 @@ export default function Home() {
                                     date={new Date(evt.start_time).toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}
                                     time={new Date(evt.start_time).toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' })}
                                     loc={evt.location}
-                                    img="https://images.unsplash.com/photo-1544197150-b99a580bb7a8?auto=format&fit=crop&q=80&w=600"
+                                    img={evt.image}
                                     link={evt.registration_link}
                                 />
                             ))}
@@ -169,9 +148,8 @@ export default function Home() {
                         <h2 style={{ fontSize: '2rem', marginBottom: '3rem' }}>Recent Highlights</h2>
                         <div className="grid-auto">
                             {highlights.map(h => {
-                                const imgUrl = h.image.startsWith('http') ? h.image : `${API_URL}${h.image}`;
                                 return (
-                                    <div key={h.id} className="highlight-card" style={{ backgroundImage: `url(${imgUrl})` }}>
+                                    <div key={h.id} className="highlight-card" style={{ backgroundImage: `url(${h.image})` }}>
                                         {h.title && (
                                             <div className="highlight-overlay">
                                                 <p style={{ color: 'white', fontWeight: 'bold' }}>{h.title}</p>

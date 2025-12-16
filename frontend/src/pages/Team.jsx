@@ -1,15 +1,32 @@
 import { Github, Linkedin, Twitter, Award, Trophy, Star, Target } from 'lucide-react';
+import { useEffect } from 'react';
 
 export default function Team() {
+    // Scroll Animation Logic
+    useEffect(() => {
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('is-visible');
+                }
+            });
+        }, { threshold: 0.1 });
+
+        const elements = document.querySelectorAll('.reveal-on-scroll');
+        elements.forEach(el => observer.observe(el));
+
+        return () => observer.disconnect();
+    }, []);
+
     return (
         <main style={{ flex: 1 }}>
             {/* HERO */}
             <section className="team-hero">
                 <div style={{ maxWidth: '800px', margin: '0 auto' }}>
-                    <h1 style={{ fontSize: '3.5rem', fontWeight: '800', marginBottom: '1rem', color: 'white' }}>
+                    <h1 className="animate-fade-in" style={{ fontSize: '3.5rem', fontWeight: '800', marginBottom: '1rem', color: 'white' }}>
                         Meet the Core Team
                     </h1>
-                    <p style={{ fontSize: '1.2rem', color: 'var(--text-secondary)', marginBottom: '3rem' }}>
+                    <p className="animate-fade-in delay-100" style={{ fontSize: '1.2rem', color: 'var(--text-secondary)', marginBottom: '3rem' }}>
                         The dedicated leaders driving the AWS Cloud Club mission at Graphic Era University.
                     </p>
                 </div>
@@ -17,7 +34,7 @@ export default function Team() {
 
             {/* CORE TEAM */}
             <section className="core-team-section">
-                <div className="team-grid">
+                <div className="team-grid reveal-on-scroll">
                     <LeaderCard
                         name="Pawan Joshi"
                         role="Cloud Club Captain"
@@ -37,7 +54,7 @@ export default function Team() {
 
             {/* CTA */}
             <section className="team-cta-section">
-                <div style={{ maxWidth: '800px', margin: '0 auto' }}>
+                <div className="reveal-on-scroll" style={{ maxWidth: '800px', margin: '0 auto' }}>
                     <h2 style={{ fontSize: '2rem', marginBottom: '1rem', color: 'white' }}>Want to be part of this team?</h2>
                     <p style={{ color: 'var(--text-secondary)', marginBottom: '2rem' }}>
                         We recruit for core team positions at the start of every semester. Join as a member today to start your journey.

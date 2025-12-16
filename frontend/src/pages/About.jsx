@@ -1,16 +1,33 @@
-import { Target, Lightbulb, Users, Award, Briefcase, CheckCircle, Linkedin } from 'lucide-react';
+import { Target, Lightbulb, Users, Award, Briefcase, CheckCircle, Linkedin, Globe, Rocket, Heart } from 'lucide-react';
+import { useEffect } from 'react';
 
 export default function About() {
+    // Scroll Animation Logic
+    useEffect(() => {
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('is-visible');
+                }
+            });
+        }, { threshold: 0.1 });
+
+        const elements = document.querySelectorAll('.reveal-on-scroll');
+        elements.forEach(el => observer.observe(el));
+
+        return () => observer.disconnect();
+    }, []);
+
     return (
         <main style={{ flex: 1 }}>
             {/* HERO */}
             {/* HERO */}
             <section className="about-hero">
                 <div style={{ maxWidth: '800px', margin: '0 auto', position: 'relative', zIndex: 1 }}>
-                    <h1 className="about-title-gradient">
+                    <h1 className="about-title-gradient animate-fade-in">
                         Building the Future on the Cloud
                     </h1>
-                    <p className="hero-subtitle">
+                    <p className="hero-subtitle animate-fade-in delay-100">
                         We are Graphic Era University's premier student community dedicated to Amazon Web Services.
                         Bridging the gap between theory and practice.
                     </p>
@@ -20,7 +37,7 @@ export default function About() {
             {/* UNIVERSITY & STORY */}
             {/* UNIVERSITY & STORY */}
             <section className="story-section">
-                <div className="story-grid">
+                <div className="story-grid reveal-on-scroll">
                     <div>
                         <h2 className="section-title">Our Story</h2>
                         <p className="section-desc" style={{ maxWidth: 'none', margin: '0 0 1.5rem 0', fontSize: '1.25rem', lineHeight: '1.6' }}>
@@ -32,7 +49,7 @@ export default function About() {
                     </div>
                     <div className="stats-grid">
                         <StatCard icon={<Users size={28} color="#FF9900" />} number="20+" label="Active Members" />
-                        <StatCard icon={<Lightbulb size={28} color="#8B5CF6" />} number="1" label="Project Shipped" />
+
                     </div>
                 </div>
             </section>
@@ -47,9 +64,9 @@ export default function About() {
                     </div>
 
                     <div className="values-grid">
-                        <ValueCard title="Innovation" desc="We constantly push boundaries and explore the latest in cloud tech, from Serverless to AI/ML." />
-                        <ValueCard title="Community" desc="We grow together. Every member is both a learner and a mentor in our peer-to-peer ecosystem." />
-                        <ValueCard title="Excellence" desc="We strive for high standards in our projects, certifications, and technical skills." />
+                        <div className="reveal-on-scroll delay-100"><ValueCard title="Innovation" desc="We constantly push boundaries and explore the latest in cloud tech, from Serverless to AI/ML." /></div>
+                        <div className="reveal-on-scroll delay-200"><ValueCard title="Community" desc="We grow together. Every member is both a learner and a mentor in our peer-to-peer ecosystem." /></div>
+                        <div className="reveal-on-scroll delay-300"><ValueCard title="Excellence" desc="We strive for high standards in our projects, certifications, and technical skills." /></div>
                     </div>
                 </div>
             </section>
@@ -57,10 +74,12 @@ export default function About() {
             {/* FACULTY */}
             {/* FACULTY */}
             <section className="faculty-section">
-                <h2 className="section-title">Faculty Leadership</h2>
-                <p className="section-desc" style={{ marginBottom: '4rem' }}>Supported by the visionary leadership of Graphic Era University.</p>
+                <div className="reveal-on-scroll">
+                    <h2 className="section-title">Faculty Leadership</h2>
+                    <p className="section-desc" style={{ marginBottom: '4rem' }}>Supported by the visionary leadership of Graphic Era University.</p>
+                </div>
 
-                <div className="faculty-grid" style={{ display: 'flex', justifyContent: 'center' }}>
+                <div className="faculty-grid reveal-on-scroll" style={{ display: 'flex', justifyContent: 'center' }}>
                     <FacultyCard
                         name="Dr. Amit Kumar"
                         role="Associate Professor"

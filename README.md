@@ -1,119 +1,128 @@
-# AWS Cloud Club GEU
+# ☁️ AWS Cloud Club - Graphic Era University
 
-Full-stack application for AWS Cloud Club GEU. Django REST Framework backend + React (Vite) frontend with modern AWS-styled UI, token auth, role-based dashboard, events, highlights, and resources.
+[![React](https://img.shields.io/badge/Frontend-React-61DAFB?style=for-the-badge&logo=react&logoColor=black)](https://reactjs.org/)
+[![Vite](https://img.shields.io/badge/Build-Vite-646CFF?style=for-the-badge&logo=vite&logoColor=white)](https://vitejs.dev/)
+[![AWS](https://img.shields.io/badge/Community-AWS_Cloud_Club-FF9900?style=for-the-badge&logo=amazon-aws&logoColor=white)](https://aws.amazon.com/)
+[![Status](https://img.shields.io/badge/Status-Active-success?style=for-the-badge)](https://www.meetup.com/aws-cloud-club-at-graphic-era/)
 
-## Project Structure
+> **The official digital hub for the AWS Cloud Club at Graphic Era Deemed to be University.**  
+> Bridging the gap between theory and practice, empowering students to build on the Cloud.
 
-- **Backend:** Django REST Framework API (located in `backend/`)
-- **Frontend:** React + Vite SPA (located in `frontend/`)
+---
 
-## How to Run
+## 🚀 Project Overview
 
-### 1. Backend (Django)
+Everything you see is **100% Static Frontend**.  
+We have architected this platform to be lightweight, incredibly fast, and serverless-ready.
 
-Open a terminal in the `backend` folder:
+- **Zero Backend**: No databases to manage, no API latency.
+- **Instant Deployment**: Optimized for Vercel & Netlify.
+- **Premium UI**: Custom-built Glassmorphism design system.
 
+---
+
+## ⚡ Tech Stack & Architecture
+
+| Component | Technology | Description |
+|-----------|------------|-------------|
+| **Core** | ![React](https://img.shields.io/badge/-React-black?style=flat-square&logo=react) | Component-based UI Architecture |
+| **Bundler** | ![Vite](https://img.shields.io/badge/-Vite-black?style=flat-square&logo=vite) | Lightning-fast HMR and build |
+| **Styling** | ![CSS3](https://img.shields.io/badge/-CSS3-black?style=flat-square&logo=css3) | Vanilla CSS with Variables & Glassmorphism |
+| **Icons** | ![Lucide](https://img.shields.io/badge/-Lucide-black?style=flat-square) | Lightweight, beautiful SVG icons |
+| **Routing** | ![React Router](https://img.shields.io/badge/-React_Router-black?style=flat-square&logo=react-router) | Client-side navigation |
+
+---
+
+## 🛠️ Quick Start Guide
+
+Ready to contribute or run this locally? Follow these simple steps:
+
+### 1. Clone & Navigate
 ```bash
-# Activate virtual environment (Windows)
-.\venv\Scripts\activate
-
-# Run server
-python manage.py runserver
+git clone https://github.com/pwnjoshi/AWS-Cloud-Club-CMS.git
+cd AWS-Cloud-Club-CMS/frontend
 ```
 
-The API will be available at [http://127.0.0.1:8000/api/](http://127.0.0.1:8000/api/).
-
-### 2. Frontend (React)
-
-Open a new terminal in the `frontend` folder:
-
+### 2. Install Dependencies
 ```bash
-# Install dependencies (if not already installed)
 npm install
+```
 
-# Run development server
+### 3. Launch Dev Server
+```bash
 npm run dev
 ```
+🌟 Open `http://localhost:5173` to view the site!
 
-The website will be available at [http://localhost:5173](http://localhost:5173). Vite may switch to another port automatically; backend CORS allows 5173 and 5174.
+---
 
-## Features
+## � Project Structure
 
-### Public Landing Page
-- Modern, responsive design with "Glassmorphism" aesthetics.
-- Hero section, Breaking News ticker, Mission cards, and Gallery.
-- **PublicLayout** ensures consistent navigation across public pages.
-
-### Secure Dashboard
-- **Role-Based Access Control (RBAC):**
-  - **Leads/Faculty:** Can create events, upload gallery highlights, manage tasks, and manage breaking news.
-  - **Members/Public:** Read-only access to events and gallery.
-- **Task Management:** Rapid task entry and status tracking.
-- **Interactive Calendar:** Monthly view of club events.
-- **Resources Hub:** Shared documents and links.
-- **Breaking News Manager:** Leads/Faculty can manage dynamic announcements on the home page.
-- **Faculty View:** Oversight dashboard for Leads/Faculty.
-
-### Event Management
-- **Meetup.com Import:** Auto-fetch event details from a URL.
-- **RBAC:** Only 'LEAD' and 'FACULTY' roles can create new events.
-
-### Dynamic Highlights (Gallery)
-- Images are served dynamically from the backend.
-- Uploads are restricted to authorized roles.
-
-## Tech Stack
-
-- **Backend:** Python, Django, Django REST Framework, SQLite
-- **Frontend:** JavaScript, React, Vite, CSS (Glassmorphism)
-- **Authentication:** Token Authentication
-
-## Environment & Config
-- CORS allowed origins: `http://localhost:5173`, `http://localhost:5174` (see `backend/config/settings.py`).
-- Media served from `backend/media/` with `ImageField` uploads for `Highlight`.
-- API base used by frontend: `frontend/src/api.js` (`API_URL = 'http://127.0.0.1:8000'`).
-
-## Authentication
-Token-based login via `/api-token-auth/`.
-
-Example (PowerShell):
-```powershell
-$body = @{ username = "lead"; password = "awsclub123" } | ConvertTo-Json
-Invoke-WebRequest -Uri "http://127.0.0.1:8000/api-token-auth/" -Method POST -Headers @{'Content-Type'='application/json'} -Body $body -UseBasicParsing | Select-Object -ExpandProperty Content
+```bash
+AWS-Cloud-Club-GEU/
+├── frontend/             # 🎨 The Heart of the App
+│   ├── public/           # Static Assets (Images, Icons)
+│   └── src/
+│       ├── components/   # Atomic UI Building Blocks (Navbar, Cards, Footer)
+│       ├── pages/        # Route Views (Home, Events, Team, Gallery)
+│       ├── data/         # 🧠 The "Brain" (Static Data)
+│       │   └── mockData.js  <-- EDIT THIS TO UPDATE CONTENT
+│       ├── App.jsx       # Routing Logic
+│       └── index.css     # Global Design System
+├── README.md             # 📖 You are here
+└── .gitignore            # Git configuration
 ```
 
-## RBAC Summary
-- Leads & Faculty: create events, manage highlights (gallery), manage breaking news, access resources and calendar.
-- Members/Public: read-only access to public endpoints and pages.
-- Enforcement via `IsLeadOrFaculty` (backend `club/permissions.py`).
+---
 
-## Key API Endpoints
-- `GET/POST /api/events/` — public read, lead/faculty write
-- `GET/POST /api/highlights/` — public read, lead/faculty write
-- `DELETE /api/highlights/{id}/` — lead/faculty only
-- `GET/POST /api/news/` — public read, lead/faculty write
-- `GET /api/users/` — list users (restricted)
-- `GET /api/users/me/` — current user profile (role included)
-- `POST /api/import-meetup-event/` — import event details by URL (auth required)
+## 📝 Managing Content (CMS)
 
-## Deployment Notes
-- Backend
-  - Use production WSGI/ASGI server (e.g., gunicorn/uvicorn) and reverse proxy (nginx).
-  - Configure environment variables for `DEBUG`, `ALLOWED_HOSTS`, `CORS_ALLOWED_ORIGINS`.
-  - Set up persistent storage for `media/` uploads.
-  - Ensure `rest_framework.authtoken` installed and migrations applied.
-- Frontend
-  - Build with `npm run build`; serve `dist/` via static hosting or proxy through backend.
-  - Update `API_URL` in `frontend/src/api.js` to your backend domain.
+We use a **"Code-as-CMS"** approach. You don't need a database to update the site.
 
-## Troubleshooting
-- Login says "Invalid credentials": verify token endpoint returns a token; reset password via `manage.py shell`.
-- 401 on API calls: ensure token stored in localStorage; confirm `Authorization: Token <token>` header.
-- File upload fails: confirm `authenticatedFetch` does not set `Content-Type` for `FormData` (fixed). Check `MEDIA_URL`/`MEDIA_ROOT`.
-- Frontend can’t reach backend: confirm CORS origin matches actual frontend port.
+### Updating Events, News, or Highlights
+1.  Navigate to `frontend/src/data/mockData.js`.
+2.  Modify the constant arrays:
+    -   **`EVENTS`**: Add new objects for upcoming meetups.
+    -   **`NEWS`**: Update the breaking news ticker.
+    -   **`HIGHLIGHTS`**: Change the homepage featured image.
 
-## Contributing
-PRs welcome. Open issues for bugs or feature requests.
+**Example Event Update:**
+```javascript
+{
+    id: 1,
+    title: "New Workshop",
+    start_time: "2026-02-15T10:00:00+05:30", // or "TBA"
+    location: "Auditorium",
+    image: "/events/new-image.jpg"
+}
+```
 
-## License
-This project is intended for club operations and learning purposes.
+---
+
+## ☁️ Deployment
+
+This project is built to live on the **Edge**.
+
+1.  **Vercel / Netlify**: Connect your GitHub repo.
+2.  **Build Settings**:
+    -   **Root Directory**: `frontend`
+    -   **Build Command**: `npm run build`
+    -   **Output Directory**: `dist`
+3.  **Deploy**: It just works.
+
+---
+
+## 🤝 Contributing
+
+We welcome contributions from the community!
+1.  Fork the repo.
+2.  Create a feature branch (`git checkout -b feature/amazing-feature`).
+3.  Commit your changes.
+4.  Open a Pull Request.
+
+---
+
+<div align="center">
+  <p>Made with ❤️ by Pawan Joshi</p>
+  <p>© 2025 AWS Cloud Club GEU</p>
+</div>
