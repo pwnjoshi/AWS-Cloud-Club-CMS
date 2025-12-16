@@ -39,12 +39,16 @@ CORS_ALLOWED_ORIGINS = [
     "http://localhost:5173",
     "http://localhost:5174",
     "https://aws-cloud-club-cms.vercel.app",
+    "https://awsclubgeu.in",
+    "https://www.awsclubgeu.in",
 ]
 
 CORS_ALLOW_CREDENTIALS = True
 
 CSRF_TRUSTED_ORIGINS = [
     "https://aws-cloud-club-cms.vercel.app",
+    "https://awsclubgeu.in",
+    "https://www.awsclubgeu.in",
 ]
 
 # Application definition
