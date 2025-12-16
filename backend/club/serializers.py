@@ -54,3 +54,29 @@ class NewsSerializer(serializers.ModelSerializer):
     class Meta:
         model = News
         fields = '__all__'
+
+class UserCreateSerializer(serializers.ModelSerializer):
+    role = serializers.ChoiceField(choices=[('MEMBER', 'Member'), ('LEAD', 'Lead'), ('FACULTY', 'Faculty')])
+    password = serializers.CharField(write_only=True)
+
+    class Meta:
+        model = User
+        fields = ['id', 'username', 'email', 'password', 'first_name', 'last_name', 'role']
+
+    def create(self, validated_data):
+        role = validated_data.pop('role', 'MEMBER')
+        password = validated_data.pop('password')
+        user = User.objects.create_user(**validated_data)
+        user.set_password(password)
+        user.save()
+        
+        # Profile is created via signals, update the role
+        if hasattr(user, 'profile'):
+            user.profile.role = role
+            user.profile.save()
+        else:
+            # Fallback if signal didn't fire (unlikely but safe)
+            from .models import UserProfile
+            UserProfile.objects.create(user=user, role=role)
+            
+        return user

@@ -13,7 +13,8 @@ import {
     LayoutDashboard,
     Users,
     Image, // Added Image import
-    Bell // Added Bell import
+    Bell, // Added Bell import
+    UserPlus // Added UserPlus import
 } from 'lucide-react';
 
 import CalendarView from '../components/CalendarView';
@@ -21,9 +22,26 @@ import ResourcesView from '../components/ResourcesView';
 import EventWizard from '../components/EventWizard';
 import FacultyView from '../components/FacultyView';
 import NewsManager from '../components/NewsManager';
+import UserManager from '../components/UserManager'; // Import UserManager
+
+import './Dashboard.css';
+
+// ... (existing helper functions if any, but MobileNav will be defined below or here)
 
 export default function Dashboard() {
     const [view, setView] = useState('overview');
+    const [user, setUser] = useState(null); // Move user state up
+
+    // Fetch user on mount to determine permissions for Sidebar
+    useEffect(() => {
+        const fetchMe = async () => {
+            try {
+                const res = await authenticatedFetch('/api/users/me/');
+                if (res.ok) setUser(await res.json());
+            } catch (e) { console.error(e); }
+        };
+        fetchMe();
+    }, []);
 
     const renderContent = () => {
         switch (view) {
@@ -31,43 +49,36 @@ export default function Dashboard() {
             case 'resources': return <ResourcesView />;
             case 'event_wizard': return <EventWizard onCancel={() => setView('overview')} />;
             case 'faculty': return <FacultyView />;
-            case 'gallery': return <GalleryView />; // Added GalleryView case
-            case 'news': return <NewsManager />; // Added NewsManager case
+            case 'gallery': return <GalleryView />;
+            case 'news': return <NewsManager />;
+            case 'users': return <UserManager />; // Add Users View
             case 'overview':
-            default: return <DashboardContent setView={setView} />;
+            default: return <DashboardContent setView={setView} user={user} />; // Pass user down
         }
     };
 
     return (
-        <div style={{ display: 'flex', minHeight: '100vh', background: '#0F1520', color: 'white' }}>
-            <Sidebar view={view} setView={setView} />
-            <div style={{ flex: 1, overflowY: 'auto' }}>
+        <div className="dashboard-container">
+            <Sidebar view={view} setView={setView} user={user} />
+            <div className="dashboard-content">
                 {renderContent()}
             </div>
+            <MobileNav view={view} setView={setView} user={user} />
         </div>
     );
 }
 
-function Sidebar({ view, setView }) {
+function Sidebar({ view, setView, user }) {
     const navigate = useNavigate();
     const handleLogout = () => {
         logout();
         navigate('/login');
     };
 
+    const isAdmin = ['LEAD', 'FACULTY'].includes(user?.role);
+
     return (
-        <div style={{
-            width: '260px',
-            background: 'var(--aws-squid-ink)',
-            color: 'white',
-            display: 'flex',
-            flexDirection: 'column',
-            padding: '1.5rem',
-            position: 'sticky',
-            top: 0,
-            height: '100vh',
-            boxSizing: 'border-box'
-        }}>
+        <div className="dashboard-sidebar">
             <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', marginBottom: '3rem', paddingLeft: '0.5rem' }}>
                 <div style={{ width: '32px', height: '32px', background: 'var(--aws-smile-orange)', borderRadius: '6px' }}></div>
                 <span style={{ fontWeight: 'bold', fontSize: '1.1rem' }}>AWS Club CRM</span>
@@ -81,14 +92,19 @@ function Sidebar({ view, setView }) {
                 <div onClick={() => setView('calendar')}>
                     <NavItem icon={<Calendar size={20} />} label="Calendar" active={view === 'calendar'} />
                 </div>
-                {/* New navigation items based on instruction */}
+
+                {isAdmin && (
+                    <div onClick={() => setView('users')}>
+                        <NavItem icon={<UserPlus size={20} />} label="Manage Team" active={view === 'users'} />
+                    </div>
+                )}
+
                 <div onClick={() => setView('gallery')}>
                     <NavItem icon={<Image size={20} />} label="Gallery" active={view === 'gallery'} />
                 </div>
                 <div onClick={() => setView('news')}>
                     <NavItem icon={<Bell size={20} />} label="Breaking News" active={view === 'news'} />
                 </div>
-                {/* End of new navigation items */}
                 <div onClick={() => setView('resources')}>
                     <NavItem icon={<Users size={20} />} label="Resources" active={view === 'resources'} />
                 </div>
@@ -118,6 +134,36 @@ function Sidebar({ view, setView }) {
     );
 }
 
+function MobileNav({ view, setView, user }) {
+    const isAdmin = ['LEAD', 'FACULTY'].includes(user?.role);
+    return (
+        <div className="dashboard-bottom-nav">
+            <button className={`mobile-nav-item ${view === 'overview' ? 'active' : ''}`} onClick={() => setView('overview')}>
+                <LayoutDashboard size={24} />
+                <span>Home</span>
+            </button>
+            <button className={`mobile-nav-item ${view === 'calendar' ? 'active' : ''}`} onClick={() => setView('calendar')}>
+                <Calendar size={24} />
+                <span>Events</span>
+            </button>
+            {isAdmin && (
+                <button className={`mobile-nav-item ${view === 'users' ? 'active' : ''}`} onClick={() => setView('users')}>
+                    <UserPlus size={24} />
+                    <span>Team</span>
+                </button>
+            )}
+            <button className={`mobile-nav-item ${view === 'gallery' ? 'active' : ''}`} onClick={() => setView('gallery')}>
+                <Image size={24} />
+                <span>Gallery</span>
+            </button>
+            <button className={`mobile-nav-item ${['resources', 'faculty', 'news'].includes(view) ? 'active' : ''}`} onClick={() => setView('resources')}>
+                <Users size={24} />
+                <span>More</span>
+            </button>
+        </div>
+    );
+}
+
 function NavItem({ icon, label, active }) {
     return (
         <div style={{
@@ -138,7 +184,7 @@ function NavItem({ icon, label, active }) {
     );
 }
 
-function DashboardContent({ setView }) {
+function DashboardContent({ setView, user }) { // Receive user as prop
     const [tasks, setTasks] = useState([]);
     const [loading, setLoading] = useState(true);
 
@@ -181,55 +227,17 @@ function DashboardContent({ setView }) {
         }
     };
 
-    const [user, setUser] = useState(null);
-
-    useEffect(() => {
-        fetchCurrentUser();
-    }, []);
-
-    const fetchCurrentUser = async () => {
-        try {
-            const res = await authenticatedFetch('/api/users/me/'); // Assuming we have a /me endpoint or similar, but standard UserViewSet usually requires ID.
-            // Let's use a workaround: fetch list and filter or if backend supports it.
-            // Actually, best to fetch /api/dashboard_stats or similar, or just parse from specific endpoint.
-            // Let's assume UserViewSet allows reading own profile if we knew ID.
-            // Easier: Fetch tasks, we already do it.
-            // BETTER: Add a simple /api/me/ endpoint or use what we have.
-            // Let's try fetching the user details via a new utility or existing.
-            // Since we modified UserSerializer, any user fetch should return role.
-            // Let's assume we can GET /api/users/current/ (we need to implement this potentially or just assume ID 1 for test).
-            // Wait, standard DRF ViewSet doesn't have 'current'.
-            // Let's fetch the list (filtered by owner? No).
-
-            // Temporary Solution: Since we don't have a /me endpoint, I will just proceed with assuming the 'role' is stored in localStorage or decoded from token if JWT (it's token auth).
-            // BETTER PLAN: I will assume the backend returns the role in the login response and we store it? No.
-            // I will update the Dashboard to fetch user info. I'll add a 'me' action to UserViewSet in backend efficiently? 
-            // Or just fetch all users and find logic (inefficient).
-            // I'll stick to: Add a 'me' action to UserViewSet in backend is best practice.
-            // BUT, for now, let's just attempt to fetch id=1 or similar? No, bad.
-
-            // Let's blindly add the 'me' endpoint to backend views.py in next step.
-            // For now, write the frontend code expecting /api/users/me/
-            const userRes = await authenticatedFetch('/api/users/me/');
-            if (userRes.ok) {
-                setUser(await userRes.json());
-            }
-        } catch (e) {
-            console.error("Failed to fetch user", e);
-        }
-    };
-
     return (
-        <div style={{ padding: '2rem 3rem' }}>
-            <header style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '3rem' }}>
+        <div>
+            <header style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '3rem', flexWrap: 'wrap', gap: '1rem' }}>
                 <div>
                     <h1 style={{ fontSize: '2rem', color: 'white', marginBottom: '0.5rem' }}>Welcome back, {user?.first_name || 'Member'} 👋</h1>
                     <p style={{ color: '#9CA3AF' }}>Here's what's happening with the club today.</p>
                 </div>
-                <div style={{ display: 'flex', gap: '1rem' }}>
+                <div style={{ display: 'flex', gap: '1rem', flexWrap: 'wrap' }}>
                     <div style={{ position: 'relative' }}>
                         <Search size={18} style={{ position: 'absolute', left: '12px', top: '12px', color: '#9CA3AF' }} />
-                        <input placeholder="Search query..." style={{ padding: '0.75rem 1rem 0.75rem 2.5rem', borderRadius: '50px', border: '1px solid #374151', width: '250px', background: '#1E293B', color: 'white' }} />
+                        <input placeholder="Search query..." style={{ padding: '0.75rem 1rem 0.75rem 2.5rem', borderRadius: '50px', border: '1px solid #374151', width: '250px', maxWidth: '100%', background: '#1E293B', color: 'white', boxSizing: 'border-box' }} />
                     </div>
                     {/* RBAC: Only show New Event for LEAD or FACULTY */}
                     {['LEAD', 'FACULTY'].includes(user?.role) && (
@@ -244,7 +252,7 @@ function DashboardContent({ setView }) {
                 </div>
             </header>
 
-            <div style={{ display: 'grid', gridTemplateColumns: '2fr 1fr', gap: '2rem' }}>
+            <div className="dashboard-grid">
                 <div>
                     <div style={{ background: '#1E293B', borderRadius: '16px', padding: '1.5rem', boxShadow: '0 4px 6px rgba(0,0,0,0.2)', marginBottom: '2rem', border: '1px solid rgba(255,255,255,0.05)' }}>
                         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.5rem' }}>
@@ -253,9 +261,9 @@ function DashboardContent({ setView }) {
                                 Rapid Task Entry
                             </h2>
                         </div>
-                        <form onSubmit={handleCreateTask} style={{ display: 'flex', gap: '1rem' }}>
-                            <input name="title" placeholder="What needs to be done?" style={{ flex: 1, padding: '0.8rem 1rem', borderRadius: '8px', border: '1px solid #374151', background: '#0F1520', color: 'white' }} required />
-                            <input name="description" placeholder="Details (Optional)" style={{ flex: 1, padding: '0.8rem 1rem', borderRadius: '8px', border: '1px solid #374151', background: '#0F1520', color: 'white' }} />
+                        <form onSubmit={handleCreateTask} style={{ display: 'flex', gap: '1rem', flexWrap: 'wrap' }}>
+                            <input name="title" placeholder="What needs to be done?" style={{ flex: 1, minWidth: '200px', padding: '0.8rem 1rem', borderRadius: '8px', border: '1px solid #374151', background: '#0F1520', color: 'white' }} required />
+                            <input name="description" placeholder="Details (Optional)" style={{ flex: 1, minWidth: '200px', padding: '0.8rem 1rem', borderRadius: '8px', border: '1px solid #374151', background: '#0F1520', color: 'white' }} />
                             <button type="submit" className="btn-primary" style={{ borderRadius: '8px' }}>Add</button>
                         </form>
                     </div>
@@ -465,9 +473,9 @@ function GalleryView() {
                             {highlights.map(h => {
                                 const imgUrl = h.image.startsWith('http') ? h.image : `http://localhost:8000${h.image}`;
                                 return (
-                                    <div key={h.id} style={{ background: '#1E293B', borderRadius: '12px', overflow: 'hidden', border: '1px solid rgba(255,255,255,0.05)', transition: 'transform 0.2s', cursor: 'pointer' }} 
-                                         onMouseEnter={(e) => e.currentTarget.style.transform = 'scale(1.02)'}
-                                         onMouseLeave={(e) => e.currentTarget.style.transform = 'scale(1)'}>
+                                    <div key={h.id} style={{ background: '#1E293B', borderRadius: '12px', overflow: 'hidden', border: '1px solid rgba(255,255,255,0.05)', transition: 'transform 0.2s', cursor: 'pointer' }}
+                                        onMouseEnter={(e) => e.currentTarget.style.transform = 'scale(1.02)'}
+                                        onMouseLeave={(e) => e.currentTarget.style.transform = 'scale(1)'}>
                                         <div style={{ height: '160px', background: `url(${imgUrl}) center/cover no-repeat` }}></div>
                                         <div style={{ padding: '1rem' }}>
                                             <h4 style={{ margin: '0 0 0.5rem', fontSize: '1rem', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>{h.title || 'Untitled'}</h4>

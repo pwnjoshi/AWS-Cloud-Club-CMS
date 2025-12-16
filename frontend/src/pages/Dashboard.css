@@ -1,0 +1,108 @@
+/* Dashboard / CRM Styles */
+
+.dashboard-container {
+    display: flex;
+    min-height: 100vh;
+    background: #0F1520;
+    color: white;
+}
+
+.dashboard-sidebar {
+    width: 260px;
+    background: var(--aws-squid-ink);
+    height: 100vh;
+    position: sticky;
+    top: 0;
+    display: flex;
+    flex-direction: column;
+    padding: 1.5rem;
+    box-sizing: border-box;
+}
+
+.dashboard-bottom-nav {
+    display: none;
+}
+
+.dashboard-content {
+    flex: 1;
+    overflow-y: auto;
+    padding: 2rem 3rem;
+}
+
+.dashboard-grid {
+    display: grid;
+    grid-template-columns: 2fr 1fr;
+    gap: 2rem;
+}
+
+.dashboard-nav-item {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 0.75rem 1rem;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.2s;
+    color: var(--text-secondary);
+}
+
+.dashboard-nav-item.active {
+    background: var(--aws-smile-orange);
+    color: var(--aws-squid-ink);
+    font-weight: 600;
+}
+
+.dashboard-nav-item.active span {
+    color: var(--aws-squid-ink);
+}
+
+/* Mobile Dashboard */
+@media (max-width: 768px) {
+    .dashboard-sidebar {
+        display: none;
+    }
+
+    .dashboard-bottom-nav {
+        display: flex;
+        justify-content: space-around;
+        align-items: center;
+        position: fixed;
+        bottom: 0;
+        left: 0;
+        width: 100%;
+        background: #0F1520;
+        /* Darker bg for contrast */
+        padding: 0.75rem 0;
+        border-top: 1px solid rgba(255, 255, 255, 0.1);
+        z-index: 1000;
+        box-shadow: 0 -5px 20px rgba(0, 0, 0, 0.5);
+        backdrop-filter: blur(10px);
+    }
+
+    .dashboard-content {
+        padding: 1.5rem 1rem 6rem;
+        /* Extra bottom padding for nav */
+    }
+
+    .dashboard-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .mobile-nav-item {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 0.25rem;
+        color: #9CA3AF;
+        font-size: 0.75rem;
+        transition: color 0.2s;
+        background: none;
+        border: none;
+        padding: 0.5rem;
+    }
+
+    .mobile-nav-item.active {
+        color: var(--aws-smile-orange);
+        font-weight: 600;
+    }
+}

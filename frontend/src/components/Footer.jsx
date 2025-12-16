@@ -8,7 +8,7 @@ export default function Footer() {
                 {/* Brand Column */}
                 <div>
                     <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', marginBottom: '1.5rem' }}>
-                        <div style={{ width: '32px', height: '32px', background: 'var(--aws-smile-orange)', borderRadius: '6px' }}></div>
+                        <img src="/logo.png" alt="AWS Cloud Club GEU" style={{ height: '35px' }} />
                         <span style={{ fontWeight: 'bold', fontSize: '1.25rem', color: 'white' }}>AWS Cloud Club GEU</span>
                     </div>
                     <p style={{ color: 'var(--text-secondary)', lineHeight: '1.6', fontSize: '0.95rem' }}>
@@ -46,7 +46,7 @@ export default function Footer() {
             </div>
 
             <div className="container footer-bottom" style={{ marginTop: '3rem', paddingTop: '2rem', borderTop: '1px solid rgba(255,255,255,0.05)', color: '#4B5563', fontSize: '0.9rem' }}>
-                <span>© 2024 AWS Cloud Club GEU. All rights reserved.</span>
+                <span>© 2025 AWS Cloud Club GEU. All rights reserved.</span>
                 <div className="footer-legal">
                     <a href="https://aws.amazon.com/privacy/" target="_blank" rel="noreferrer" style={{ color: 'var(--text-secondary)', textDecoration: 'none' }} className="hover:text-white">Privacy Policy</a>
                     <a href="https://aws.amazon.com/events/terms/" target="_blank" rel="noreferrer" style={{ color: 'var(--text-secondary)', textDecoration: 'none' }} className="hover:text-white">Terms of Service</a>

@@ -12,7 +12,7 @@ export default function Navbar() {
         <nav className="glass-panel" style={{ position: 'sticky', top: 0, zIndex: 100, padding: '0.9rem 0' }}>
             <div className="container navbar" style={{ position: 'relative' }}>
                 <Link to="/" onClick={closeMenu} style={{ textDecoration: 'none', display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
-                    <div style={{ width: '32px', height: '32px', background: 'var(--aws-smile-orange)', borderRadius: '6px' }}></div>
+                    <img src="/logo.png" alt="AWS Cloud Club GEU" style={{ height: '35px' }} />
                     <span style={{ fontWeight: 'bold', fontSize: '1.25rem', color: 'white' }}>AWS Cloud Club GEU</span>
                 </Link>
 

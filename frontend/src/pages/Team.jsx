@@ -23,14 +23,14 @@ export default function Team() {
                         role="Cloud Club Captain"
                         bio="Leading the club's vision and strategy. AWS Cloud Enthusiast & Community Builder."
                         tags={['Leadership', 'AWS', 'Cloud Architecture']}
-                        img="/faculty/dr_amit_kumar.jpg"
+                        img="/team/pawan_joshi.jpg"
                     />
                     <LeaderCard
                         name="Atishay Jain"
                         role="Vice Captain"
                         bio="Overseeing technical workshops and project development. Driving innovation in cloud technologies."
                         tags={['DevOps', 'Management', 'Strategy']}
-                        img="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&q=80"
+                        img="/team/atishay_jain.jpg"
                     />
                 </div>
             </section>

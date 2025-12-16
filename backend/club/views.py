@@ -3,7 +3,7 @@ from rest_framework.decorators import action, api_view, permission_classes
 from rest_framework.response import Response
 from .permissions import IsLeadOrFaculty
 from .models import Event, Task, Resource, Highlight, News
-from .serializers import EventSerializer, TaskSerializer, ResourceSerializer, UserSerializer, HighlightSerializer, NewsSerializer
+from .serializers import EventSerializer, TaskSerializer, ResourceSerializer, UserSerializer, HighlightSerializer, NewsSerializer, UserCreateSerializer
 from django.contrib.auth.models import User
 
 class EventViewSet(viewsets.ModelViewSet):
@@ -46,9 +46,18 @@ class HighlightViewSet(viewsets.ModelViewSet):
     def perform_create(self, serializer):
         serializer.save(uploaded_by=self.request.user)
 
-class UserViewSet(viewsets.ReadOnlyModelViewSet):
+class UserViewSet(viewsets.ModelViewSet):
     queryset = User.objects.all()
-    serializer_class = UserSerializer
+    
+    def get_serializer_class(self):
+        if self.action == 'create':
+            return UserCreateSerializer
+        return UserSerializer
+
+    def get_permissions(self):
+        if self.action in ['create', 'update', 'partial_update', 'destroy']:
+            return [permissions.IsAuthenticated(), IsLeadOrFaculty()]
+        return [permissions.IsAuthenticated()]
 
     @action(detail=False, methods=['get'])
     def me(self, request):

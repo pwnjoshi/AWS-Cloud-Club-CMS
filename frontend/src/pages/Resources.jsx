@@ -108,14 +108,9 @@ export default function Resources() {
     return (
         <main style={{ flex: 1 }}>
             {/* HERO */}
-            <section style={{
-                padding: '6rem 2rem',
-                textAlign: 'center',
-                background: 'radial-gradient(circle at top, #1A2332 0%, #0F1520 70%)',
-                borderBottom: '1px solid rgba(255,255,255,0.05)'
-            }}>
+            <section className="resources-hero">
                 <div style={{ maxWidth: '800px', margin: '0 auto' }}>
-                    <h1 style={{ fontSize: '3.5rem', fontWeight: '800', marginBottom: '1rem', color: 'white' }}>
+                    <h1 style={{ fontSize: '3.5rem', fontWeight: '800', marginBottom: '1rem', color: 'white' }} className="hero-title">
                         Learning Resources
                     </h1>
                     <p style={{ fontSize: '1.2rem', color: 'var(--text-secondary)', marginBottom: '3rem' }}>
@@ -125,17 +120,15 @@ export default function Resources() {
             </section>
 
             {/* RESOURCES GRID */}
-            <section style={{ padding: '4rem 0' }}>
-                <div className="container" style={{ display: 'grid', gap: '3.5rem' }}>
+            <section className="resources-container">
+                <div className="container resources-list">
                     {sections.map(section => (
-                        <div key={section.title} style={{ display: 'grid', gap: '1.5rem' }}>
-                            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', gap: '1rem', flexWrap: 'wrap' }}>
-                                <div>
-                                    <h2 style={{ margin: 0, fontSize: '1.75rem' }}>{section.title}</h2>
-                                    <p style={{ marginTop: '0.5rem', color: 'var(--text-secondary)' }}>{section.blurb}</p>
-                                </div>
+                        <div key={section.title} className="resources-section">
+                            <div className="resources-section-header">
+                                <h2 className="resources-section-title">{section.title}</h2>
+                                <p className="resources-section-desc">{section.blurb}</p>
                             </div>
-                            <div className="grid-auto" style={{ gap: '1.75rem' }}>
+                            <div className="resource-grid">
                                 {section.items.map(item => (
                                     <ResourceCard
                                         key={item.title}
@@ -157,8 +150,8 @@ export default function Resources() {
 
 function ResourceCard({ icon, title, desc, link, btnText }) {
     return (
-        <div style={{ background: '#1E293B', borderRadius: '16px', padding: '2rem', border: '1px solid rgba(255,255,255,0.05)', display: 'flex', flexDirection: 'column', height: '100%' }}>
-            <div style={{ marginBottom: '1.5rem', background: 'rgba(255,153,0,0.1)', width: 'fit-content', padding: '1rem', borderRadius: '12px' }}>
+        <div className="resource-card">
+            <div className="resource-icon">
                 {icon}
             </div>
             <h3 style={{ fontSize: '1.5rem', marginBottom: '1rem', color: 'white' }}>{title}</h3>

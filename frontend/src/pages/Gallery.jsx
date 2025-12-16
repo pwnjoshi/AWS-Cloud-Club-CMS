@@ -1,16 +1,11 @@
-import { ArrowDown, RotateCcw, Play } from 'lucide-react';
+import { ArrowDown, RotateCcw, Play, Image as ImageIcon } from 'lucide-react';
 
 export default function Gallery() {
     return (
         <main style={{ flex: 1 }}>
 
             {/* HERO */}
-            <section style={{
-                padding: '8rem 2rem',
-                textAlign: 'center',
-                background: 'radial-gradient(circle at top, #1A2332 0%, #0F1520 70%)',
-                overflow: 'hidden'
-            }}>
+            <section className="gallery-hero">
                 <div style={{ maxWidth: '800px', margin: '0 auto', position: 'relative', zIndex: 1 }}>
                     <h1 style={{ fontSize: '4rem', fontWeight: '800', marginBottom: '1.5rem', color: 'white' }}>
                         Our Moments
@@ -26,12 +21,12 @@ export default function Gallery() {
             </section>
 
             {/* FILTERS & GRID */}
-            <section style={{ padding: '4rem 2rem', background: '#0F1520' }}>
-                <div style={{ maxWidth: '1200px', margin: '0 auto' }}>
+            <section className="gallery-container">
+                <div className="gallery-inner">
 
                     {/* TOOLBAR */}
-                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '3rem', flexWrap: 'wrap', gap: '1rem' }}>
-                        <div style={{ display: 'flex', gap: '0.75rem' }}>
+                    <div className="gallery-toolbar">
+                        <div className="gallery-filters">
                             <FilterBadge label="All" active />
                             <FilterBadge label="Workshops" />
                             <FilterBadge label="Hackathons" />
@@ -43,23 +38,27 @@ export default function Gallery() {
                     </div>
 
                     {/* GALLERY GRID */}
-                    <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(350px, 1fr))', gap: '2rem' }}>
-                        <GalleryItem img="https://images.unsplash.com/photo-1544531586-fde5298cdd40?auto=format&fit=crop&q=80" />
-                        <GalleryItem img="https://images.unsplash.com/photo-1531482615713-2afd69097998?auto=format&fit=crop&q=80" video />
-                        <GalleryItem img="https://images.unsplash.com/photo-1556761175-5973dc0f32e7?auto=format&fit=crop&q=80" />
-                        <GalleryItem img="https://images.unsplash.com/photo-1550751827-4bd374c3f58b?auto=format&fit=crop&q=80" />
-                        <GalleryItem img="https://images.unsplash.com/photo-1552664730-d307ca884978?auto=format&fit=crop&q=80" />
-                        <GalleryItem img="https://images.unsplash.com/photo-1517048676732-d65bc937f952?auto=format&fit=crop&q=80" />
-                        <GalleryItem img="https://images.unsplash.com/photo-1517245386807-bb43f82c33c4?auto=format&fit=crop&q=80" />
-                        <GalleryItem img="https://images.unsplash.com/photo-1522202176988-66273c2fd55f?auto=format&fit=crop&q=80" />
+                    {/* Empty State */}
+                    <div className="gallery-empty">
+                        <ImageIcon size={48} style={{ marginBottom: '1rem', opacity: 0.5 }} />
+                        <h3 style={{ fontSize: '1.5rem', marginBottom: '0.5rem', color: 'white' }}>Gallery Coming Soon</h3>
+                        <p>We are curating our best moments. Stay tuned!</p>
                     </div>
 
-                    {/* LOAD MORE */}
+                    {/* 
+                    <div className="gallery-grid">
+                         Images will be mapped here in the future 
+                    </div>
+                    */}
+
+                    {/* LOAD MORE (Hidden for now) */}
+                    {/*
                     <div style={{ textAlign: 'center', marginTop: '4rem' }}>
                         <button className="btn-secondary" style={{ display: 'inline-flex', alignItems: 'center', gap: '0.75rem' }}>
                             Load More Memories <RotateCcw size={16} />
                         </button>
                     </div>
+                    */}
 
                 </div>
             </section>
@@ -69,38 +68,8 @@ export default function Gallery() {
 
 function FilterBadge({ label, active }) {
     return (
-        <button style={{
-            background: active ? 'var(--aws-blue)' : '#1E293B',
-            color: active ? 'white' : '#9CA3AF',
-            border: 'none',
-            padding: '0.5rem 1.25rem',
-            borderRadius: '50px',
-            fontSize: '0.9rem',
-            cursor: 'pointer',
-            transition: 'all 0.2s'
-        }}>
+        <button className={`filter-badge ${active ? 'active' : ''}`}>
             {label}
         </button>
-    )
-}
-
-function GalleryItem({ img, video }) {
-    return (
-        <div style={{
-            borderRadius: '16px',
-            overflow: 'hidden',
-            position: 'relative',
-            aspectRatio: '1',
-            cursor: 'pointer',
-            group: 'true'
-        }}>
-            <img src={img} style={{ width: '100%', height: '100%', objectFit: 'cover', transition: 'transform 0.3s' }} />
-            <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(to top, rgba(0,0,0,0.6), transparent)', opacity: 0, transition: 'opacity 0.3s' }} className="hover-overlay"></div>
-            {video && (
-                <div style={{ position: 'absolute', top: '50%', left: '50%', transform: 'translate(-50%, -50%)', background: 'rgba(255,255,255,0.2)', backdropFilter: 'blur(4px)', width: '60px', height: '60px', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                    <Play fill="white" color="white" size={24} style={{ marginLeft: '4px' }} />
-                </div>
-            )}
-        </div>
     )
 }
