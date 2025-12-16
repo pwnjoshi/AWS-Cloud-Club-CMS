@@ -26,8 +26,13 @@ export default function Navbar() {
                     <NavLink to="/team" onNavigate={closeMenu}>Team</NavLink>
                     <NavLink to="/events" onNavigate={closeMenu}>Events</NavLink>
                     <NavLink to="/gallery" onNavigate={closeMenu}>Gallery</NavLink>
-                    <NavLink to="/resources" onNavigate={closeMenu}>Resources</NavLink>
-                    <Link to="/login" onClick={closeMenu} className="btn-primary nav-login" style={{ textDecoration: 'none', padding: '0.6rem 1.1rem', fontSize: '0.9rem' }}>Login</Link>
+                    <NavLink to="/blog" onNavigate={closeMenu}>Blog</NavLink>
+
+                    {localStorage.getItem('token') ? (
+                        <Link to="/dashboard" onClick={closeMenu} className="btn-primary nav-login" style={{ textDecoration: 'none', padding: '0.6rem 1.1rem', fontSize: '0.9rem' }}>Dashboard</Link>
+                    ) : (
+                        <Link to="/login" onClick={closeMenu} className="btn-primary nav-login" style={{ textDecoration: 'none', padding: '0.6rem 1.1rem', fontSize: '0.9rem' }}>Login</Link>
+                    )}
                 </div>
             </div>
         </nav>

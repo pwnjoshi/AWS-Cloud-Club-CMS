@@ -5,8 +5,8 @@ import Events from './pages/Events';
 import Gallery from './pages/Gallery';
 import Dashboard from './pages/Dashboard';
 import Login from './pages/Login';
-import Resources from './pages/Resources';
 import Blog from './pages/Blog';
+import BlogDetail from './pages/BlogDetail';
 
 import About from './pages/About';
 import Team from './pages/Team';
@@ -26,8 +26,8 @@ function App() {
           <Route path="/about" element={<About />} />
           <Route path="/events" element={<Events />} />
           <Route path="/gallery" element={<Gallery />} />
-          <Route path="/resources" element={<Resources />} />
           <Route path="/blog" element={<Blog />} />
+          <Route path="/blog/:id" element={<BlogDetail />} />
           <Route path="/team" element={<Team />} />
           <Route path="/login" element={<Login />} />
         </Route>

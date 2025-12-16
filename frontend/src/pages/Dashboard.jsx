@@ -11,13 +11,14 @@ import {
     Bell,
     ArrowRight,
     Shield,
-    User
+    User,
+    FileText
 } from 'lucide-react';
 
-import ResourcesView from '../components/ResourcesView';
 import EventWizard from '../components/EventWizard';
 import NewsManager from '../components/NewsManager';
 import UserManager from '../components/UserManager';
+import BlogManager from '../components/BlogManager';
 import SettingsView from '../components/SettingsView';
 import GalleryView from '../components/GalleryView';
 
@@ -31,18 +32,30 @@ export default function Dashboard() {
         const fetchMe = async () => {
             try {
                 const res = await authenticatedFetch('/api/users/me/');
-                if (res.ok) setUser(await res.json());
-            } catch (e) { console.error(e); }
+                if (res.ok) {
+                    setUser(await res.json());
+                } else {
+                    navigate('/login');
+                }
+            } catch (e) {
+                console.error(e);
+                navigate('/login');
+            }
         };
-        fetchMe();
+        const token = localStorage.getItem('token');
+        if (!token) {
+            navigate('/login');
+        } else {
+            fetchMe();
+        }
     }, []);
 
     const renderContent = () => {
         switch (view) {
-            case 'resources': return <ResourcesView />;
             case 'event_wizard': return <EventWizard onCancel={() => setView('overview')} />;
             case 'gallery': return <GalleryView user={user} />;
             case 'news': return <NewsManager />;
+            case 'blog': return <BlogManager />;
             case 'users': return <UserManager />;
             case 'settings': return <SettingsView />;
             case 'overview':
@@ -94,8 +107,8 @@ function Sidebar({ view, setView, user }) {
                 <div onClick={() => setView('news')}>
                     <NavItem icon={<Bell size={20} />} label="Breaking News" active={view === 'news'} />
                 </div>
-                <div onClick={() => setView('resources')}>
-                    <NavItem icon={<Users size={20} />} label="Resources" active={view === 'resources'} />
+                <div onClick={() => setView('blog')}>
+                    <NavItem icon={<FileText size={20} />} label="Blog Posts" active={view === 'blog'} />
                 </div>
 
                 <div onClick={() => setView('settings')}>
@@ -129,7 +142,7 @@ function MobileNav({ view, setView, user }) {
                     <span>Team</span>
                 </button>
             )}
-            <button className={`mobile-nav-item ${['gallery', 'news', 'resources'].includes(view) ? 'active' : ''}`} onClick={() => setView('gallery')}>
+            <button className={`mobile-nav-item ${['gallery', 'news', 'blog'].includes(view) ? 'active' : ''}`} onClick={() => setView('blog')}>
                 <Image size={24} />
                 <span>Media</span>
             </button>
@@ -218,9 +231,6 @@ function DashboardContent({ setView, user }) {
 
                     <h4 style={{ color: '#9CA3AF', fontSize: '0.9rem', marginBottom: '1rem', textTransform: 'uppercase', letterSpacing: '0.05em' }}>Quick Actions</h4>
                     <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
-                        <button onClick={() => setView('resources')} style={quickActionStyle}>
-                            <span>Browse Resources</span> <ArrowRight size={16} />
-                        </button>
                         <button onClick={() => setView('gallery')} style={quickActionStyle}>
                             <span>View Gallery</span> <ArrowRight size={16} />
                         </button>
