@@ -1,14 +1,42 @@
-name: Keep Render Backend Alive
+name: Aggressive Render Keep Alive
 
 on:
   schedule:
-    - cron: "*/5 * * * *"   # runs every 5 minutes
+    # GitHub cron is best-effort, so we run VERY frequently
+    - cron: "*/2 * * * *"   # every 2 minutes
   workflow_dispatch:
 
 jobs:
-  ping-backend:
+  keep-alive:
     runs-on: ubuntu-latest
+    timeout-minutes: 10
+
     steps:
-      - name: Ping Render backend
+      - name: Timestamp
+        run: echo "⏰ Started at $(date -u)"
+
+      - name: Warm up backend (multiple real GET hits)
         run: |
-          curl -I --retry 3 --user-agent "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36" https://aws-cloud-club-backend.onrender.com/api/events/
+          URL="https://aws-cloud-club-backend.onrender.com/api/events/"
+
+          for i in {1..6}
+          do
+            echo "🔥 Ping attempt $i"
+            curl -sS \
+              --retry 3 \
+              --retry-delay 5 \
+              --connect-timeout 20 \
+              --max-time 40 \
+              -A "Mozilla/5.0 GitHub-Actions-KeepAlive" \
+              "$URL" || true
+            sleep 15
+          done
+
+      - name: Final check
+        run: |
+          curl -v \
+            -A "Mozilla/5.0 GitHub-Actions-Final-Check" \
+            https://aws-cloud-club-backend.onrender.com/api/events/
+
+      - name: Finished
+        run: echo "✅ Finished at $(date -u)"
