@@ -41,6 +41,8 @@ export default function Team() {
                         bio="Leading the club's vision and strategy. AWS Cloud Enthusiast & Community Builder."
                         tags={['Leadership', 'AWS', 'Cloud Architecture']}
                         img="/team/pawan_joshi.jpg"
+                        github="https://github.com/pwnjoshi"
+                        linkedin="https://www.linkedin.com/in/pwnjoshi/"
                     />
                     <LeaderCard
                         name="Atishay Jain"
@@ -48,6 +50,8 @@ export default function Team() {
                         bio="Overseeing technical workshops and project development. Driving innovation in cloud technologies."
                         tags={['DevOps', 'Management', 'Strategy']}
                         img="/team/atishay_jain.jpg"
+                        github="https://github.com/Atishay-Jain17"
+                        linkedin="https://www.linkedin.com/in/atishay-jain-bb5835354/"
                     />
                 </div>
             </section>
@@ -68,7 +72,7 @@ export default function Team() {
     );
 }
 
-function LeaderCard({ name, role, bio, tags, img }) {
+function LeaderCard({ name, role, bio, tags, img, github, linkedin, twitter }) {
     return (
         <div className="leader-card">
             <div style={{ display: 'flex', alignItems: 'center', gap: '1.5rem' }}>
@@ -85,9 +89,21 @@ function LeaderCard({ name, role, bio, tags, img }) {
                 ))}
             </div>
             <div style={{ display: 'flex', gap: '1rem', marginTop: '1rem', paddingTop: '1rem', borderTop: '1px solid rgba(255,255,255,0.05)' }}>
-                <Github size={18} color="#9CA3AF" style={{ cursor: 'pointer' }} />
-                <Linkedin size={18} color="#9CA3AF" style={{ cursor: 'pointer' }} />
-                <Twitter size={18} color="#9CA3AF" style={{ cursor: 'pointer' }} />
+                {github && (
+                    <a href={github} target="_blank" rel="noopener noreferrer" aria-label="GitHub">
+                        <Github size={18} color="#9CA3AF" style={{ cursor: 'pointer' }} />
+                    </a>
+                )}
+                {linkedin && (
+                    <a href={linkedin} target="_blank" rel="noopener noreferrer" aria-label="LinkedIn">
+                        <Linkedin size={18} color="#9CA3AF" style={{ cursor: 'pointer' }} />
+                    </a>
+                )}
+                {twitter && (
+                    <a href={twitter} target="_blank" rel="noopener noreferrer" aria-label="Twitter">
+                        <Twitter size={18} color="#9CA3AF" style={{ cursor: 'pointer' }} />
+                    </a>
+                )}
             </div>
         </div>
     );

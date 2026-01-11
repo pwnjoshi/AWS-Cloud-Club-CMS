@@ -37,7 +37,7 @@ export default function Home() {
                         Innovate with the Cloud
                     </h1>
                     <p className="hero-subtitle animate-fade-in delay-100">
-                        Build. Deploy. Scale. Join the largest community of student developers and cloud enthusiasts at Graphic Era Deemed to be University.
+                        Build. Deploy. Scale. Join the largest community of student developers and cloud enthusiasts at Graphic Era University.
                     </p>
                     <div className="cta-row animate-fade-in delay-200">
                         <a href="https://www.meetup.com/aws-cloud-club-at-graphic-era/" target="_blank" rel="noopener noreferrer" className="btn-primary" style={{ fontSize: '1.1rem', padding: '1rem 2rem', textDecoration: 'none' }}>Join the Club</a>
@@ -127,7 +127,7 @@ export default function Home() {
                                     time={new Date(evt.start_time).toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' })}
                                     loc={evt.location}
                                     img={evt.image}
-                                    link={evt.registration_link}
+                                    link="https://forms.gle/iVBCPxZLEzTARUoaA"
                                 />
                             ))}
                         </div>

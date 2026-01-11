@@ -14,7 +14,7 @@ export const NEWS = [
     {
         id: 1,
         content: "Registrations for the AWS Club Core Team are ON",
-        link_url: "https://forms.gle/48LioCSuJZzCVm7p6",
+        link_url: "https://forms.gle/iVBCPxZLEzTARUoaA",
         link_text: "Register Now"
     }
 ];

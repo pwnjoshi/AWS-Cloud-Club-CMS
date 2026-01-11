@@ -31,8 +31,14 @@ export default function Footer() {
                 </FooterColumn>
 
                 <FooterColumn title="Resources">
+                    <FooterLink href="https://linktr.ee/awscloudclubgeu">Linktree (All Links)</FooterLink>
                     <FooterLink href="https://www.meetup.com/aws-cloud-club-at-graphic-era/">Meetup</FooterLink>
                     <FooterLink href="https://chat.whatsapp.com/IvCnmpfmJ3BCI6etmQ1i5E">WhatsApp Group</FooterLink>
+                    <FooterLink href="https://www.linkedin.com/company/aws-cloud-club-geu/">LinkedIn</FooterLink>
+                    <FooterLink href="https://discord.gg/c36ftreuWW">Discord</FooterLink>
+                    <FooterLink href="https://www.instagram.com/awscloudclubgeu/">Instagram</FooterLink>
+                    <FooterLink href="https://x.com/awscloudclubgeu">X (Twitter)</FooterLink>
+                    <FooterLink href="https://www.youtube.com/@AWSCloudClubGEU">YouTube</FooterLink>
                 </FooterColumn>
 
                 <FooterColumn title="Contact">

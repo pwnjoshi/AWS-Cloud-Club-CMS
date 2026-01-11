@@ -48,8 +48,10 @@ export default function About() {
                         </p>
                     </div>
                     <div className="stats-grid">
-                        <StatCard icon={<Users size={28} color="#FF9900" />} number="20+" label="Active Members" />
-
+                        <StatCard icon={<Users size={28} color="#FF9900" />} number="100+" label="Active Members" />
+                        <StatCard icon={<Rocket size={28} color="#FF9900" />} number="2025" label="Founded" />
+                        <StatCard icon={<Globe size={28} color="#FF9900" />} number="4" label="University Campuses" />
+                        <StatCard icon={<Award size={28} color="#FF9900" />} number="Growing" label="Community" />
                     </div>
                 </div>
             </section>
