@@ -50,7 +50,7 @@ export default function Footer() {
             </div>
 
             <div className="container footer-bottom" style={{ marginTop: '3rem', paddingTop: '2rem', borderTop: '1px solid rgba(255,255,255,0.05)', color: '#4B5563', fontSize: '0.9rem' }}>
-                <span>© 2025 AWS Cloud Club GEU. All rights reserved.</span>
+                <span>© 2026 AWS Cloud Club GEU. All rights reserved.</span>
                 <div className="footer-legal">
                     <a href="https://aws.amazon.com/privacy/" target="_blank" rel="noreferrer" style={{ color: 'var(--text-secondary)', textDecoration: 'none' }} className="hover:text-white">Privacy Policy</a>
                     <a href="https://aws.amazon.com/events/terms/" target="_blank" rel="noreferrer" style={{ color: 'var(--text-secondary)', textDecoration: 'none' }} className="hover:text-white">Terms of Service</a>
