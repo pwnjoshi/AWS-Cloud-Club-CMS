@@ -10,7 +10,7 @@ export default function Blog() {
           Read our latest technical articles, tutorials, and club updates on our AWS Community Builder Profile.
         </p>
         <a
-          href="https://builder.aws.com/community/@pwnjoshi"
+          href="https://builder.aws.com/community/@pawanjoshidev"
           target="_blank"
           rel="noopener noreferrer"
           className="btn-primary"
