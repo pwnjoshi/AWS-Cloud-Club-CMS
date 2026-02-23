@@ -20,35 +20,33 @@ export default function ParticleBackground() {
         window.addEventListener('resize', resizeCanvas);
 
         // Particle class
-        class Particle {
-            constructor() {
-                this.x = Math.random() * canvas.width;
-                this.y = Math.random() * canvas.height;
-                this.vx = (Math.random() - 0.5) * 0.5;
-                this.vy = (Math.random() - 0.5) * 0.5;
-                this.radius = Math.random() * 2 + 1;
-            }
+        function createParticle() {
+            return {
+                x: Math.random() * canvas.width,
+                y: Math.random() * canvas.height,
+                vx: (Math.random() - 0.5) * 0.5,
+                vy: (Math.random() - 0.5) * 0.5,
+                radius: Math.random() * 2 + 1,
+                update() {
+                    this.x += this.vx;
+                    this.y += this.vy;
 
-            update() {
-                this.x += this.vx;
-                this.y += this.vy;
-
-                if (this.x < 0 || this.x > canvas.width) this.vx *= -1;
-                if (this.y < 0 || this.y > canvas.height) this.vy *= -1;
-            }
-
-            draw() {
-                ctx.beginPath();
-                ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2);
-                ctx.fillStyle = 'rgba(0, 115, 187, 0.5)';
-                ctx.fill();
-            }
+                    if (this.x < 0 || this.x > canvas.width) this.vx *= -1;
+                    if (this.y < 0 || this.y > canvas.height) this.vy *= -1;
+                },
+                draw() {
+                    ctx.beginPath();
+                    ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2);
+                    ctx.fillStyle = 'rgba(0, 115, 187, 0.5)';
+                    ctx.fill();
+                }
+            };
         }
 
         // Create particles
         const particleCount = Math.min(Math.floor((canvas.width * canvas.height) / 15000), 100);
         for (let i = 0; i < particleCount; i++) {
-            particles.push(new Particle());
+            particles.push(createParticle());
         }
 
         // Animation loop

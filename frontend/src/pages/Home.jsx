@@ -44,7 +44,7 @@ export default function Home() {
               </h1>
               
               <p className="text-lg text-gray-400 max-w-lg leading-relaxed animate-slide-up delay-100">
-                Join the premier community for cloud enthusiasts at Graphic Era. Master AWS, ship scalable projects, and fast-track your career.
+                Join the premier community for cloud enthusiasts at Graphic Era University (GEU). Master AWS, ship scalable projects, and fast-track your career.
               </p>
 
               <div className="flex flex-col sm:flex-row gap-4 animate-slide-up delay-200">
@@ -187,7 +187,7 @@ export default function Home() {
               <div>
                 <div className="text-[10px] font-bold uppercase tracking-wider text-[var(--color-primary)] mb-1">Faculty Coordinator</div>
                 <h3 className="text-xl font-bold text-white font-display">Dr. Amit Kumar</h3>
-                <p className="text-sm text-gray-400 mt-1">Head of Department, CSE</p>
+                <p className="text-sm text-gray-400 mt-1">Associate Professor</p>
               </div>
             </div>
 

@@ -21,14 +21,23 @@ export default function Events() {
         return () => observer.disconnect();
     }, []);
 
+    useEffect(() => {
+        if (selectedEvent) {
+            document.body.style.overflow = 'hidden';
+        } else {
+            document.body.style.overflow = 'unset';
+        }
+        return () => {
+            document.body.style.overflow = 'unset';
+        };
+    }, [selectedEvent]);
+
     const showModal = (event) => {
         setSelectedEvent(event);
-        document.body.style.overflow = 'hidden'; // Prevent background scrolling
     };
 
     const closeModal = () => {
         setSelectedEvent(null);
-        document.body.style.overflow = 'unset';
     };
 
     return (

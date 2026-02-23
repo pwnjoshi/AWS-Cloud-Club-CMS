@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useEffect } from 'react';
 import { ArrowRight, ExternalLink, Github, Linkedin, Twitter } from 'lucide-react';
 
 const teamData = [
@@ -20,11 +20,7 @@ const teamData = [
   }
 ];
 
-const filters = ['All Members', 'Core Team', 'Technical Leads', 'Creative Leads', 'Operations'];
-
 export default function Team() {
-  const [activeFilter, setActiveFilter] = useState('All Members');
-
   useEffect(() => {
     const observer = new IntersectionObserver((entries) => {
       entries.forEach(entry => {

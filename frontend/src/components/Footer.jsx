@@ -74,9 +74,11 @@ export default function Footer() {
         </div>
 
         <div className="pt-8 border-t border-white/5 flex flex-col md:flex-row justify-between items-center gap-6">
-          <p className="text-gray-500 text-xs text-center md:text-left">
-            &copy; {currentYear} AWS Cloud Club GEU. 
-          </p>
+          <div className="text-gray-500 text-xs text-center md:text-left flex flex-col md:flex-row gap-2 md:items-center">
+            <p>&copy; {currentYear} AWS Cloud Club at Graphic Era University.</p>
+            <span className="hidden md:block w-1 h-1 bg-gray-700 rounded-full"></span>
+            <p>Led by <span className="font-medium text-gray-400">Cloud Captain Pawan Joshi</span></p>
+          </div>
           <div className="flex gap-6 text-xs font-medium text-gray-500">
             <a href="https://aws.amazon.com/privacy/" className="hover:text-[var(--color-primary)] transition-colors">Privacy Policy</a>
             <a href="https://aws.amazon.com/events/terms/" className="hover:text-[var(--color-primary)] transition-colors">Terms of Service</a>
