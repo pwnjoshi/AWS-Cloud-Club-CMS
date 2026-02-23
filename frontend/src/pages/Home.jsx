@@ -70,11 +70,11 @@ export default function Home() {
                     </div>
                   ))}
                   <div className="w-9 h-9 rounded-full border-2 border-[#020617] bg-[#1e293b] flex items-center justify-center text-[10px] font-bold text-white">
-                    +500
+                    +300
                   </div>
                 </div>
                 <div className="flex flex-col">
-                  <span className="font-semibold text-white">500+ Members</span>
+                  <span className="font-semibold text-white">300+ Members</span>
                   <span className="text-xs">Growing community</span>
                 </div>
               </div>

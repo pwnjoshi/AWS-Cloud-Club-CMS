@@ -1,9 +1,9 @@
 # ☁️ AWS Cloud Club - Graphic Era University
 
-[![React](https://img.shields.io/badge/Frontend-React-61DAFB?style=for-the-badge&logo=react&logoColor=black)](https://reactjs.org/)
+[![React](https://img.shields.io/badge/Frontend-React_19-61DAFB?style=for-the-badge&logo=react&logoColor=black)](https://react.dev/)
 [![Vite](https://img.shields.io/badge/Build-Vite-646CFF?style=for-the-badge&logo=vite&logoColor=white)](https://vitejs.dev/)
+[![Tailwind CSS](https://img.shields.io/badge/Styling-Tailwind_CSS_4-38B2AC?style=for-the-badge&logo=tailwind-css&logoColor=white)](https://tailwindcss.com/)
 [![AWS](https://img.shields.io/badge/Community-AWS_Cloud_Club-FF9900?style=for-the-badge&logo=amazon-aws&logoColor=white)](https://aws.amazon.com/)
-[![Status](https://img.shields.io/badge/Status-Active-success?style=for-the-badge)](https://www.meetup.com/aws-cloud-club-at-graphic-era/)
 
 > **The official digital hub for the AWS Cloud Club at Graphic Era Deemed to be University.**  
 > Bridging the gap between theory and practice, empowering students to build on the Cloud.
@@ -17,7 +17,8 @@ We have architected this platform to be lightweight, incredibly fast, and server
 
 - **Zero Backend**: No databases to manage, no API latency.
 - **Instant Deployment**: Optimized for Vercel & Netlify.
-- **Premium UI**: Custom-built Glassmorphism design system.
+- **Modern UI**: Custom-built Glassmorphism design system using Tailwind CSS.
+- **SEO Optimized**: Built-in sitemap, meta tags, and structured data.
 
 ---
 
@@ -25,11 +26,11 @@ We have architected this platform to be lightweight, incredibly fast, and server
 
 | Component | Technology | Description |
 |-----------|------------|-------------|
-| **Core** | ![React](https://img.shields.io/badge/-React-black?style=flat-square&logo=react) | Component-based UI Architecture |
+| **Core** | ![React](https://img.shields.io/badge/-React_19-black?style=flat-square&logo=react) | Component-based UI Architecture |
 | **Bundler** | ![Vite](https://img.shields.io/badge/-Vite-black?style=flat-square&logo=vite) | Lightning-fast HMR and build |
-| **Styling** | ![CSS3](https://img.shields.io/badge/-CSS3-black?style=flat-square&logo=css3) | Vanilla CSS with Variables & Glassmorphism |
+| **Styling** | ![Tailwind CSS](https://img.shields.io/badge/-Tailwind_CSS_4-black?style=flat-square&logo=tailwind-css) | Utility-first CSS framework with Glassmorphism |
 | **Icons** | ![Lucide](https://img.shields.io/badge/-Lucide-black?style=flat-square) | Lightweight, beautiful SVG icons |
-| **Routing** | ![React Router](https://img.shields.io/badge/-React_Router-black?style=flat-square&logo=react-router) | Client-side navigation |
+| **Routing** | ![React Router](https://img.shields.io/badge/-React_Router_7-black?style=flat-square&logo=react-router) | Client-side navigation |
 
 ---
 
@@ -56,19 +57,19 @@ npm run dev
 
 ---
 
-## � Project Structure
+## 📂 Project Structure
 
 ```bash
 AWS-Cloud-Club-GEU/
 ├── frontend/             # 🎨 The Heart of the App
-│   ├── public/           # Static Assets (Images, Icons)
+│   ├── public/           # Static Assets (Images, Icons, Sitemap)
 │   └── src/
-│       ├── components/   # Atomic UI Building Blocks (Navbar, Cards, Footer)
-│       ├── pages/        # Route Views (Home, Events, Team, Gallery)
+│       ├── components/   # Atomic UI Building Blocks (Navbar, Footer, Cards)
+│       ├── pages/        # Route Views (Home, Events, Team, Gallery, About)
 │       ├── data/         # 🧠 The "Brain" (Static Data)
-│       │   └── mockData.js  <-- EDIT THIS TO UPDATE CONTENT
+│       │   └── mockData.js  <-- EDIT THIS TO UPDATE DYNAMIC CONTENT
 │       ├── App.jsx       # Routing Logic
-│       └── index.css     # Global Design System
+│       └── index.css     # Global Styles (Tailwind Directives)
 ├── README.md             # 📖 You are here
 └── .gitignore            # Git configuration
 ```
@@ -97,6 +98,9 @@ We use a **"Code-as-CMS"** approach. You don't need a database to update the sit
 }
 ```
 
+### Updating Static Pages
+- **About/Team**: Edit `frontend/src/pages/About.jsx` or `Team.jsx` directly to update text content or add/remove team members.
+
 ---
 
 ## ☁️ Deployment
@@ -124,5 +128,5 @@ We welcome contributions from the community!
 
 <div align="center">
   <p>Made with ❤️ by Pawan Joshi</p>
-  <p>© 2025 AWS Cloud Club GEU</p>
+  <p>© 2025-2026 AWS Cloud Club GEU</p>
 </div>
