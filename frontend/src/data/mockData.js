@@ -1,7 +1,7 @@
 export const EVENTS = [
     {
         id: 1,
-        title: "AWS Cloud Club Inauguration Ceremony 2026",
+        title: "CLOUD IGNITE ’26 - AWS Cloud Club GEU Inaugural Experience",
         start_time: "TBA",
         location: "Graphic Era Deemed to be University",
         image: "/events/inauguration-custom.jpg",
@@ -10,19 +10,39 @@ export const EVENTS = [
     }
 ];
 
-export const NEWS = [
-    {
-        id: 1,
-        content: "Registrations for the AWS Club Core Team are ON",
-        link_url: "https://forms.gle/iVBCPxZLEzTARUoaA",
-        link_text: "Register Now"
-    }
-];
+export const NEWS = [];
 
 export const HIGHLIGHTS = [
     {
         id: 1,
         title: "We are live",
         image: "/highlights/we-are-live.jpg"
+    }
+];
+
+export const STATISTICS = [
+    {
+        id: 1,
+        value: "500+",
+        label: "Active Members",
+        icon: "users"
+    },
+    {
+        id: 2,
+        value: "50+",
+        label: "Events Conducted",
+        icon: "calendar"
+    },
+    {
+        id: 3,
+        value: "100+",
+        label: "AWS Certifications",
+        icon: "award"
+    },
+    {
+        id: 4,
+        value: "30+",
+        label: "Projects Completed",
+        icon: "code"
     }
 ];
