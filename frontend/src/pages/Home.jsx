@@ -187,7 +187,7 @@ export default function Home() {
               <div>
                 <div className="text-[10px] font-bold uppercase tracking-wider text-[var(--color-primary)] mb-1">Faculty Coordinator</div>
                 <h3 className="text-xl font-bold text-white font-display">Dr. Amit Kumar</h3>
-                <p className="text-sm text-gray-400 mt-1">Associate Professor</p>
+                <p className="text-sm text-gray-400 mt-1">Professor</p>
               </div>
             </div>
 
