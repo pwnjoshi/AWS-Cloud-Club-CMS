@@ -17,6 +17,14 @@ const teamData = [
     image: '/team/atishay_jain.jpg',
     category: 'Leadership',
     socials: { linkedin: '#', github: '#' }
+  },
+  {
+    name: 'Tishar Soni',
+    role: 'Event Management Lead',
+    subRole: 'Cloud Enthusiast',
+    image: '/team/tishar_soni.jpg',
+    category: 'Leadership',
+    socials: { linkedin: '#', github: '#' }
   }
 ];
 
