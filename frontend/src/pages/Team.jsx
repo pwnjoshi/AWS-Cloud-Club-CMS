@@ -30,7 +30,7 @@ const teamData = [
     name: 'Sarthak Kathait',
     role: 'Technical Team',
     subRole: 'Cloud Enthusiast',
-    image: '',
+    image: '/team/sarthak_kathait.jpg',
     category: 'Leadership',
     socials: { linkedin: '#', github: '#' }
   },
