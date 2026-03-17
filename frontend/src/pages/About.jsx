@@ -1,20 +1,8 @@
 import { Target, Lightbulb, Users, Award, Briefcase, CheckCircle, Linkedin, Globe, Rocket, Heart, ExternalLink, Quote } from 'lucide-react';
-import { useEffect } from 'react';
+import { useScrollReveal } from '../hooks/useScrollReveal';
 
 export default function About() {
-  useEffect(() => {
-    const observer = new IntersectionObserver((entries) => {
-      entries.forEach(entry => {
-        if (entry.isIntersecting) {
-          entry.target.classList.add('opacity-100', 'translate-y-0');
-          entry.target.classList.remove('opacity-0', 'translate-y-10');
-        }
-      });
-    }, { threshold: 0.1 });
-
-    document.querySelectorAll('.reveal-on-scroll').forEach(el => observer.observe(el));
-    return () => observer.disconnect();
-  }, []);
+  useScrollReveal();
 
   return (
     <div className="relative w-full bg-[#020617] selection:bg-[var(--color-primary)] selection:text-white pb-20 min-h-screen">

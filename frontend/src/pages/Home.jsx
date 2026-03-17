@@ -1,22 +1,9 @@
 import { ArrowRight, Calendar, Users, Zap, Terminal, Trophy, Rocket, Target, ChevronRight, ExternalLink, BookOpen } from 'lucide-react';
-import { useEffect } from 'react';
 import { Link } from 'react-router-dom';
+import { useScrollReveal } from '../hooks/useScrollReveal';
 
 export default function Home() {
-  
-  useEffect(() => {
-    const observer = new IntersectionObserver((entries) => {
-      entries.forEach(entry => {
-        if (entry.isIntersecting) {
-          entry.target.classList.add('opacity-100', 'translate-y-0');
-          entry.target.classList.remove('opacity-0', 'translate-y-10');
-        }
-      });
-    }, { threshold: 0.1 });
-
-    document.querySelectorAll('.reveal-on-scroll').forEach(el => observer.observe(el));
-    return () => observer.disconnect();
-  }, []);
+  useScrollReveal();
 
   return (
     <div className="relative w-full bg-[#020617] selection:bg-[var(--color-primary)] selection:text-white min-h-screen">
@@ -276,12 +263,12 @@ export default function Home() {
 
           <div className="grid md:grid-cols-1 max-w-2xl mx-auto gap-6">
             <EventCard 
-              title="CLOUD IGNITE ’26"
-              subtitle="AWS Cloud Club GEU – Inaugural Experience"
-              date="March 25, 2026"
-              image="https://images.unsplash.com/photo-1540575467063-178a50c2df87?auto=format&fit=crop&q=80&w=1200"
+              title="CLOUD IGNITE '26"
+              subtitle="Official Inauguration of AWS Cloud Club GEU"
+              date="March 28, 2026 · 11:30 AM IST"
+              image="https://secure.meetupstatic.com/photos/event/6/0/6/a/highres_533244682.webp?w=640"
               tag="Flagship Event"
-              link="https://www.meetup.com/aws-cloud-club-at-graphic-era/"
+              link="https://www.meetup.com/aws-cloud-club-at-graphic-era/events/313810371"
             />
           </div>
           
@@ -328,8 +315,8 @@ function FeatureCard({ icon, title, description, color }) {
 function EventCard({ title, subtitle, date, image, tag, link }) {
   return (
     <div className="group rounded-xl bg-white/5 border border-white/10 overflow-hidden hover:border-[var(--color-primary)]/30 transition-all hover:-translate-y-1">
-       <div className="h-64 overflow-hidden relative">
-         <img src={image} alt={title} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" />
+       <div className="w-full overflow-hidden relative aspect-[4175/2344]">
+         <img src={image} alt={title} width={4175} height={2344} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" />
          <div className="absolute top-4 left-4 px-3 py-1 bg-[#0f111a]/80 backdrop-blur-md rounded-md text-xs font-semibold border border-white/10 text-white shadow-lg">
            {tag}
          </div>

@@ -1,12 +1,12 @@
 export const EVENTS = [
     {
         id: 1,
-        title: "CLOUD IGNITE ’26 - AWS Cloud Club GEU Inaugural Experience",
-        start_time: "TBA",
-        location: "Graphic Era Deemed to be University",
-        image: "/events/inauguration-custom.jpg",
-        registration_link: "https://www.meetup.com/aws-cloud-club-at-graphic-era/",
-        description: "Dates and time are yet to be announced. Stay tuned! Mandatory registration on Meetup.com before attending."
+        title: "CLOUD IGNITE '26",
+        start_time: "2026-03-28T11:30:00+05:30",
+        location: "Seminar Hall, CSIT Block, Graphic Era (Deemed to be University), Dehradun",
+        image: "https://secure.meetupstatic.com/photos/event/6/0/6/a/highres_533244682.webp?w=640",
+        registration_link: "https://www.meetup.com/aws-cloud-club-at-graphic-era/events/313810371",
+        description: "Official inauguration of AWS Cloud Club GEU with expert talks, live AWS demos, an interactive quiz, and networking. Mandatory registration on Meetup before attending."
     }
 ];
 

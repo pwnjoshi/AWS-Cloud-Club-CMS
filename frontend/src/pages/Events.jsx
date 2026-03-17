@@ -1,25 +1,13 @@
 import { Calendar, MapPin, Clock, ArrowRight, X, Info, ExternalLink } from 'lucide-react';
 import { useState, useEffect } from 'react';
 import { EVENTS } from '../data/mockData';
+import { useScrollReveal } from '../hooks/useScrollReveal';
 
 export default function Events() {
     const [events] = useState(EVENTS);
     const [selectedEvent, setSelectedEvent] = useState(null);
 
-    // Scroll Animation Logic
-    useEffect(() => {
-        const observer = new IntersectionObserver((entries) => {
-            entries.forEach(entry => {
-                if (entry.isIntersecting) {
-                    entry.target.classList.add('opacity-100', 'translate-y-0');
-                    entry.target.classList.remove('opacity-0', 'translate-y-10');
-                }
-            });
-        }, { threshold: 0.1 });
-
-        document.querySelectorAll('.reveal-on-scroll').forEach(el => observer.observe(el));
-        return () => observer.disconnect();
-    }, []);
+    useScrollReveal();
 
     useEffect(() => {
         if (selectedEvent) {
@@ -105,10 +93,12 @@ export default function Events() {
                         </button>
 
                         {/* Image Header */}
-                        <div className="relative h-48 sm:h-64 shrink-0">
+                        <div className="relative w-full shrink-0 aspect-[4175/2344]">
                             <img 
                                 src={selectedEvent.image} 
                                 alt={selectedEvent.title} 
+                                width={4175}
+                                height={2344}
                                 className="w-full h-full object-cover"
                             />
                             <div className="absolute inset-0 bg-gradient-to-t from-[#0a0e17] to-transparent"></div>
@@ -194,10 +184,12 @@ function EventCard({ event, onDetails }) {
     return (
         <div className="group flex flex-col h-full bg-[#0a0e17]/80 border border-white/10 rounded-2xl overflow-hidden hover:border-white/20 hover:bg-[#1e293b]/40 transition-all duration-500 hover:-translate-y-1 shadow-xl">
             {/* Image Container */}
-            <div className="relative h-48 overflow-hidden shrink-0">
+            <div className="relative w-full overflow-hidden shrink-0 aspect-[4175/2344]">
                 <img
                     src={event.image}
                     alt={event.title}
+                    width={4175}
+                    height={2344}
                     className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-[#0a0e17] to-transparent opacity-80"></div>

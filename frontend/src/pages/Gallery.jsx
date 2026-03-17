@@ -1,5 +1,6 @@
 import { ArrowDown, X, Image as ImageIcon, ZoomIn } from 'lucide-react';
 import { useEffect, useState } from 'react';
+import { useScrollReveal } from '../hooks/useScrollReveal';
 
 // Dynamically import all images from the src/assets/gallery folder
 const imageModules = import.meta.glob('../assets/gallery/*.{png,jpg,jpeg,svg,webp,PNG,JPG,JPEG,SVG,WEBP}', { eager: true });
@@ -8,22 +9,7 @@ const galleryImages = Object.values(imageModules).map(module => module.default);
 export default function Gallery() {
     const [selectedImage, setSelectedImage] = useState(null);
 
-    // Scroll Animation Logic
-    useEffect(() => {
-        const observer = new IntersectionObserver((entries) => {
-            entries.forEach(entry => {
-                if (entry.isIntersecting) {
-                    entry.target.classList.add('opacity-100', 'translate-y-0');
-                    entry.target.classList.remove('opacity-0', 'translate-y-10');
-                }
-            });
-        }, { threshold: 0.1 });
-
-        const elements = document.querySelectorAll('.reveal-on-scroll');
-        elements.forEach(el => observer.observe(el));
-
-        return () => observer.disconnect();
-    }, []);
+    useScrollReveal();
 
     // Handle body scroll lock when modal is open
     useEffect(() => {

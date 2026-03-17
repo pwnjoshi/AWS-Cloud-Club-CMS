@@ -1,5 +1,5 @@
-import { useEffect } from 'react';
 import { ArrowRight, ExternalLink, Github, Linkedin, Twitter } from 'lucide-react';
+import { useScrollReveal } from '../hooks/useScrollReveal';
 
 const teamData = [
   {
@@ -25,23 +25,27 @@ const teamData = [
     image: '/team/tishar_soni.jpg',
     category: 'Leadership',
     socials: { linkedin: '#', github: '#' }
+  },
+  {
+    name: 'Sarthak Kathait',
+    role: 'Technical Team',
+    subRole: 'Cloud Enthusiast',
+    image: '',
+    category: 'Leadership',
+    socials: { linkedin: '#', github: '#' }
+  },
+  {
+    name: 'Bhumika Gupta',
+    role: 'Media & Design Lead',
+    subRole: 'Creative Team',
+    image: '/team/bhumika_gupta.jpg',
+    category: 'Leadership',
+    socials: { linkedin: '#', github: '#' }
   }
 ];
 
 export default function Team() {
-  useEffect(() => {
-    const observer = new IntersectionObserver((entries) => {
-      entries.forEach(entry => {
-        if (entry.isIntersecting) {
-          entry.target.classList.add('opacity-100', 'translate-y-0');
-          entry.target.classList.remove('opacity-0', 'translate-y-10');
-        }
-      });
-    }, { threshold: 0.1 });
-
-    document.querySelectorAll('.reveal-on-scroll').forEach(el => observer.observe(el));
-    return () => observer.disconnect();
-  }, []);
+  useScrollReveal();
 
   const faculty = teamData.filter(m => m.category === 'Faculty');
   const leadership = teamData.filter(m => m.category === 'Leadership');
@@ -131,11 +135,13 @@ export default function Team() {
 function TeamCard({ member }) {
   return (
     <div className="group relative rounded-xl overflow-hidden border border-white/10 bg-[#0a0e17]/80 aspect-[4/5] shadow-xl transition-all duration-500 hover:-translate-y-1 hover:shadow-2xl hover:shadow-[var(--color-primary)]/10 hover:border-white/20">
-      <img 
-        src={member.image} 
-        alt={member.name} 
-        className="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-105 opacity-80 group-hover:opacity-100"
-      />
+      {member.image && (
+        <img 
+          src={member.image} 
+          alt={member.name} 
+          className="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-105 opacity-80 group-hover:opacity-100"
+        />
+      )}
       <div className="absolute inset-0 bg-gradient-to-t from-[#020617] via-[#020617]/60 to-transparent opacity-90 group-hover:opacity-80 transition-opacity duration-500"></div>
       
       <div className="absolute bottom-0 left-0 w-full p-5 flex flex-col justify-end transform transition-transform duration-500 translate-y-4 group-hover:translate-y-0">
