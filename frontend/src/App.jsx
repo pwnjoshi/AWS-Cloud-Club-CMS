@@ -5,6 +5,7 @@ import Gallery from './pages/Gallery';
 import Blog from './pages/Blog';
 import About from './pages/About';
 import Team from './pages/Team';
+import Verify from './pages/Verify';
 import PublicLayout from './components/PublicLayout';
 import ScrollToTop from './components/ScrollToTop';
 
@@ -20,6 +21,7 @@ function App() {
           <Route path="/events" element={<Events />} />
           <Route path="/blog" element={<Blog />} />
           <Route path="/team" element={<Team />} />
+          <Route path="/verify" element={<Verify />} />
         </Route>
       </Routes>
     </BrowserRouter>

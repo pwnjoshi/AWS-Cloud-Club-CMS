@@ -1,0 +1,114 @@
+{
+  "AWS-GEU-001": {
+    "name": "Pawan Joshi",
+    "role": "Captain",
+    "subRole": "Cloud Enthusiast",
+    "status": "active",
+    "validTill": "Dec 2026",
+    "image": "/team/pawan_joshi.jpg"
+  },
+  "AWS-GEU-002": {
+    "name": "Atishay Jain",
+    "role": "Vice Captain",
+    "subRole": "Core Leadership",
+    "status": "active",
+    "validTill": "Dec 2026",
+    "image": "/team/atishay_jain.jpg"
+  },
+  "AWS-GEU-003": {
+    "name": "Tishar Soni",
+    "role": "Event Management Lead",
+    "subRole": "Cloud Enthusiast",
+    "status": "active",
+    "validTill": "Dec 2026",
+    "image": "/team/tishar_soni.jpg"
+  },
+  "AWS-GEU-004": {
+    "name": "Sarthak Kathait",
+    "role": "Technical Team",
+    "subRole": "Core Technical",
+    "status": "active",
+    "validTill": "Dec 2026",
+    "image": "/team/sarthak_kathait.jpg"
+  },
+  "AWS-GEU-005": {
+    "name": "Bhumika Gupta",
+    "role": "Media & Design Lead",
+    "subRole": "Creative Team",
+    "status": "active",
+    "validTill": "Dec 2026",
+    "image": "/team/bhumika_gupta.jpg"
+  },
+  "AWS-GEU-006": {
+    "name": "Mehak Sethi",
+    "role": "PR Team",
+    "subRole": "Public Relations",
+    "status": "active",
+    "validTill": "Dec 2026",
+    "image": "https://drive.google.com/uc?export=view&id=1nsHcFkdf4gz8Ys9j8vf8JfUPdFz1mVF8"
+  },
+  "AWS-GEU-007": {
+    "name": "Pratyush Nautiyal",
+    "role": "Technical Team",
+    "subRole": "Design & Coding",
+    "status": "active",
+    "validTill": "Dec 2026",
+    "image": "https://drive.google.com/uc?export=view&id=1MeQasXOSTIo956upEWH1ABejFPQbPgYo"
+  },
+  "AWS-GEU-008": {
+    "name": "Vinayak Singh",
+    "role": "Technical Team",
+    "subRole": "AI/DS Developer",
+    "status": "active",
+    "validTill": "Dec 2026",
+    "image": "https://drive.google.com/uc?export=view&id=1vjSckEK7ZZvVi6EAigaRh3brcfyc0ynk"
+  },
+  "AWS-GEU-009": {
+    "name": "Aadya Gupta",
+    "role": "Event and Operations",
+    "subRole": "Operations Coordinator",
+    "status": "active",
+    "validTill": "Dec 2026",
+    "image": "https://drive.google.com/uc?export=view&id=16bGxysIDSObpbz-NiD4Zqa73fSSlzLYB"
+  },
+  "AWS-GEU-010": {
+    "name": "Bhumika Bhatt",
+    "role": "Event and Operations",
+    "subRole": "Visual Media",
+    "status": "active",
+    "validTill": "Dec 2026",
+    "image": "https://drive.google.com/uc?export=view&id=1yhsHdOvkdsW32o6ToRXQui5gucCPb0uu"
+  },
+  "AWS-GEU-011": {
+    "name": "Saloni Sharma",
+    "role": "Event and Operations",
+    "subRole": "Events & Outreach",
+    "status": "active",
+    "validTill": "Dec 2026",
+    "image": "https://drive.google.com/uc?export=view&id=1RxrH37LZFjPOcPqCxFpCNbGuWNRKPhlJ"
+  },
+  "AWS-GEU-012": {
+    "name": "Jasmine",
+    "role": "PR Team",
+    "subRole": "Public Relations",
+    "status": "active",
+    "validTill": "Dec 2026",
+    "image": "https://drive.google.com/uc?export=view&id=1vAC0t8ZOC1uuu7Bv-2cx1YZOdwKN8zQY"
+  },
+  "AWS-GEU-013": {
+    "name": "Riddhima Sharma",
+    "role": "Event and Operations",
+    "subRole": "Operations",
+    "status": "active",
+    "validTill": "Dec 2026",
+    "image": "https://drive.google.com/uc?export=view&id=1oKQMOD7qYHsQpIjXHMgUtn1ObquKwm9m"
+  },
+  "AWS-GEU-014": {
+    "name": "Karmanya Singh",
+    "role": "Media and Design",
+    "subRole": "Design",
+    "status": "active",
+    "validTill": "Dec 2026",
+    "image": "https://drive.google.com/uc?export=view&id=1q_rLjJGQk4TroTFuEwS53hbvrlrAsJ1h"
+  }
+}
