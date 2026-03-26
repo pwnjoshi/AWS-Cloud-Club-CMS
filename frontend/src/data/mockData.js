@@ -5,7 +5,7 @@ export const EVENTS = [
         start_time: "2026-03-28T11:30:00+05:30",
         location: "Seminar Hall, CSIT Block, Graphic Era (Deemed to be University), Dehradun",
         image: "https://secure.meetupstatic.com/photos/event/6/0/6/a/highres_533244682.webp?w=640",
-        registration_link: "https://www.meetup.com/aws-cloud-club-at-graphic-era/events/313810371",
+        registration_link: "https://forms.gle/8qRq2BJUPNJ6aRkj8",
         description: "Official inauguration of AWS Cloud Club GEU with expert talks, live AWS demos, an interactive quiz, and networking. Mandatory registration on Meetup before attending."
     }
 ];

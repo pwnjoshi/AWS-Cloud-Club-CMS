@@ -268,10 +268,10 @@ export default function Home() {
               date="March 28, 2026 · 11:30 AM IST"
               image="https://secure.meetupstatic.com/photos/event/6/0/6/a/highres_533244682.webp?w=640"
               tag="Flagship Event"
-              link="https://www.meetup.com/aws-cloud-club-at-graphic-era/events/313810371"
+              link="https://forms.gle/8qRq2BJUPNJ6aRkj8"
             />
           </div>
-          
+
           <div className="mt-8 md:hidden text-center">
             <Link to="/events" className="inline-flex items-center gap-2 text-[var(--color-primary)] font-semibold text-sm">
               View All Events <ArrowRight className="w-4 h-4" />
