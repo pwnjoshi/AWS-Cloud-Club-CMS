@@ -33,6 +33,7 @@ export default function Footer() {
               <FooterLink to="/events">Events & Workshops</FooterLink>
               <FooterLink to="/team">Our Team</FooterLink>
               <FooterLink to="/blog">Tech Blog</FooterLink>
+              <FooterLink to="/verify">Verify Member ID</FooterLink>
             </ul>
           </div>
 

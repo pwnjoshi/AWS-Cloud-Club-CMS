@@ -110,5 +110,13 @@
     "status": "active",
     "validTill": "Dec 2026",
     "image": "https://drive.google.com/uc?export=view&id=1q_rLjJGQk4TroTFuEwS53hbvrlrAsJ1h"
+  },
+  "AWS-GEU-015": {
+    "name": "Vidushi Mohan",
+    "role": "Media and Design",
+    "subRole": "Editing & Content Creation",
+    "status": "active",
+    "validTill": "Dec 2026",
+    "image": "#"
   }
 }
