@@ -1,9 +1,56 @@
 import { ArrowRight, Calendar, Users, Zap, Terminal, Trophy, Rocket, Target, ChevronRight, ExternalLink, BookOpen } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { useScrollReveal } from '../hooks/useScrollReveal';
+import { EVENTS } from '../data/mockData';
+
+function isUpcomingEvent(event) {
+  if (!event?.start_time) return false;
+  if (event.start_time === 'TBA') return true;
+
+  const start = new Date(event.start_time);
+  if (Number.isNaN(start.getTime())) return false;
+
+  return start >= new Date();
+}
+
+function formatEventDate(startTime) {
+  if (!startTime || startTime === 'TBA') {
+    return 'Date and time to be announced';
+  }
+
+  const start = new Date(startTime);
+  if (Number.isNaN(start.getTime())) {
+    return 'Date and time to be announced';
+  }
+
+  const date = start.toLocaleDateString('en-IN', {
+    month: 'long',
+    day: 'numeric',
+    year: 'numeric',
+    timeZone: 'Asia/Kolkata',
+  });
+  const time = start.toLocaleTimeString('en-IN', {
+    hour: 'numeric',
+    minute: '2-digit',
+    hour12: true,
+    timeZone: 'Asia/Kolkata',
+  });
+
+  return `${date} · ${time} IST`;
+}
 
 export default function Home() {
   useScrollReveal();
+
+  const upcomingEvents = EVENTS
+    .filter(isUpcomingEvent)
+    .sort((a, b) => {
+      if (a.start_time === 'TBA') return 1;
+      if (b.start_time === 'TBA') return -1;
+      return new Date(a.start_time) - new Date(b.start_time);
+    });
+
+  const nextEvent = upcomingEvents[0] || null;
 
   return (
     <div className="relative w-full bg-[#020617] selection:bg-[var(--color-primary)] selection:text-white min-h-screen">
@@ -262,14 +309,21 @@ export default function Home() {
           </div>
 
           <div className="grid md:grid-cols-1 max-w-2xl mx-auto gap-6">
-            <EventCard 
-              title="CLOUD IGNITE '26"
-              subtitle="Official Inauguration of AWS Cloud Club GEU"
-              date="March 28, 2026 · 11:30 AM IST"
-              image="https://secure.meetupstatic.com/photos/event/6/0/6/a/highres_533244682.webp?w=640"
-              tag="Flagship Event"
-              link="https://forms.gle/8qRq2BJUPNJ6aRkj8"
-            />
+            {nextEvent ? (
+              <EventCard
+                title={nextEvent.title}
+                subtitle={nextEvent.description}
+                date={formatEventDate(nextEvent.start_time)}
+                image={nextEvent.image}
+                tag={nextEvent.start_time === 'TBA' ? 'Coming Soon' : 'Upcoming'}
+                link={nextEvent.registration_link}
+              />
+            ) : (
+              <div className="rounded-xl bg-white/5 border border-white/10 p-8 text-center">
+                <h3 className="text-2xl font-bold text-white mb-2">No upcoming events right now</h3>
+                <p className="text-gray-400 text-sm">We are planning the next session. Check back soon.</p>
+              </div>
+            )}
           </div>
 
           <div className="mt-8 md:hidden text-center">
@@ -313,6 +367,10 @@ function FeatureCard({ icon, title, description, color }) {
 }
 
 function EventCard({ title, subtitle, date, image, tag, link }) {
+  const resolvedLink = link
+    ? (link.startsWith('http') ? link : `https://${link}`)
+    : null;
+
   return (
     <div className="group rounded-xl bg-white/5 border border-white/10 overflow-hidden hover:border-[var(--color-primary)]/30 transition-all hover:-translate-y-1">
        <div className="w-full overflow-hidden relative aspect-[4175/2344]">
@@ -327,10 +385,16 @@ function EventCard({ title, subtitle, date, image, tag, link }) {
            {date}
          </div>
          <h3 className="text-2xl font-bold mb-1 group-hover:text-[var(--color-primary)] transition-colors leading-snug">{title}</h3>
-         {subtitle && <p className="text-gray-400 text-sm mb-2">{subtitle}</p>}
-         <a href={link || "/events"} target="_blank" rel="noopener noreferrer" className="flex items-center gap-2 text-sm text-gray-500 mt-4 group/link cursor-pointer font-medium hover:text-white transition-colors w-fit">
-           Register Now <ChevronRight className="w-4 h-4 group-hover/link:translate-x-1 transition-transform" />
-         </a>
+         {subtitle && <p className="text-gray-400 text-sm mb-2 line-clamp-3">{subtitle}</p>}
+         {resolvedLink ? (
+           <a href={resolvedLink} target="_blank" rel="noopener noreferrer" className="flex items-center gap-2 text-sm text-gray-500 mt-4 group/link cursor-pointer font-medium hover:text-white transition-colors w-fit">
+             Register Now <ChevronRight className="w-4 h-4 group-hover/link:translate-x-1 transition-transform" />
+           </a>
+         ) : (
+           <button disabled className="flex items-center gap-2 text-sm text-gray-500 mt-4 font-medium cursor-not-allowed">
+             Registration opens soon
+           </button>
+         )}
        </div>
     </div>
   );

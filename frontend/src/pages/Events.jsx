@@ -3,8 +3,18 @@ import { useState, useEffect } from 'react';
 import { EVENTS } from '../data/mockData';
 import { useScrollReveal } from '../hooks/useScrollReveal';
 
+function isUpcomingEvent(event) {
+    if (!event?.start_time) return false;
+    if (event.start_time === 'TBA') return true;
+
+    const start = new Date(event.start_time);
+    if (Number.isNaN(start.getTime())) return false;
+
+    return start >= new Date();
+}
+
 export default function Events() {
-    const [events] = useState(EVENTS);
+    const [events] = useState(() => EVENTS.filter(isUpcomingEvent));
     const [selectedEvent, setSelectedEvent] = useState(null);
 
     useScrollReveal();
