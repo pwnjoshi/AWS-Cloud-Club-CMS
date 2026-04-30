@@ -4,16 +4,16 @@ import { useScrollReveal } from '../hooks/useScrollReveal';
 const teamData = [
   {
     name: 'Pawan Joshi',
-    role: 'CAPTAIN',
-    subRole: 'Cloud Enthusiast',
+    role: 'GROUP LEAD',
+    subRole: 'Builder & Cloud Enthusiast',
     image: '/team/pawan_joshi.jpg',
     category: 'Leadership',
     socials: { linkedin: 'https://www.linkedin.com/in/pwnjoshi/', github: 'https://github.com/pwnjoshi/' }
   },
   {
     name: 'Atishay Jain',
-    role: 'VICE CAPTAIN',
-    subRole: 'Cloud Enthusiast',
+    role: 'VICE LEAD',
+    subRole: 'Builder & Cloud Enthusiast',
     image: '/team/atishay_jain.jpg',
     category: 'Leadership',
     socials: { linkedin: '#', github: '#' }
@@ -21,7 +21,7 @@ const teamData = [
   {
     name: 'Tishar Soni',
     role: 'Event Management Lead',
-    subRole: 'Cloud Enthusiast',
+    subRole: 'Builder & Cloud Enthusiast',
     image: '/team/tishar_soni.jpg',
     category: 'Leadership',
     socials: { linkedin: '#', github: '#' }
@@ -29,7 +29,7 @@ const teamData = [
   {
     name: 'Sarthak Kathait',
     role: 'Technical Team',
-    subRole: 'Cloud Enthusiast',
+    subRole: 'Builder & Cloud Enthusiast',
     image: '/team/sarthak_kathait.jpg',
     category: 'Leadership',
     socials: { linkedin: '#', github: '#' }
@@ -70,11 +70,11 @@ export default function Team() {
           
           <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold font-display mb-6 text-white animate-slide-up leading-tight tracking-tight">
             The Minds Behind <br className="hidden md:block" />
-            <span className="text-[var(--color-primary)]">Cloud Innovation</span>
+            <span className="text-[var(--color-primary)]">Building the Future</span>
           </h1>
           
           <p className="text-lg text-gray-400 max-w-2xl mx-auto leading-relaxed animate-slide-up delay-100">
-            A collective of passionate students, developers, and cloud enthusiasts driving the AWS community forward at Graphic Era University.
+            A collective of passionate students, developers, and builders driving the AWS Student Builder Group forward at Graphic Era University.
           </p>
         </div>
       </section>
@@ -101,7 +101,7 @@ export default function Team() {
           <section className="reveal-on-scroll opacity-0 translate-y-10 transition-all duration-700">
             <div className="flex items-center gap-4 mb-6 border-b border-white/5 pb-3">
               <div className="w-2 h-2 bg-[var(--color-accent)] rounded-full animate-pulse"></div>
-              <h2 className="text-xl font-bold text-white font-display tracking-wide">Club Leadership</h2>
+              <h2 className="text-xl font-bold text-white font-display tracking-wide">Group Leadership</h2>
             </div>
             <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-6">
               {leadership.map((member, idx) => (

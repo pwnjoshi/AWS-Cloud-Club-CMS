@@ -25,11 +25,11 @@ export default function Blog() {
           </div>
 
           <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold font-display mb-6 text-white animate-slide-up leading-tight tracking-tight">
-            Club Blog & <span className="text-[var(--color-primary)]">Articles</span>
+            Community Blog & <span className="text-[var(--color-primary)]">Articles</span>
           </h1>
           
           <p className="text-lg text-gray-400 max-w-2xl mx-auto leading-relaxed animate-slide-up delay-100 mb-12">
-            Dive into our latest technical articles, step-by-step tutorials, and club updates. Written by students, for students, on our official AWS Community Builder Profile.
+            Dive into our latest technical articles, step-by-step tutorials, and community updates. Written by builders, for builders, on our official AWS Community Builder Profile.
           </p>
           
           <div className="flex flex-col sm:flex-row gap-4 animate-slide-up delay-200">

@@ -60,7 +60,7 @@ export default function Events() {
                     </h1>
                     
                     <p className="text-lg text-gray-400 max-w-2xl mx-auto leading-relaxed animate-slide-up delay-100">
-                        Join workshops, hackathons, and meetups designed to level up your cloud skills and connect with fellow builders.
+                        Join workshops, hackathons, and meetups designed to level up your cloud and development skills. Hands-on build sessions and project-driven workshops.
                     </p>
                 </div>
             </section>

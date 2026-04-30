@@ -12,10 +12,10 @@ export default function Footer() {
           {/* Brand Column */}
           <div className="space-y-6">
             <Link to="/" className="flex items-center group">
-              <img src="/logo.png" alt="AWS Cloud Club GEU" className="h-20 w-auto object-contain transform group-hover:scale-105 transition-transform duration-300" />
+              <img src="/logo.png" alt="AWS Student Builder Group GEU" className="h-14 w-auto object-contain p-1 transform group-hover:scale-105 transition-transform duration-300" />
             </Link>
             <p className="text-gray-400 text-sm leading-relaxed max-w-xs">
-              Empowering the next generation of cloud builders at Graphic Era University. Learn, build, and innovate with the power of AWS.
+              Empowering the next generation of builders at Graphic Era University. Learn cloud, AI, and full-stack development while shipping real-world projects.
             </p>
             <div className="flex gap-3 pt-2">
               <SocialIcon href="https://github.com/aws-cloud-club-geu" icon={<Github size={18} />} label="GitHub" />
@@ -42,7 +42,7 @@ export default function Footer() {
             <h3 className="text-white font-bold mb-6 text-base border-l-2 border-[var(--color-primary)] pl-3">Connect With Us</h3>
             <ul className="space-y-3">
               <ExternalFooterLink href="https://linktr.ee/awscloudclubgeu">Linktree (All Links)</ExternalFooterLink>
-              <ExternalFooterLink href="https://www.meetup.com/aws-cloud-club-at-graphic-era/">Meetup</ExternalFooterLink>
+              <ExternalFooterLink href="https://www.meetup.com/aws-sbg-at-graphic-era/">Meetup</ExternalFooterLink>
               <ExternalFooterLink href="https://chat.whatsapp.com/IvCnmpfmJ3BCI6etmQ1i5E">WhatsApp Group</ExternalFooterLink>
               <ExternalFooterLink href="https://discord.gg/c36ftreuWW">Discord</ExternalFooterLink>
               <ExternalFooterLink href="https://www.youtube.com/@AWSCloudClubGEU">YouTube</ExternalFooterLink>
@@ -76,13 +76,16 @@ export default function Footer() {
 
         <div className="pt-8 border-t border-white/5 flex flex-col md:flex-row justify-between items-center gap-6">
           <div className="text-gray-500 text-xs text-center md:text-left flex flex-col md:flex-row gap-2 md:items-center">
-            <p>&copy; {currentYear} AWS Cloud Club at Graphic Era University.</p>
+            <p>&copy; {currentYear} AWS Student Builder Group at Graphic Era University.</p>
             <span className="hidden md:block w-1 h-1 bg-gray-700 rounded-full"></span>
-            <p>Led by <span className="font-medium text-gray-400">Cloud Captain Pawan Joshi</span></p>
+            <p>Led by <span className="font-medium text-gray-400">Student Builder Group Lead Pawan Joshi</span></p>
           </div>
-          <div className="flex gap-6 text-xs font-medium text-gray-500">
+          <div className="flex flex-col md:flex-row items-center gap-2 md:gap-6 text-xs font-medium text-gray-500">
+            <span className="text-gray-400 italic">Same Community. Bigger Vision.</span>
+            <div className="flex gap-6">
             <a href="https://aws.amazon.com/privacy/" className="hover:text-[var(--color-primary)] transition-colors">Privacy Policy</a>
             <a href="https://aws.amazon.com/events/terms/" className="hover:text-[var(--color-primary)] transition-colors">Terms of Service</a>
+          </div>
           </div>
         </div>
       </div>

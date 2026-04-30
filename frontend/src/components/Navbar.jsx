@@ -23,7 +23,7 @@ export default function Navbar() {
         <div className="flex justify-between items-center h-20">
           {/* Logo */}
           <Link to="/" className="flex items-center group">
-            <img src="/logo.png" alt="AWS Cloud Club GEU" className="h-16 md:h-20 w-auto object-contain transform group-hover:scale-105 transition-transform duration-300" />
+            <img src="/logo.png" alt="AWS Student Builder Group GEU" className="h-12 md:h-14 w-auto object-contain p-1 transform group-hover:scale-105 transition-transform duration-300" />
           </Link>
 
           {/* Desktop Menu */}
@@ -35,12 +35,12 @@ export default function Navbar() {
             <NavLink to="/blog">Blog</NavLink>
             
             <a 
-              href="https://www.meetup.com/aws-cloud-club-at-graphic-era/" 
+              href="https://www.meetup.com/aws-sbg-at-graphic-era/" 
               target="_blank" 
               rel="noopener noreferrer"
               className="px-5 py-2 bg-white text-black hover:bg-gray-200 rounded-md font-semibold shadow-lg shadow-white/5 hover:shadow-white/10 hover:-translate-y-0.5 transition-all duration-300 text-sm"
             >
-              Join Club
+              Join the Builders
             </a>
           </div>
 
@@ -66,12 +66,12 @@ export default function Navbar() {
             <MobileNavLink to="/blog" onClick={() => setIsOpen(false)}>Blog</MobileNavLink>
             
             <a 
-              href="https://www.meetup.com/aws-cloud-club-at-graphic-era/" 
+              href="https://www.meetup.com/aws-sbg-at-graphic-era/" 
               target="_blank" 
               rel="noopener noreferrer"
               className="mt-4 px-8 py-3 bg-[var(--color-primary)] rounded-md font-bold text-white w-full text-center hover:bg-[#e68a00] transition-colors"
             >
-              Join Club
+              Join the Builders
             </a>
           </div>
         </div>

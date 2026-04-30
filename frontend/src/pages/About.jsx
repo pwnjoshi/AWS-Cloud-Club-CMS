@@ -41,10 +41,10 @@ export default function About() {
               <h2 className="text-2xl font-bold text-white font-display tracking-wide">Who We Are</h2>
             </div>
             <p className="text-gray-300 text-lg leading-relaxed">
-              <strong className="text-white">Founded in 2025</strong>, AWS Cloud Club GEU is a student-led initiative dedicated to mastering Amazon Web Services. We bridge the gap between theory and practice, empowering builders to create real-world cloud solutions.
+              <strong className="text-white">Founded in 2025</strong>, AWS Student Builder Group GEU is a student-led initiative dedicated to building real-world solutions with Amazon Web Services, AI, and full-stack development. We bridge the gap between theory and practice, empowering builders to create and ship impactful projects.
             </p>
             <p className="text-gray-400 leading-relaxed">
-              More than just a club, we are a movement. Whether you're a beginner writing your first Lambda function or a pro architecting serverless applications, join us to innovate, hack, and grow your career with the power of the Cloud.
+              More than just a group, we are a movement. Whether you're a beginner writing your first Lambda function or a pro architecting serverless applications, join us to innovate, hack, and grow your career with the power of Cloud, AI, and modern development.
             </p>
           </div>
 
@@ -117,7 +117,7 @@ export default function About() {
                         </div>
                         <p className="text-gray-300 italic mb-4">"MIEEE PES | Academician | Data Science | ML | NLP | GenAI | AWS Cloud"</p>
                         <p className="text-gray-400 leading-relaxed max-w-3xl">
-                             The backbone of our technical excellence. Dr. Kumar provides the strategic academic direction ensuring our club remains at the forefront of technological innovation and pedagogical standards at GEU.
+                             The backbone of our technical excellence. Dr. Kumar provides the strategic academic direction ensuring our group remains at the forefront of technological innovation and pedagogical standards at GEU.
                         </p>
                     </div>
                 </div>
@@ -134,12 +134,12 @@ export default function About() {
                              </h3>
                          </div>
                          <p className="text-gray-400 leading-relaxed mb-6">
-                                Welcome to the AWS Cloud Club at Graphic Era University. Our mission is concise but ambitious: to forge a community of cloud-native builders ready to lead the industry. We are here to learn, fail, and succeed—together.
+                                Welcome to the AWS Student Builder Group at Graphic Era University. Our mission is concise but ambitious: to forge a community of cloud-native builders ready to lead the industry. We are here to learn, build, ship, and succeed—together.
                          </p>
                          <div className="flex items-center gap-3 justify-center md:justify-start border-t border-white/5 pt-4">
                             <div>
                                 <p className="text-white font-bold">Pawan Joshi</p>
-                                <p className="text-gray-500 text-sm">Cloud Captain, GEU Chapter</p>
+                                <p className="text-gray-500 text-sm">Student Builder Group Lead, GEU Chapter</p>
                             </div>
                          </div>
                     </div>

@@ -48,7 +48,7 @@ export default function Verify() {
             Member Verification
           </p>
           <h1 className="mt-3 text-2xl sm:text-3xl md:text-4xl font-bold font-display tracking-tight text-white leading-tight">
-            Verify AWS Cloud Club ID
+            Verify AWS Student Builder Group ID
           </h1>
           <p className="mt-2 text-sm md:text-base text-gray-400 max-w-lg mx-auto">
             Scan QR or enter a member ID. Built for quick checks on mobile and event desk.
