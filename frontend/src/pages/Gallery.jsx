@@ -42,7 +42,7 @@ export default function Gallery() {
                         Our <span className="text-[var(--color-primary)]">Moments</span>
                     </h1>
                     <p className="text-lg text-gray-400 max-w-2xl mx-auto leading-relaxed animate-slide-up delay-100 mb-10">
-                        Capturing the cloud journey at Graphic Era University. Explore our past events, workshops, and community gatherings that define our spirit.
+                        Capturing the builder journey at Graphic Era University. Explore our past events, workshops, and community gatherings that define our spirit.
                     </p>
                 </div>
             </section>

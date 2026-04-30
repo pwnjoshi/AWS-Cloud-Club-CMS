@@ -68,27 +68,27 @@ export default function Home() {
             <div className="space-y-8">
               <a href="/assets/handbook.pdf" target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-2 px-3 py-1.5 rounded-md bg-white/5 border border-white/10 hover:border-white/20 transition-colors cursor-pointer animate-fade-in group">
                 <span className="w-1.5 h-1.5 rounded-full bg-[var(--color-accent)] animate-pulse"></span>
-                <span className="text-xs font-medium text-gray-300 group-hover:text-white transition-colors">Read the Official Club Handbook</span>
+                <span className="text-xs font-medium text-gray-300 group-hover:text-white transition-colors">Read the Official Handbook</span>
                 <ArrowRight className="w-3 h-3 text-gray-400 group-hover:text-white transition-colors" />
               </a>
               
               <h1 className="text-4xl md:text-5xl lg:text-[3.5rem] xl:text-6xl font-bold font-display animate-slide-up leading-tight tracking-tight text-white">
-                Learn. Build. Network. <br />
-                <span className="text-[var(--color-primary)]">Be Cloud Ready.</span>
+                Learn. Build. Ship. <br />
+                <span className="text-[var(--color-primary)]">Become a Builder.</span>
               </h1>
               
               <p className="text-lg text-gray-400 max-w-lg leading-relaxed animate-slide-up delay-100">
-                Join the premier community for cloud enthusiasts at Graphic Era University (GEU). Master AWS, ship scalable projects, and fast-track your career.
+                Join the premier builder community at Graphic Era University. Learn cloud, AI, and full-stack development while building real-world projects and shipping impactful solutions.
               </p>
 
               <div className="flex flex-col sm:flex-row gap-4 animate-slide-up delay-200">
                 <a 
-                   href="https://www.meetup.com/aws-cloud-club-at-graphic-era/" 
+                   href="https://www.meetup.com/aws-sbg-at-graphic-era/" 
                    target="_blank" 
                    rel="noopener noreferrer"
                    className="px-6 py-3 bg-white text-black hover:bg-gray-200 rounded-lg font-semibold shadow-lg shadow-white/5 transition-all hover:-translate-y-0.5 text-center text-sm flex items-center justify-center gap-2"
                 >
-                  Join the Club <ExternalLink className="w-4 h-4" />
+                  Join the Builders <ExternalLink className="w-4 h-4" />
                 </a>
                 <Link to="/events" className="px-6 py-3 bg-white/5 border border-white/10 rounded-lg font-semibold text-white hover:bg-white/10 hover:border-white/20 transition-all text-center flex items-center justify-center gap-2 group text-sm">
                   <Calendar className="w-4 h-4 group-hover:text-[var(--color-primary)] transition-colors" />
@@ -128,21 +128,21 @@ export default function Home() {
                   <div className="flex gap-2">
                     <span className="text-[var(--color-primary)] font-bold">➜</span>
                     <span className="text-[var(--color-accent)] font-bold">~</span>
-                    <span className="text-gray-300">aws cloud-club init --region geu</span>
+                    <span className="text-gray-300">aws builder-group init --region geu</span>
                   </div>
-                  <div className="text-gray-500 pl-4">Initializing new chapter environment...</div>
+                  <div className="text-gray-500 pl-4">Initializing builder environment...</div>
                   <div className="text-gray-500 pl-4">Allocating resources [██████████] 100%</div>
-                  <div className="text-emerald-400 pl-4">✓ Cloud Club GEU successfully deployed</div>
+                  <div className="text-emerald-400 pl-4">✓ Student Builder Group GEU successfully deployed</div>
                   
                   <div className="flex gap-2 mt-4">
                      <span className="text-[var(--color-primary)] font-bold">➜</span>
                      <span className="text-[var(--color-accent)] font-bold">~</span>
-                     <span className="text-gray-300">aws cloud-club info</span>
+                     <span className="text-gray-300">aws builder-group info</span>
                   </div>
                   <div className="pl-4 text-gray-300 font-mono text-sm leading-relaxed">
                     <div className="flex gap-2"><span className="text-[var(--color-primary)]">Region:</span> <span>ap-south-1</span></div>
                     <div className="flex gap-2"><span className="text-[var(--color-primary)]">Status:</span> <span className="text-emerald-400">Active</span></div>
-                    <div className="flex gap-2"><span className="text-[var(--color-primary)]">Mission:</span> <span>Learn. Build. Network.</span></div>
+                    <div className="flex gap-2"><span className="text-[var(--color-primary)]">Mission:</span> <span>Learn. Build. Ship.</span></div>
                   </div>
 
                   <div className="flex gap-2 animate-pulse mt-4">
@@ -165,9 +165,9 @@ export default function Home() {
               <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[var(--color-primary)]/10 border border-[var(--color-primary)]/20 text-[var(--color-primary)] text-xs font-bold uppercase tracking-wider mb-4">
                 New Release
               </div>
-              <h2 className="text-3xl font-bold font-display mb-4 text-white">AWS Cloud Club GEU Handbook</h2>
+              <h2 className="text-3xl font-bold font-display mb-4 text-white">AWS Student Builder Group GEU Handbook</h2>
               <p className="text-gray-400 text-lg mb-6">
-                Everything you need to know about our community, core values, learning paths, and how you can make the most out of your cloud journey with us.
+                Everything you need to know about our community, core values, learning paths, and how you can make the most out of your builder journey with us. Focused on building real-world projects across cloud, AI, and development.
               </p>
               <a 
                 href="/assets/handbook.pdf" 
@@ -190,7 +190,7 @@ export default function Home() {
                   <div className="text-center p-6">
                     <BookOpen className="w-16 h-16 text-[var(--color-primary)] mx-auto mb-4 opacity-50" />
                     <div className="text-xl font-bold text-white font-display">Official Handbook</div>
-                    <div className="text-sm text-gray-500 mt-2">AWS Cloud Club GEU</div>
+                    <div className="text-sm text-gray-500 mt-2">AWS Student Builder Group GEU</div>
                   </div>
                 </div>
               </div>
@@ -205,7 +205,7 @@ export default function Home() {
           <div className="text-center mb-12">
             <h2 className="text-3xl font-bold font-display mb-4 text-white">Guided by Experts</h2>
             <p className="text-gray-400 max-w-2xl mx-auto">
-              Meet the visionaries leading the AWS Cloud Club at Graphic Era University.
+              Meet the visionaries leading the AWS Student Builder Group at Graphic Era University.
             </p>
           </div>
           
@@ -225,7 +225,7 @@ export default function Home() {
               </div>
             </div>
 
-            {/* Cloud Captain */}
+            {/* Student Builder Group Lead */}
             <div className="glass-panel border border-white/10 rounded-2xl p-6 flex items-center gap-6 bg-[#0a0e17]/80 hover:bg-[#1e293b]/40 transition-all duration-300 hover:-translate-y-1 shadow-xl">
               <img 
                 src="/team/pawan_joshi.jpg" 
@@ -234,9 +234,9 @@ export default function Home() {
                 onError={(e) => { e.target.src = 'https://images.unsplash.com/photo-1531427186611-ecfd6d936c79?auto=format&fit=crop&q=80&w=800' }}
               />
               <div>
-                <div className="text-[10px] font-bold uppercase tracking-wider text-[var(--color-accent)] mb-1">Cloud Captain</div>
+                <div className="text-[10px] font-bold uppercase tracking-wider text-[var(--color-accent)] mb-1">Student Builder Group Lead</div>
                 <h3 className="text-xl font-bold text-white font-display">Pawan Joshi</h3>
-                <p className="text-sm text-gray-400 mt-1">Cloud Enthusiast</p>
+                <p className="text-sm text-gray-400 mt-1">Builder & Cloud Enthusiast</p>
               </div>
             </div>
           </div>
@@ -266,9 +266,9 @@ export default function Home() {
       <section className="py-12 md:py-20 relative overflow-hidden reveal-on-scroll opacity-0 translate-y-8 transition-all duration-700">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
           <div className="text-center mb-16">
-            <h2 className="text-3xl font-bold font-display mb-4">Why Join AWS Cloud Club?</h2>
+            <h2 className="text-3xl font-bold font-display mb-4">Why Join AWS Student Builder Group?</h2>
             <p className="text-gray-400 max-w-2xl mx-auto">
-              We provide a platform for students to learn, build, and grow their cloud computing skills through hands-on experience and mentorship.
+              We provide a platform for students to learn, build, and ship real-world projects across cloud, AI, and full-stack development through hands-on experience and mentorship.
             </p>
           </div>
 
@@ -276,19 +276,19 @@ export default function Home() {
             <FeatureCard 
               icon={<Terminal className="w-6 h-6 text-white" />}
               title="Hands-on Workshops"
-              description="Get your hands dirty with real AWS services. From EC2 to Lambda, we cover it all through practical sessions."
+              description="Get your hands dirty with real AWS services, AI tools, and full-stack frameworks. From EC2 to Lambda to LLMs, we cover it all through practical build sessions."
               color="from-[var(--color-accent)] to-[#42A5F5]"
             />
             <FeatureCard 
               icon={<Users className="w-6 h-6 text-white" />}
-              title="Networking"
-              description="Connect with industry experts, AWS Community Builders, and like-minded peers to grow your professional network."
+              title="Build & Ship Products"
+              description="Go beyond tutorials. Build real applications, participate in hackathons, and ship products that solve actual problems — with mentorship from industry experts."
               color="from-[var(--color-primary)] to-[#FFA726]"
             />
             <FeatureCard 
               icon={<Target className="w-6 h-6 text-white" />}
-              title="Career Growth"
-              description="Get guidance on AWS certifications, internships, and career paths in cloud computing."
+              title="Project-Based Learning"
+              description="Build real applications, not just tutorials. Get guidance on AWS certifications, contribute to open-source projects, and fast-track your career in tech."
               color="from-[#AB47BC] to-[#CE93D8]"
             />
           </div>
