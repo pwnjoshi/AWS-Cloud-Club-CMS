@@ -1,12 +1,12 @@
-# ☁️ AWS Cloud Club - Graphic Era University
+# 🚀 AWS Student Builder Group - Graphic Era University
 
 [![React](https://img.shields.io/badge/Frontend-React_19-61DAFB?style=for-the-badge&logo=react&logoColor=black)](https://react.dev/)
 [![Vite](https://img.shields.io/badge/Build-Vite-646CFF?style=for-the-badge&logo=vite&logoColor=white)](https://vitejs.dev/)
 [![Tailwind CSS](https://img.shields.io/badge/Styling-Tailwind_CSS_4-38B2AC?style=for-the-badge&logo=tailwind-css&logoColor=white)](https://tailwindcss.com/)
-[![AWS](https://img.shields.io/badge/Community-AWS_Cloud_Club-FF9900?style=for-the-badge&logo=amazon-aws&logoColor=white)](https://aws.amazon.com/)
+[![AWS](https://img.shields.io/badge/Community-AWS_Student_Builder_Group-FF9900?style=for-the-badge&logo=amazon-aws&logoColor=white)](https://aws.amazon.com/)
 
-> **The official digital hub for the AWS Cloud Club at Graphic Era Deemed to be University.**  
-> Bridging the gap between theory and practice, empowering students to build on the Cloud.
+> **The official digital hub for the AWS Student Builder Group at Graphic Era Deemed to be University.**  
+> Learn cloud, AI, and full-stack development while building real-world projects and shipping impactful solutions.
 
 ---
 
@@ -60,7 +60,7 @@ npm run dev
 ## 📂 Project Structure
 
 ```bash
-AWS-Cloud-Club-GEU/
+AWS-Student-Builder-Group-GEU/
 ├── frontend/             # 🎨 The Heart of the App
 │   ├── public/           # Static Assets (Images, Icons, Sitemap)
 │   └── src/
@@ -128,5 +128,6 @@ We welcome contributions from the community!
 
 <div align="center">
   <p>Made with ❤️ by Pawan Joshi</p>
-  <p>© 2025-2026 AWS Cloud Club GEU</p>
+  <p>© 2025-2026 AWS Student Builder Group GEU</p>
+  <p><em>Same Community. Bigger Vision.</em></p>
 </div>
