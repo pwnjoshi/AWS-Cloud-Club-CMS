@@ -2,7 +2,11 @@ import { useEffect, useState, useCallback } from 'react';
 import { useParams } from 'react-router-dom';
 import { api } from '../lib/api';
 import { PageHeader, Card, Badge, Button, Input, Spinner } from '../components/UI';
-import { Calendar, MapPin, Star, ExternalLink, Cloud, Copy, Check, AlertTriangle, Clock, Navigation } from 'lucide-react';
+import { Calendar, MapPin, Star, ExternalLink, Cloud, Copy, Check, AlertTriangle, Clock, Navigation, QrCode } from 'lucide-react';
+import { useState as useStateLazy } from 'react';
+
+// Lazy load QR scanner
+let QRScannerComponent = null;
 
 export default function EventDetail() {
   const { id } = useParams();
@@ -20,6 +24,7 @@ export default function EventDetail() {
   const [copied, setCopied] = useState('');
   const [geoStatus, setGeoStatus] = useState(''); // '' | 'getting' | 'got' | 'denied'
   const [userCoords, setUserCoords] = useState(null);
+  const [showScanner, setShowScanner] = useState(false);
 
   useEffect(() => {
     Promise.all([
@@ -169,6 +174,8 @@ export default function EventDetail() {
             <h3 className="text-sm font-bold text-white mb-3">Event Check-in</h3>
             {attended ? (
               <div className="flex items-center gap-2 text-emerald-400 text-sm"><Check className="w-4 h-4" /> You've checked in</div>
+            ) : !checkinStatus?.eventActive ? (
+              <p className="text-xs text-gray-500">This event has ended. Check-in is no longer available.</p>
             ) : !checkinStatus?.checkinActive ? (
               <p className="text-xs text-gray-500">Check-in is not active for this event yet.</p>
             ) : (
@@ -192,6 +199,28 @@ export default function EventDetail() {
                   </div>
                 )}
 
+                {/* QR Scan Button */}
+                <Button
+                  variant="secondary"
+                  size="sm"
+                  className="w-full"
+                  onClick={async () => {
+                    if (!QRScannerComponent) {
+                      const mod = await import('../components/QRScanner');
+                      QRScannerComponent = mod.default;
+                    }
+                    setShowScanner(true);
+                  }}
+                >
+                  <QrCode className="w-4 h-4" /> Scan QR Code
+                </Button>
+
+                <div className="flex items-center gap-3">
+                  <div className="flex-1 h-px bg-white/10" />
+                  <span className="text-[10px] text-gray-500">or enter code</span>
+                  <div className="flex-1 h-px bg-white/10" />
+                </div>
+
                 <form onSubmit={handleCheckin}>
                   <Input placeholder="Enter 6-digit code" value={otpCode} onChange={e => setOtpCode(e.target.value)} required maxLength={6} />
                   <p className="text-[10px] text-gray-500 mt-1 mb-3">The code rotates every {checkinStatus.geoRequired ? `few seconds. You must be within ${checkinStatus.geoRadiusMeters}m of the venue.` : 'few seconds. Enter the code shown at the venue.'}</p>
@@ -212,7 +241,7 @@ export default function EventDetail() {
           </Card>
 
           {/* AWS Lab Access */}
-          {labStatus?.available && (
+          {labStatus?.available && checkinStatus?.eventActive && (
             <Card className="border-[var(--color-accent)]/20">
               <div className="flex items-center gap-2 mb-3">
                 <Cloud className="w-4 h-4 text-[var(--color-accent)]" />
@@ -238,6 +267,32 @@ export default function EventDetail() {
           )}
         </div>
       </div>
+
+      {/* QR Scanner Modal */}
+      {showScanner && QRScannerComponent && (
+        <QRScannerComponent
+          onScan={(data) => {
+            setShowScanner(false);
+            if (data.eventId === id) {
+              setOtpCode(data.code);
+              const body = { eventId: id, code: data.code };
+              if (checkinStatus?.geoRequired && userCoords) {
+                body.latitude = userCoords.latitude;
+                body.longitude = userCoords.longitude;
+              }
+              setCheckinLoading(true);
+              api.post('/attendance/checkin', body)
+                .then(() => { setAttended(true); setMsg('Checked in via QR!'); setMsgType('success'); })
+                .catch(err => { setMsg(err.message); setMsgType('error'); })
+                .finally(() => setCheckinLoading(false));
+            } else {
+              setMsg('QR code is for a different event');
+              setMsgType('error');
+            }
+          }}
+          onClose={() => setShowScanner(false)}
+        />
+      )}
     </div>
   );
 }

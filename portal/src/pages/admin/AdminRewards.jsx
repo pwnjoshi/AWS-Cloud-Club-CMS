@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { api } from '../../lib/api';
 import { PageHeader, Card, Badge, Button, Input, Textarea, Modal, Spinner, EmptyState } from '../../components/UI';
-import { Gift, Plus, Star, Trash2, EyeOff, Eye } from 'lucide-react';
+import { Gift, Plus, Star, EyeOff, Eye, Trash2 } from 'lucide-react';
 
 export default function AdminRewards() {
   const [rewards, setRewards] = useState([]);
@@ -10,7 +10,7 @@ export default function AdminRewards() {
   const [form, setForm] = useState({ title: '', description: '', pointsCost: 100, stock: -1 });
 
   const fetchRewards = () => {
-    api.get('/rewards').then(d => setRewards(d.rewards || [])).catch(() => {}).finally(() => setLoading(false));
+    api.get('/rewards/all').then(d => setRewards(d.rewards || [])).catch(() => {}).finally(() => setLoading(false));
   };
 
   useEffect(() => { fetchRewards(); }, []);
@@ -25,12 +25,6 @@ export default function AdminRewards() {
 
   const toggleActive = async (id, isActive) => {
     await api.put(`/rewards/${id}`, { isActive: !isActive });
-    fetchRewards();
-  };
-
-  const handleDelete = async (id) => {
-    if (!confirm('Delete this reward? This cannot be undone.')) return;
-    await api.put(`/rewards/${id}`, { isActive: false });
     fetchRewards();
   };
 
@@ -54,13 +48,15 @@ export default function AdminRewards() {
               <div className="flex items-center gap-2 shrink-0">
                 <Badge variant="primary"><Star className="w-3 h-3 mr-0.5" />{r.pointsCost}</Badge>
                 <Badge variant={r.isActive ? 'success' : 'danger'}>{r.isActive ? 'Active' : 'Disabled'}</Badge>
-                <Badge>{r.stock === -1 ? '∞' : r.stock}</Badge>
+                <Badge>{r.stock === -1 ? '∞' : `${r.stock} left`}</Badge>
               </div>
               <div className="flex gap-1 shrink-0">
-                <Button size="sm" variant="ghost" onClick={() => toggleActive(r.id, r.isActive)} title={r.isActive ? 'Disable' : 'Enable'}>
-                  {r.isActive ? <EyeOff className="w-3.5 h-3.5" /> : <Eye className="w-3.5 h-3.5" />}
+                <Button size="sm" variant={r.isActive ? 'danger' : 'secondary'} onClick={() => toggleActive(r.id, r.isActive)}>
+                  {r.isActive ? <><EyeOff className="w-3.5 h-3.5" /> Disable</> : <><Eye className="w-3.5 h-3.5" /> Enable</>}
                 </Button>
-                <Button size="sm" variant="ghost" onClick={() => handleDelete(r.id)} title="Delete"><Trash2 className="w-3.5 h-3.5 text-red-400" /></Button>
+                <Button size="sm" variant="ghost" onClick={async () => { if (confirm('Delete this reward permanently?')) { await api.delete(`/rewards/${r.id}`); fetchRewards(); } }} title="Delete">
+                  <Trash2 className="w-3.5 h-3.5 text-red-400" />
+                </Button>
               </div>
             </Card>
           ))}

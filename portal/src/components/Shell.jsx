@@ -1,10 +1,11 @@
+import { useState, useEffect } from 'react';
 import { NavLink, useLocation } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import {
   LayoutDashboard, Calendar, ClipboardCheck, Star, Trophy, BookOpen, Award,
-  Users, Gift, User, LogOut, Shield, Menu, X, ChevronDown, Cloud, Medal, PenTool, Mail
+  Users, Gift, User, LogOut, Shield, Menu, X, ChevronDown, Cloud, Medal, PenTool, Mail,
+  HelpCircle, Lightbulb
 } from 'lucide-react';
-import { useState } from 'react';
 
 const memberNav = [
   { to: '/', icon: LayoutDashboard, label: 'Dashboard' },
@@ -18,6 +19,8 @@ const memberNav = [
   { to: '/rewards', icon: Gift, label: 'Rewards' },
   { to: '/badges', icon: Medal, label: 'Badges' },
   { to: '/blogs', icon: PenTool, label: 'Blogs' },
+  { to: '/suggestions', icon: Lightbulb, label: 'Suggest Event' },
+  { to: '/support', icon: HelpCircle, label: 'Help & Support' },
 ];
 
 const adminNav = [
@@ -30,6 +33,8 @@ const adminNav = [
   { to: '/admin/rewards', icon: Gift, label: 'Rewards' },
   { to: '/admin/aws-lab', icon: Cloud, label: 'AWS Lab' },
   { to: '/admin/blogs', icon: PenTool, label: 'Blog Reviews' },
+  { to: '/admin/suggestions', icon: Lightbulb, label: 'Suggestions' },
+  { to: '/admin/support', icon: HelpCircle, label: 'Support' },
   { to: '/admin/email', icon: Mail, label: 'Bulk Email' },
   { to: '/admin/audit', icon: ClipboardCheck, label: 'Audit Log' },
 ];
@@ -47,10 +52,34 @@ export default function Shell({ children }) {
   const { user, logout } = useAuth();
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [adminExpanded, setAdminExpanded] = useState(false);
+  const [maintenance, setMaintenance] = useState(false);
+  const [regDisabled, setRegDisabled] = useState(false);
   const location = useLocation();
 
   const isAdmin = user?.role === 'ADMIN';
   const isAdminPage = location.pathname.startsWith('/admin');
+
+  useEffect(() => {
+    if (!isAdmin) return;
+    import('../lib/api').then(({ api }) => {
+      api.get('/admin/maintenance').then(d => setMaintenance(d.enabled)).catch(() => {});
+      api.get('/admin/registration').then(d => setRegDisabled(d.disabled)).catch(() => {});
+    });
+  }, [isAdmin]);
+
+  const toggleMaintenance = async () => {
+    const { api } = await import('../lib/api');
+    const newState = !maintenance;
+    await api.post('/admin/maintenance', { enabled: newState });
+    setMaintenance(newState);
+  };
+
+  const toggleRegistration = async () => {
+    const { api } = await import('../lib/api');
+    const newState = !regDisabled;
+    await api.post('/admin/registration', { disabled: newState });
+    setRegDisabled(newState);
+  };
 
   return (
     <div className="min-h-screen flex bg-[var(--color-bg)]">
@@ -77,6 +106,18 @@ export default function Shell({ children }) {
               {adminExpanded && adminNav.map(item => (
                 <SidebarLink key={item.to} {...item} />
               ))}
+              {adminExpanded && (
+                <button onClick={toggleMaintenance} className={`flex items-center gap-3 px-3 py-2 rounded-lg text-sm font-medium w-full transition-all ${maintenance ? 'bg-red-500/10 text-red-400' : 'text-gray-400 hover:text-white hover:bg-white/5'}`}>
+                  <Shield className="w-4 h-4 shrink-0" />
+                  <span>{maintenance ? '🔴 Maintenance ON' : 'Maintenance Mode'}</span>
+                </button>
+              )}
+              {adminExpanded && (
+                <button onClick={toggleRegistration} className={`flex items-center gap-3 px-3 py-2 rounded-lg text-sm font-medium w-full transition-all ${regDisabled ? 'bg-amber-500/10 text-amber-400' : 'text-gray-400 hover:text-white hover:bg-white/5'}`}>
+                  <Users className="w-4 h-4 shrink-0" />
+                  <span>{regDisabled ? '🟡 Registration CLOSED' : 'Registration Open'}</span>
+                </button>
+              )}
             </>
           )}
         </nav>

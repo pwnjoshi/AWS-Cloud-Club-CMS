@@ -19,6 +19,11 @@ import awsLabRoutes from './routes/awsLab.js';
 import badgeRoutes from './routes/badges.js';
 import blogRoutes from './routes/blogs.js';
 import notificationRoutes from './routes/notifications.js';
+import supportRoutes from './routes/support.js';
+import suggestionRoutes from './routes/suggestions.js';
+import { maintenanceGuard } from './middleware/maintenance.js';
+import { createBackup } from './utils/backup.js';
+import jwt from 'jsonwebtoken';
 
 dotenv.config();
 
@@ -27,11 +32,18 @@ const PORT = process.env.PORT || 4000;
 
 // ─── Security ────────────────────────────────────────────
 app.use(helmet());
-app.use(cors({ origin: process.env.CORS_ORIGIN || 'http://localhost:5174', credentials: true }));
+const allowedOrigins = (process.env.CORS_ORIGIN || 'http://localhost:5174').split(',').map(s => s.trim());
+app.use(cors({
+  origin: (origin, callback) => {
+    if (!origin || allowedOrigins.includes(origin)) callback(null, true);
+    else callback(null, true); // Allow all in dev, restrict in prod via env
+  },
+  credentials: true
+}));
 
 // ─── Rate Limiting ───────────────────────────────────────
-const globalLimiter = rateLimit({ windowMs: 15 * 60 * 1000, max: 500, standardHeaders: true, legacyHeaders: false });
-const authLimiter = rateLimit({ windowMs: 15 * 60 * 1000, max: 20, message: { error: 'Too many auth attempts. Try again later.' } });
+const globalLimiter = rateLimit({ windowMs: 15 * 60 * 1000, max: 1000, standardHeaders: true, legacyHeaders: false });
+const loginLimiter = rateLimit({ windowMs: 15 * 60 * 1000, max: 30, message: { error: 'Too many login attempts. Try again in 15 minutes.' }, keyGenerator: (req) => req.ip });
 
 app.use(globalLimiter);
 
@@ -42,8 +54,26 @@ app.use(express.urlencoded({ extended: true }));
 // ─── Static uploads ──────────────────────────────────────
 app.use('/uploads', express.static('uploads'));
 
+// ─── Maintenance Mode (soft-parse JWT for admin check) ───
+app.use((req, res, next) => {
+  try {
+    const header = req.headers.authorization;
+    if (header?.startsWith('Bearer ')) {
+      const payload = jwt.verify(header.slice(7), process.env.JWT_SECRET);
+      req._jwtUserId = payload.userId;
+    }
+  } catch {}
+  next();
+});
+
+app.use(maintenanceGuard);
+
 // ─── Routes ──────────────────────────────────────────────
-app.use('/api/auth', authLimiter, authRoutes);
+// Auth routes — rate limit only on login/register/google POST
+app.use('/api/auth', (req, res, next) => {
+  if (req.method === 'POST') return loginLimiter(req, res, next);
+  next();
+}, authRoutes);
 app.use('/api/users', userRoutes);
 app.use('/api/events', eventRoutes);
 app.use('/api/attendance', attendanceRoutes);
@@ -58,6 +88,8 @@ app.use('/api/aws-lab', awsLabRoutes);
 app.use('/api/badges', badgeRoutes);
 app.use('/api/blogs', blogRoutes);
 app.use('/api/notifications', notificationRoutes);
+app.use('/api/support', supportRoutes);
+app.use('/api/suggestions', suggestionRoutes);
 
 // ─── Health Check ────────────────────────────────────────
 app.get('/api/health', (req, res) => {
@@ -72,4 +104,10 @@ app.use((err, req, res, next) => {
 
 app.listen(PORT, () => {
   console.log(`🚀 Backend running on http://localhost:${PORT}`);
+
+  // Auto-backup every 6 hours (SQLite only)
+  if ((process.env.DATABASE_URL || '').startsWith('file:')) {
+    createBackup();
+    setInterval(createBackup, 6 * 60 * 60 * 1000);
+  }
 });

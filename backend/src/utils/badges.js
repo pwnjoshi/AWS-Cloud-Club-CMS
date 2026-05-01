@@ -5,12 +5,18 @@ export const BADGE_DEFINITIONS = [
   { slug: 'first-event', name: 'First Event', description: 'Attended your first event', icon: '🎯', category: 'EVENT', criteria: JSON.stringify({ type: 'attendance_count', threshold: 1 }), pointsReward: 10 },
   { slug: 'regular-builder', name: 'Regular Builder', description: 'Attended 5 events', icon: '🔥', category: 'EVENT', criteria: JSON.stringify({ type: 'attendance_count', threshold: 5 }), pointsReward: 25 },
   { slug: 'power-builder', name: 'Power Builder', description: 'Attended 10 events', icon: '⚡', category: 'EVENT', criteria: JSON.stringify({ type: 'attendance_count', threshold: 10 }), pointsReward: 50 },
+  { slug: 'event-veteran', name: 'Event Veteran', description: 'Attended 25 events', icon: '🎖️', category: 'EVENT', criteria: JSON.stringify({ type: 'attendance_count', threshold: 25 }), pointsReward: 100 },
   { slug: 'blog-writer', name: 'Blog Writer', description: 'Published an approved blog post', icon: '📝', category: 'COMMUNITY', criteria: JSON.stringify({ type: 'blog_approved', threshold: 1 }), pointsReward: 30 },
   { slug: 'prolific-writer', name: 'Prolific Writer', description: 'Published 5 approved blog posts', icon: '✍️', category: 'COMMUNITY', criteria: JSON.stringify({ type: 'blog_approved', threshold: 5 }), pointsReward: 50 },
   { slug: 'top-contributor', name: 'Top Contributor', description: 'Reached 500 points', icon: '🌟', category: 'ACHIEVEMENT', criteria: JSON.stringify({ type: 'points_total', threshold: 500 }), pointsReward: 0 },
+  { slug: 'point-master', name: 'Point Master', description: 'Reached 2000 points', icon: '💎', category: 'ACHIEVEMENT', criteria: JSON.stringify({ type: 'points_total', threshold: 2000 }), pointsReward: 0 },
+  { slug: 'referral-starter', name: 'Referral Starter', description: '3 successful referrals', icon: '🤝', category: 'COMMUNITY', criteria: JSON.stringify({ type: 'referral_count', threshold: 3 }), pointsReward: 20 },
   { slug: 'referral-champion', name: 'Referral Champion', description: '10 successful referrals', icon: '🚀', category: 'COMMUNITY', criteria: JSON.stringify({ type: 'referral_count', threshold: 10 }), pointsReward: 50 },
   { slug: 'certified', name: 'AWS Certified', description: 'Earned an AWS certification', icon: '🎓', category: 'CERTIFICATION', criteria: JSON.stringify({ type: 'cert_type', value: 'AWS_CERT' }), pointsReward: 0 },
   { slug: 'hackathon-winner', name: 'Hackathon Winner', description: 'Won a hackathon', icon: '🏆', category: 'ACHIEVEMENT', criteria: JSON.stringify({ type: 'manual' }), pointsReward: 0 },
+  { slug: 'early-adopter', name: 'Early Adopter', description: 'One of the first 50 members', icon: '🌱', category: 'COMMUNITY', criteria: JSON.stringify({ type: 'manual' }), pointsReward: 15 },
+  { slug: 'speaker', name: 'Speaker', description: 'Gave a talk or presentation', icon: '🎤', category: 'COMMUNITY', criteria: JSON.stringify({ type: 'manual' }), pointsReward: 0 },
+  { slug: 'open-source', name: 'Open Source Contributor', description: 'Contributed to an open source project', icon: '🔓', category: 'ACHIEVEMENT', criteria: JSON.stringify({ type: 'manual' }), pointsReward: 0 },
 ];
 
 /**

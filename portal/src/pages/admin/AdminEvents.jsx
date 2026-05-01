@@ -1,13 +1,17 @@
 import { useEffect, useState, useRef, useCallback } from 'react';
 import { api } from '../../lib/api';
 import { PageHeader, Card, Badge, Button, Input, Textarea, Modal, Spinner } from '../../components/UI';
-import { Calendar, Plus, Radio, Square, MapPin, Clock, Users, Settings } from 'lucide-react';
+import { Calendar, Plus, Radio, Square, MapPin, Clock, Users, Settings, UserPlus } from 'lucide-react';
+import MemberSearch from '../../components/MemberSearch';
 
 export default function AdminEvents() {
   const [events, setEvents] = useState([]);
   const [loading, setLoading] = useState(true);
   const [showCreate, setShowCreate] = useState(false);
-  const [checkinModal, setCheckinModal] = useState(null); // eventId
+  const [checkinModal, setCheckinModal] = useState(null);
+  const [addAttendeeModal, setAddAttendeeModal] = useState(null); // eventId
+  const [addAttendeeUser, setAddAttendeeUser] = useState('');
+  const [addAttendeeMsg, setAddAttendeeMsg] = useState('');
   const [form, setForm] = useState({ title: '', description: '', date: '', location: '', registrationLink: '', pointsReward: 50 });
 
   const fetchEvents = () => {
@@ -39,9 +43,14 @@ export default function AdminEvents() {
                 <p className="text-sm font-semibold text-white truncate">{ev.title}</p>
                 <p className="text-xs text-gray-500">{new Date(ev.date).toLocaleDateString()} · {ev._count?.attendances || 0} attended</p>
               </div>
-              <Button size="sm" variant="secondary" onClick={() => setCheckinModal(ev.id)}>
-                <Radio className="w-3.5 h-3.5" /> Check-in
-              </Button>
+              <div className="flex gap-1 shrink-0">
+                <Button size="sm" variant="secondary" onClick={() => setCheckinModal(ev.id)}>
+                  <Radio className="w-3.5 h-3.5" /> Check-in
+                </Button>
+                <Button size="sm" variant="ghost" onClick={() => { setAddAttendeeModal(ev.id); setAddAttendeeUser(''); setAddAttendeeMsg(''); }}>
+                  <UserPlus className="w-3.5 h-3.5" />
+                </Button>
+              </div>
             </Card>
           ))}
         </div>
@@ -63,6 +72,30 @@ export default function AdminEvents() {
       {/* Check-in Session Modal */}
       <Modal open={!!checkinModal} onClose={() => setCheckinModal(null)} title="Event Check-in">
         {checkinModal && <CheckinPanel eventId={checkinModal} />}
+      </Modal>
+
+      {/* Add Attendee Modal */}
+      <Modal open={!!addAttendeeModal} onClose={() => setAddAttendeeModal(null)} title="Add Attendee Manually">
+        <div className="space-y-3">
+          <p className="text-xs text-gray-400">Manually add a member to this event's attendance. Use this when a student couldn't scan the QR or enter the code.</p>
+          <MemberSearch value={addAttendeeUser} onChange={(id) => setAddAttendeeUser(id)} />
+          {addAttendeeMsg && <p className="text-xs text-emerald-400">{addAttendeeMsg}</p>}
+          <Button
+            className="w-full"
+            disabled={!addAttendeeUser}
+            onClick={async () => {
+              setAddAttendeeMsg('');
+              try {
+                await api.post('/attendance/manual', { userId: addAttendeeUser, eventId: addAttendeeModal });
+                setAddAttendeeMsg('Attendee added successfully! Points awarded.');
+                setAddAttendeeUser('');
+                fetchEvents();
+              } catch (err) { setAddAttendeeMsg(err.message); }
+            }}
+          >
+            <UserPlus className="w-4 h-4" /> Add Attendee
+          </Button>
+        </div>
       </Modal>
     </div>
   );

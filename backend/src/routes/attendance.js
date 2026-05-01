@@ -5,6 +5,7 @@ import { generateOTP } from '../utils/helpers.js';
 import { logAudit } from '../utils/audit.js';
 import { creditReferralIfEligible } from '../utils/referral.js';
 import { checkAndAwardBadges } from '../utils/badges.js';
+import { isEventActive } from '../utils/eventGuard.js';
 import QRCode from 'qrcode';
 
 const router = Router();
@@ -167,6 +168,12 @@ router.post('/checkin', authenticate, async (req, res, next) => {
       return res.status(400).json({ error: 'Event ID and code are required' });
     }
 
+    // Block check-in for past events
+    const active = await isEventActive(eventId);
+    if (!active) {
+      return res.status(400).json({ error: 'This event has ended. Check-in is no longer available.' });
+    }
+
     // Find active check-in session
     let session = await prisma.checkinSession.findUnique({ where: { eventId } });
 
@@ -247,12 +254,14 @@ router.get('/checkin-status/:eventId', authenticate, async (req, res, next) => {
     const attended = await prisma.attendance.findUnique({
       where: { userId_eventId: { userId: req.user.id, eventId: req.params.eventId } }
     });
+    const eventActive = await isEventActive(req.params.eventId);
 
     res.json({
       checkinActive: session?.isActive || false,
       geoRequired: session?.geoRequired || false,
       geoRadiusMeters: session?.geoRadiusMeters || 200,
       attended: !!attended,
+      eventActive,
     });
   } catch (err) {
     next(err);

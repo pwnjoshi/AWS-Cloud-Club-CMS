@@ -3,6 +3,7 @@ import { STSClient, AssumeRoleCommand } from '@aws-sdk/client-sts';
 import prisma from '../lib/prisma.js';
 import { authenticate, requireAdmin } from '../middleware/auth.js';
 import { logAudit } from '../utils/audit.js';
+import { isEventActive } from '../utils/eventGuard.js';
 import rateLimit from 'express-rate-limit';
 
 const router = Router();
@@ -206,6 +207,12 @@ router.get('/events/:eventId/status', authenticate, async (req, res, next) => {
 // ─── Student: Request AWS credentials ────────────────────
 router.post('/events/:eventId/request', authenticate, credentialLimiter, async (req, res, next) => {
   try {
+    // Block for past events
+    const active = await isEventActive(req.params.eventId);
+    if (!active) {
+      return res.status(400).json({ error: 'This event has ended. AWS Lab access is no longer available.' });
+    }
+
     const config = await prisma.awsLabConfig.findUnique({
       where: { eventId: req.params.eventId }
     });

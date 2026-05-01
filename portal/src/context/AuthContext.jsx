@@ -12,7 +12,7 @@ export function AuthProvider({ children }) {
       const token = localStorage.getItem('token');
       if (!token) { setLoading(false); return; }
       const data = await api.get('/auth/me');
-      setUser(data.user);
+      setUser(data.user); // user object includes mustResetPassword from /me
     } catch {
       localStorage.removeItem('token');
       setUser(null);
@@ -26,12 +26,24 @@ export function AuthProvider({ children }) {
   const login = async (email, password) => {
     const data = await api.post('/auth/login', { email, password });
     localStorage.setItem('token', data.token);
-    setUser(data.user);
+    if (data.mustResetPassword) {
+      // Set user but with the flag — App will show reset screen
+      setUser({ ...data.user, mustResetPassword: true });
+    } else {
+      setUser(data.user);
+    }
     return data.user;
   };
 
   const register = async (name, email, password, referralCode) => {
     const data = await api.post('/auth/register', { name, email, password, referralCode });
+    localStorage.setItem('token', data.token);
+    setUser(data.user);
+    return data.user;
+  };
+
+  const loginWithGoogle = async (credential, referralCode) => {
+    const data = await api.post('/auth/google', { credential, referralCode });
     localStorage.setItem('token', data.token);
     setUser(data.user);
     return data.user;
@@ -45,7 +57,7 @@ export function AuthProvider({ children }) {
   const refreshUser = fetchUser;
 
   return (
-    <AuthContext.Provider value={{ user, loading, login, register, logout, refreshUser }}>
+    <AuthContext.Provider value={{ user, loading, login, register, loginWithGoogle, logout, refreshUser }}>
       {children}
     </AuthContext.Provider>
   );

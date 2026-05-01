@@ -1,7 +1,8 @@
 import { useEffect, useState } from 'react';
 import { api } from '../lib/api';
-import { PageHeader, Card, Badge, Spinner, EmptyState } from '../components/UI';
-import { Star, TrendingUp, TrendingDown } from 'lucide-react';
+import { PageHeader, Card, Badge, Spinner, EmptyState, Button } from '../components/UI';
+import { Star, TrendingUp, TrendingDown, Gift } from 'lucide-react';
+import { Link } from 'react-router-dom';
 
 export default function Points() {
   const [data, setData] = useState(null);
@@ -16,9 +17,14 @@ export default function Points() {
   return (
     <div className="animate-in">
       <PageHeader title="Points" subtitle="Your reward points history" action={
-        <div className="text-right">
-          <p className="text-3xl font-bold text-[var(--color-primary)]">{data?.balance || 0}</p>
-          <p className="text-xs text-gray-400">Total Points</p>
+        <div className="flex items-center gap-3">
+          <div className="text-right">
+            <p className="text-3xl font-bold text-[var(--color-primary)]">{data?.balance || 0}</p>
+            <p className="text-xs text-gray-400">Total Points</p>
+          </div>
+          <Link to="/rewards">
+            <Button size="sm" variant="secondary"><Gift className="w-4 h-4" /> Redeem</Button>
+          </Link>
         </div>
       } />
 

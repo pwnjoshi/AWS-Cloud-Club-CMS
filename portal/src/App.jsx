@@ -15,6 +15,8 @@ import Referrals from './pages/Referrals';
 import Rewards from './pages/Rewards';
 import Badges from './pages/Badges';
 import Blogs from './pages/Blogs';
+import Support from './pages/Support';
+import Suggestions from './pages/Suggestions';
 import Profile from './pages/Profile';
 import AdminDashboard from './pages/admin/AdminDashboard';
 import AdminUsers from './pages/admin/AdminUsers';
@@ -25,10 +27,13 @@ import AdminAnnouncements from './pages/admin/AdminAnnouncements';
 import AdminRewards from './pages/admin/AdminRewards';
 import AdminBlogs from './pages/admin/AdminBlogs';
 import AdminEmail from './pages/admin/AdminEmail';
+import AdminSupport from './pages/admin/AdminSupport';
+import AdminSuggestions from './pages/admin/AdminSuggestions';
 import AdminAudit from './pages/admin/AdminAudit';
 import AdminAwsLab from './pages/admin/AdminAwsLab';
 
 import CertificateVerify from './pages/CertificateVerify';
+import ResetPassword from './pages/ResetPassword';
 import InstallBanner from './components/InstallBanner';
 import { useServiceWorker } from './hooks/usePWA';
 
@@ -65,6 +70,16 @@ export default function App() {
     );
   }
 
+  // Force password reset for users created by admin
+  if (user.mustResetPassword) {
+    return (
+      <Routes>
+        <Route path="/verify/:code" element={<CertificateVerify />} />
+        <Route path="*" element={<ResetPassword />} />
+      </Routes>
+    );
+  }
+
   return (
     <Shell>
       <Routes>
@@ -81,6 +96,8 @@ export default function App() {
         <Route path="/rewards" element={<ProtectedRoute><Rewards /></ProtectedRoute>} />
         <Route path="/badges" element={<ProtectedRoute><Badges /></ProtectedRoute>} />
         <Route path="/blogs" element={<ProtectedRoute><Blogs /></ProtectedRoute>} />
+        <Route path="/support" element={<ProtectedRoute><Support /></ProtectedRoute>} />
+        <Route path="/suggestions" element={<ProtectedRoute><Suggestions /></ProtectedRoute>} />
         <Route path="/profile" element={<ProtectedRoute><Profile /></ProtectedRoute>} />
         {/* Admin */}
         <Route path="/admin" element={<AdminRoute><AdminDashboard /></AdminRoute>} />
@@ -92,6 +109,8 @@ export default function App() {
         <Route path="/admin/rewards" element={<AdminRoute><AdminRewards /></AdminRoute>} />
         <Route path="/admin/blogs" element={<AdminRoute><AdminBlogs /></AdminRoute>} />
         <Route path="/admin/email" element={<AdminRoute><AdminEmail /></AdminRoute>} />
+        <Route path="/admin/support" element={<AdminRoute><AdminSupport /></AdminRoute>} />
+        <Route path="/admin/suggestions" element={<AdminRoute><AdminSuggestions /></AdminRoute>} />
         <Route path="/admin/audit" element={<AdminRoute><AdminAudit /></AdminRoute>} />
         <Route path="/admin/aws-lab" element={<AdminRoute><AdminAwsLab /></AdminRoute>} />
         <Route path="/login" element={<Navigate to="/" replace />} />

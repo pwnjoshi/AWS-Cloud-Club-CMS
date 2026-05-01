@@ -87,6 +87,14 @@ router.get('/my', authenticate, async (req, res, next) => {
 
 // ─── Admin Routes ────────────────────────────────────────
 
+// GET /api/rewards/all — admin sees ALL rewards including disabled
+router.get('/all', authenticate, requireAdmin, async (req, res, next) => {
+  try {
+    const rewards = await prisma.reward.findMany({ orderBy: { createdAt: 'desc' } });
+    res.json({ rewards });
+  } catch (err) { next(err); }
+});
+
 // POST /api/rewards — admin creates a reward
 router.post('/', authenticate, requireAdmin, async (req, res, next) => {
   try {
@@ -175,6 +183,22 @@ router.put('/redemptions/:id', authenticate, requireAdmin, async (req, res, next
   } catch (err) {
     next(err);
   }
+});
+
+// DELETE /api/rewards/:id — admin permanently deletes a reward
+router.delete('/:id', authenticate, requireAdmin, async (req, res, next) => {
+  try {
+    // Check if reward has any redemptions
+    const redemptions = await prisma.redemption.count({ where: { rewardId: req.params.id } });
+    if (redemptions > 0) {
+      // Soft delete — just disable it
+      await prisma.reward.update({ where: { id: req.params.id }, data: { isActive: false } });
+      return res.json({ message: 'Reward has redemptions — disabled instead of deleted' });
+    }
+    await prisma.reward.delete({ where: { id: req.params.id } });
+    await logAudit(req.user.id, 'REWARD_DELETE', { targetType: 'REWARD', targetId: req.params.id });
+    res.json({ message: 'Reward deleted' });
+  } catch (err) { next(err); }
 });
 
 export default router;

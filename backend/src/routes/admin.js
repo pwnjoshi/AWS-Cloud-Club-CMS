@@ -5,6 +5,8 @@ import { authenticate, requireAdmin } from '../middleware/auth.js';
 import { paginate, generateReferralCode } from '../utils/helpers.js';
 import { logAudit } from '../utils/audit.js';
 import { sendEmail, sendBulkEmails } from '../utils/email.js';
+import { clearMaintenanceCache } from '../middleware/maintenance.js';
+import { validateEmail, sanitize } from '../utils/validation.js';
 
 const router = Router();
 
@@ -110,6 +112,30 @@ router.get('/users', authenticate, requireAdmin, async (req, res, next) => {
   }
 });
 
+// ═══════════════════════════════════════════════════════════
+// Search users (for member select dropdowns) — MUST be before /users/:id
+// ═══════════════════════════════════════════════════════════
+router.get('/users/search', authenticate, requireAdmin, async (req, res, next) => {
+  try {
+    const q = req.query.q || '';
+    if (q.length < 2) return res.json({ users: [] });
+
+    const users = await prisma.user.findMany({
+      where: {
+        isActive: true,
+        OR: [
+          { name: { contains: q } },
+          { email: { contains: q } }
+        ]
+      },
+      select: { id: true, name: true, email: true, avatar: true },
+      take: 20,
+      orderBy: { name: 'asc' }
+    });
+    res.json({ users });
+  } catch (err) { next(err); }
+});
+
 // GET /api/admin/users/:id — get user detail
 router.get('/users/:id', authenticate, requireAdmin, async (req, res, next) => {
   try {
@@ -135,16 +161,26 @@ router.get('/users/:id', authenticate, requireAdmin, async (req, res, next) => {
   }
 });
 
-// PUT /api/admin/users/:id — update user (role, active status, etc.)
+// PUT /api/admin/users/:id — update user (role, active status, name, email, password)
 router.put('/users/:id', authenticate, requireAdmin, async (req, res, next) => {
   try {
-    const { role, isActive, name, email } = req.body;
+    const { role, isActive, name, email, password } = req.body;
     const data = {};
 
     if (role !== undefined) data.role = role;
     if (isActive !== undefined) data.isActive = isActive;
-    if (name !== undefined) data.name = name;
-    if (email !== undefined) data.email = email;
+    if (name !== undefined) data.name = sanitize(name);
+    if (email !== undefined) {
+      const emailCheck = validateEmail(email);
+      if (!emailCheck.valid) return res.status(400).json({ error: emailCheck.error });
+      const existing = await prisma.user.findFirst({ where: { email: email.toLowerCase(), NOT: { id: req.params.id } } });
+      if (existing) return res.status(409).json({ error: 'Email already in use by another user' });
+      data.email = email.toLowerCase();
+    }
+    if (password !== undefined && password.length > 0) {
+      if (password.length < 8) return res.status(400).json({ error: 'Password must be at least 8 characters' });
+      data.passwordHash = await bcrypt.hash(password, 12);
+    }
 
     const user = await prisma.user.update({
       where: { id: req.params.id },
@@ -152,7 +188,10 @@ router.put('/users/:id', authenticate, requireAdmin, async (req, res, next) => {
       select: { id: true, email: true, name: true, role: true, isActive: true }
     });
 
-    await logAudit(req.user.id, 'USER_UPDATE', { targetType: 'USER', targetId: user.id, details: data });
+    // Don't log the password hash in audit
+    const auditDetails = { ...data };
+    if (auditDetails.passwordHash) auditDetails.passwordHash = '[RESET]';
+    await logAudit(req.user.id, 'USER_UPDATE', { targetType: 'USER', targetId: user.id, details: auditDetails });
 
     res.json({ user });
   } catch (err) {
@@ -206,25 +245,32 @@ router.post('/users/create', authenticate, requireAdmin, async (req, res, next) 
     const { name, email, password, role } = req.body;
     if (!name || !email) return res.status(400).json({ error: 'Name and email are required' });
 
+    const emailCheck = validateEmail(email);
+    if (!emailCheck.valid) return res.status(400).json({ error: emailCheck.error });
+
+    const cleanName = sanitize(name);
+
     const existing = await prisma.user.findUnique({ where: { email: email.toLowerCase() } });
     if (existing) return res.status(409).json({ error: 'Email already registered' });
 
-    const pw = password || Math.random().toString(36).slice(-10);
+    const pw = password || 'SBG@2026';
     const passwordHash = await bcrypt.hash(pw, 12);
     const referralCode = generateReferralCode();
+    const needsReset = !password; // If admin didn't set a custom password, force reset
 
     const user = await prisma.user.create({
-      data: { email: email.toLowerCase(), passwordHash, name, role: role || 'MEMBER', referralCode },
+      data: { email: email.toLowerCase(), passwordHash, name: cleanName, role: role || 'MEMBER', referralCode, mustResetPassword: needsReset },
       select: { id: true, email: true, name: true, role: true }
     });
 
-    // Send welcome email with credentials
     try {
-      await sendEmail(email, 'Welcome to AWS Student Builder Group GEU', `
+      await sendEmail(email, 'Welcome to AWS Student Builder Group GEU — Set Up Your Account', `
         <h2>Welcome, ${name}!</h2>
-        <p>Your account has been created on the AWS SBG GEU Member Portal.</p>
-        <p><strong>Email:</strong> ${email}<br><strong>Password:</strong> ${pw}</p>
-        <p>Please change your password after first login.</p>
+        <p>Your account on the AWS Student Builder Group GEU portal has been created.</p>
+        <p><strong>Login:</strong> <a href="${process.env.PORTAL_URL || 'http://localhost:5174'}/login">Portal Login</a></p>
+        <p><strong>Email:</strong> ${email}<br><strong>Default Password:</strong> ${pw}</p>
+        <p>${needsReset ? 'You will be asked to set a new password on your first login.' : ''}</p>
+        <p>You can also use <strong>Continue with Google</strong> if your email is a Google account.</p>
       `);
     } catch (emailErr) {
       console.warn('[EMAIL] Failed to send welcome email:', emailErr.message);
@@ -232,7 +278,7 @@ router.post('/users/create', authenticate, requireAdmin, async (req, res, next) 
 
     await logAudit(req.user.id, 'USER_CREATE', { targetType: 'USER', targetId: user.id, details: { name, email } });
 
-    res.status(201).json({ user, generatedPassword: password ? undefined : pw });
+    res.status(201).json({ user, generatedPassword: pw, mustResetPassword: needsReset });
   } catch (err) { next(err); }
 });
 
@@ -241,37 +287,46 @@ router.post('/users/create', authenticate, requireAdmin, async (req, res, next) 
 // ═══════════════════════════════════════════════════════════
 router.post('/users/bulk', authenticate, requireAdmin, async (req, res, next) => {
   try {
-    const { users } = req.body; // [{ name, email }]
+    const { users, defaultPassword } = req.body; // [{ name, email }]
     if (!Array.isArray(users) || users.length === 0) return res.status(400).json({ error: 'Users array is required' });
     if (users.length > 200) return res.status(400).json({ error: 'Max 200 users per batch' });
 
-    const results = { created: 0, skipped: 0, errors: [] };
+    const pw = defaultPassword || 'SBG@2026';
+    const passwordHash = await bcrypt.hash(pw, 12);
+
+    const results = { created: 0, skipped: 0, errors: [], defaultPassword: pw };
     const welcomeEmails = [];
 
     for (const u of users) {
-      if (!u.name || !u.email) { results.errors.push(`Missing name/email: ${JSON.stringify(u)}`); results.skipped++; continue; }
+      if (!u.name || !u.email) { results.errors.push(`Missing name/email`); results.skipped++; continue; }
+
+      const emailCheck = validateEmail(u.email);
+      if (!emailCheck.valid) { results.errors.push(`${u.email}: ${emailCheck.error}`); results.skipped++; continue; }
 
       const existing = await prisma.user.findUnique({ where: { email: u.email.toLowerCase() } });
       if (existing) { results.skipped++; continue; }
 
-      const pw = Math.random().toString(36).slice(-10);
-      const passwordHash = await bcrypt.hash(pw, 12);
       const referralCode = generateReferralCode();
 
       await prisma.user.create({
-        data: { email: u.email.toLowerCase(), passwordHash, name: u.name, role: 'MEMBER', referralCode }
+        data: { email: u.email.toLowerCase(), passwordHash, name: sanitize(u.name), role: 'MEMBER', referralCode, mustResetPassword: true }
       });
 
       welcomeEmails.push({
         to: u.email,
-        subject: 'Welcome to AWS Student Builder Group GEU',
-        html: `<h2>Welcome, ${u.name}!</h2><p>Your portal account has been created.</p><p><strong>Email:</strong> ${u.email}<br><strong>Password:</strong> ${pw}</p><p>Please change your password after first login.</p>`
+        subject: 'Welcome to AWS Student Builder Group GEU — Set Up Your Account',
+        html: `<h2>Welcome, ${u.name}!</h2>
+          <p>Your account on the AWS Student Builder Group GEU portal has been created.</p>
+          <p><strong>Login:</strong> <a href="${process.env.PORTAL_URL || 'http://localhost:5174'}/login">Portal Login</a></p>
+          <p><strong>Email:</strong> ${u.email}<br><strong>Default Password:</strong> ${pw}</p>
+          <p>You will be asked to set a new password on your first login.</p>
+          <p>You can also skip the password and use <strong>Continue with Google</strong> if your email is a Google account.</p>
+          <br><p>— AWS Student Builder Group GEU</p>`
       });
 
       results.created++;
     }
 
-    // Send welcome emails in bulk
     if (welcomeEmails.length > 0) {
       try { await sendBulkEmails(welcomeEmails); } catch (e) { console.warn('[EMAIL] Bulk send error:', e.message); }
     }
@@ -308,6 +363,53 @@ router.post('/email/send', authenticate, requireAdmin, async (req, res, next) =>
     await logAudit(req.user.id, 'BULK_EMAIL', { details: { subject, recipientCount: users.length } });
 
     res.json({ ...result, recipientCount: users.length });
+  } catch (err) { next(err); }
+});
+
+// ═══════════════════════════════════════════════════════════
+// Maintenance Mode
+// ═══════════════════════════════════════════════════════════
+router.get('/maintenance', authenticate, requireAdmin, async (req, res, next) => {
+  try {
+    const setting = await prisma.appSetting.findUnique({ where: { key: 'maintenance_mode' } });
+    res.json({ enabled: setting?.value === 'true' });
+  } catch (err) { next(err); }
+});
+
+router.post('/maintenance', authenticate, requireAdmin, async (req, res, next) => {
+  try {
+    const { enabled } = req.body;
+    await prisma.appSetting.upsert({
+      where: { key: 'maintenance_mode' },
+      update: { value: enabled ? 'true' : 'false' },
+      create: { key: 'maintenance_mode', value: enabled ? 'true' : 'false' }
+    });
+    clearMaintenanceCache();
+    await logAudit(req.user.id, 'MAINTENANCE_TOGGLE', { details: { enabled } });
+    res.json({ enabled, message: enabled ? 'Maintenance mode ON — portal locked for members' : 'Maintenance mode OFF — portal open' });
+  } catch (err) { next(err); }
+});
+
+// ═══════════════════════════════════════════════════════════
+// Registration Toggle
+// ═══════════════════════════════════════════════════════════
+router.get('/registration', authenticate, requireAdmin, async (req, res, next) => {
+  try {
+    const setting = await prisma.appSetting.findUnique({ where: { key: 'registration_disabled' } });
+    res.json({ disabled: setting?.value === 'true' });
+  } catch (err) { next(err); }
+});
+
+router.post('/registration', authenticate, requireAdmin, async (req, res, next) => {
+  try {
+    const { disabled } = req.body;
+    await prisma.appSetting.upsert({
+      where: { key: 'registration_disabled' },
+      update: { value: disabled ? 'true' : 'false' },
+      create: { key: 'registration_disabled', value: disabled ? 'true' : 'false' }
+    });
+    await logAudit(req.user.id, 'REGISTRATION_TOGGLE', { details: { disabled } });
+    res.json({ disabled, message: disabled ? 'Registration CLOSED — only existing users can login' : 'Registration OPEN' });
   } catch (err) { next(err); }
 });
 

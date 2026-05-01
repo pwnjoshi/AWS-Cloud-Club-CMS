@@ -2,9 +2,9 @@ import { useEffect, useState } from 'react';
 import { api } from '../../lib/api';
 import { PageHeader, Card, Button, Input, Select, Textarea, Modal, Spinner, Badge } from '../../components/UI';
 import { Award, Plus, Users, Calendar } from 'lucide-react';
+import MemberSearch from '../../components/MemberSearch';
 
 export default function AdminCertificates() {
-  const [users, setUsers] = useState([]);
   const [events, setEvents] = useState([]);
   const [showIssue, setShowIssue] = useState(false);
   const [showBulkEvent, setShowBulkEvent] = useState(false);
@@ -14,10 +14,7 @@ export default function AdminCertificates() {
   const [bulkMsg, setBulkMsg] = useState('');
 
   useEffect(() => {
-    Promise.all([
-      api.get('/admin/users?limit=200'),
-      api.get('/events?limit=50'),
-    ]).then(([u, e]) => { setUsers(u.users || []); setEvents(e.events || []); }).catch(() => {});
+    api.get('/events?limit=50').then(e => setEvents(e.events || [])).catch(() => {});
   }, []);
 
   const handleIssue = async (e) => {
@@ -73,10 +70,7 @@ export default function AdminCertificates() {
       {/* Single Issue Modal */}
       <Modal open={showIssue} onClose={() => { setShowIssue(false); setMsg(''); }} title="Issue Certificate">
         <form onSubmit={handleIssue} className="space-y-3">
-          <Select label="Member" value={form.userId} onChange={e => setForm({ ...form, userId: e.target.value })} required>
-            <option value="">Select member...</option>
-            {users.map(u => <option key={u.id} value={u.id}>{u.name} ({u.email})</option>)}
-          </Select>
+          <MemberSearch value={form.userId} onChange={(id) => setForm({ ...form, userId: id })} />
           <Input label="Certificate Title" value={form.title} onChange={e => setForm({ ...form, title: e.target.value })} required />
           <Textarea label="Description" value={form.description} onChange={e => setForm({ ...form, description: e.target.value })} />
           <Select label="Type" value={form.type} onChange={e => setForm({ ...form, type: e.target.value })}>

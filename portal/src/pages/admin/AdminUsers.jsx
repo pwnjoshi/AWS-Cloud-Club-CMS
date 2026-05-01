@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { api } from '../../lib/api';
 import { PageHeader, Card, Badge, Button, Input, Textarea, Select, Modal, Spinner } from '../../components/UI';
-import { Users, Search, Shield, Ban, Plus, Upload } from 'lucide-react';
+import { Users, Search, Shield, Ban, Plus, Upload, Pencil } from 'lucide-react';
 
 export default function AdminUsers() {
   const [users, setUsers] = useState([]);
@@ -10,9 +10,13 @@ export default function AdminUsers() {
   const [loading, setLoading] = useState(true);
   const [showAdd, setShowAdd] = useState(false);
   const [showBulk, setShowBulk] = useState(false);
+  const [showEdit, setShowEdit] = useState(null); // user object
   const [addForm, setAddForm] = useState({ name: '', email: '', password: '', role: 'MEMBER' });
+  const [editForm, setEditForm] = useState({ name: '', email: '', password: '' });
   const [bulkText, setBulkText] = useState('');
+  const [bulkPassword, setBulkPassword] = useState('SBG@2026');
   const [msg, setMsg] = useState('');
+  const [editMsg, setEditMsg] = useState('');
 
   const fetchUsers = (q = '') => {
     setLoading(true);
@@ -33,6 +37,29 @@ export default function AdminUsers() {
     fetchUsers(search);
   };
 
+  const openEdit = (user) => {
+    setShowEdit(user);
+    setEditForm({ name: user.name, email: user.email, password: '' });
+    setEditMsg('');
+  };
+
+  const handleEdit = async (e) => {
+    e.preventDefault();
+    setEditMsg('');
+    try {
+      const body = {};
+      if (editForm.name !== showEdit.name) body.name = editForm.name;
+      if (editForm.email !== showEdit.email) body.email = editForm.email;
+      if (editForm.password) body.password = editForm.password;
+
+      if (Object.keys(body).length === 0) { setEditMsg('No changes made'); return; }
+
+      await api.put(`/admin/users/${showEdit.id}`, body);
+      setEditMsg('User updated successfully');
+      fetchUsers(search);
+    } catch (err) { setEditMsg(err.message); }
+  };
+
   const handleAddUser = async (e) => {
     e.preventDefault();
     setMsg('');
@@ -48,17 +75,16 @@ export default function AdminUsers() {
     e.preventDefault();
     setMsg('');
     try {
-      // Parse CSV: name,email per line
       const lines = bulkText.trim().split('\n').filter(l => l.trim());
-      const users = lines.map(line => {
+      const parsed = lines.map(line => {
         const [name, email] = line.split(',').map(s => s.trim());
         return { name, email };
       }).filter(u => u.name && u.email);
 
-      if (users.length === 0) { setMsg('No valid entries found. Format: name,email per line'); return; }
+      if (parsed.length === 0) { setMsg('No valid entries. Format: name,email per line'); return; }
 
-      const result = await api.post('/admin/users/bulk', { users });
-      setMsg(`Created: ${result.created}, Skipped: ${result.skipped}${result.errors?.length ? `, Errors: ${result.errors.length}` : ''}`);
+      const result = await api.post('/admin/users/bulk', { users: parsed, defaultPassword: bulkPassword });
+      setMsg(`Created: ${result.created}, Skipped: ${result.skipped}. Default password: ${result.defaultPassword}`);
       setBulkText('');
       fetchUsers(search);
     } catch (err) { setMsg(err.message); }
@@ -94,6 +120,7 @@ export default function AdminUsers() {
                 <Badge variant={u.isActive ? 'success' : 'danger'}>{u.isActive ? 'Active' : 'Inactive'}</Badge>
               </div>
               <div className="flex gap-1 shrink-0">
+                <Button size="sm" variant="ghost" onClick={() => openEdit(u)} title="Edit user"><Pencil className="w-3.5 h-3.5" /></Button>
                 <Button size="sm" variant="ghost" onClick={() => toggleRole(u.id, u.role)} title="Toggle role"><Shield className="w-3.5 h-3.5" /></Button>
                 <Button size="sm" variant="ghost" onClick={() => toggleActive(u.id, u.isActive)} title="Toggle active"><Ban className="w-3.5 h-3.5" /></Button>
               </div>
@@ -101,6 +128,20 @@ export default function AdminUsers() {
           ))}
         </div>
       )}
+
+      {/* Edit User Modal */}
+      <Modal open={!!showEdit} onClose={() => setShowEdit(null)} title="Edit User">
+        {showEdit && (
+          <form onSubmit={handleEdit} className="space-y-3">
+            <Input label="Name" value={editForm.name} onChange={e => setEditForm({ ...editForm, name: e.target.value })} required />
+            <Input label="Email" type="email" value={editForm.email} onChange={e => setEditForm({ ...editForm, email: e.target.value })} required />
+            <Input label="New Password (leave blank to keep current)" type="text" value={editForm.password} onChange={e => setEditForm({ ...editForm, password: e.target.value })} placeholder="Min 8 characters" />
+            <p className="text-[10px] text-gray-500">Only fill password to reset it. The user will need to use the new password on next login.</p>
+            {editMsg && <p className={`text-xs ${editMsg.includes('success') ? 'text-emerald-400' : 'text-red-400'}`}>{editMsg}</p>}
+            <Button type="submit" className="w-full">Save Changes</Button>
+          </form>
+        )}
+      </Modal>
 
       {/* Add User Modal */}
       <Modal open={showAdd} onClose={() => { setShowAdd(false); setMsg(''); }} title="Add User">
@@ -122,8 +163,9 @@ export default function AdminUsers() {
       <Modal open={showBulk} onClose={() => { setShowBulk(false); setMsg(''); }} title="Bulk Add Users">
         <form onSubmit={handleBulkAdd} className="space-y-3">
           <Textarea label="Users (CSV: name,email per line)" value={bulkText} onChange={e => setBulkText(e.target.value)} placeholder={"Rahul Sharma,rahul@example.com\nPriya Singh,priya@example.com"} required />
-          <p className="text-[10px] text-gray-500">Max 200 users per batch. Passwords are auto-generated. Welcome emails sent if configured. Existing emails are skipped.</p>
-          {msg && <p className="text-xs text-gray-400">{msg}</p>}
+          <Input label="Default Password" value={bulkPassword} onChange={e => setBulkPassword(e.target.value)} placeholder="SBG@2026" />
+          <p className="text-[10px] text-gray-500">All users get this password and must reset it on first login. They can also use "Continue with Google" to skip the password entirely. Max 200 per batch.</p>
+          {msg && <p className="text-xs text-emerald-400">{msg}</p>}
           <Button type="submit" className="w-full"><Upload className="w-4 h-4" /> Import Users</Button>
         </form>
       </Modal>
