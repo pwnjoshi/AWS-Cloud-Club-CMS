@@ -4,6 +4,8 @@ import { authenticate, requireAdmin } from '../middleware/auth.js';
 import { generateOTP } from '../utils/helpers.js';
 import { logAudit } from '../utils/audit.js';
 import { creditReferralIfEligible } from '../utils/referral.js';
+import { checkAndAwardBadges } from '../utils/badges.js';
+import QRCode from 'qrcode';
 
 const router = Router();
 
@@ -125,12 +127,17 @@ router.get('/session/:eventId/code', authenticate, requireAdmin, async (req, res
 
     session = await getActiveCode(session);
 
+    // Generate QR code containing the check-in payload
+    const qrPayload = JSON.stringify({ eventId: req.params.eventId, code: session.currentCode });
+    const qrDataUrl = await QRCode.toDataURL(qrPayload, { width: 300, margin: 2, color: { dark: '#FFFFFF', light: '#00000000' } });
+
     res.json({
       code: session.currentCode,
       expiresAt: session.codeExpiresAt,
       rotationSeconds: session.rotationSeconds,
       geoRequired: session.geoRequired,
       isActive: session.isActive,
+      qrCode: qrDataUrl,
     });
   } catch (err) {
     next(err);
@@ -222,6 +229,7 @@ router.post('/checkin', authenticate, async (req, res, next) => {
         }
       });
       await creditReferralIfEligible(req.user.id);
+      await checkAndAwardBadges(req.user.id);
     }
 
     res.status(201).json({ attendance, message: 'Checked in successfully' });

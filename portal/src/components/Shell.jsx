@@ -2,7 +2,7 @@ import { NavLink, useLocation } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import {
   LayoutDashboard, Calendar, ClipboardCheck, Star, Trophy, BookOpen, Award,
-  Users, Gift, User, LogOut, Shield, Menu, X, ChevronDown, Cloud
+  Users, Gift, User, LogOut, Shield, Menu, X, ChevronDown, Cloud, Medal, PenTool, Mail
 } from 'lucide-react';
 import { useState } from 'react';
 
@@ -16,6 +16,8 @@ const memberNav = [
   { to: '/certificates', icon: Award, label: 'Certificates' },
   { to: '/referrals', icon: Users, label: 'Referrals' },
   { to: '/rewards', icon: Gift, label: 'Rewards' },
+  { to: '/badges', icon: Medal, label: 'Badges' },
+  { to: '/blogs', icon: PenTool, label: 'Blogs' },
 ];
 
 const adminNav = [
@@ -27,6 +29,8 @@ const adminNav = [
   { to: '/admin/announcements', icon: LayoutDashboard, label: 'Announcements' },
   { to: '/admin/rewards', icon: Gift, label: 'Rewards' },
   { to: '/admin/aws-lab', icon: Cloud, label: 'AWS Lab' },
+  { to: '/admin/blogs', icon: PenTool, label: 'Blog Reviews' },
+  { to: '/admin/email', icon: Mail, label: 'Bulk Email' },
   { to: '/admin/audit', icon: ClipboardCheck, label: 'Audit Log' },
 ];
 

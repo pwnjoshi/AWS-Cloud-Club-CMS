@@ -13,6 +13,8 @@ import Resources from './pages/Resources';
 import Certificates from './pages/Certificates';
 import Referrals from './pages/Referrals';
 import Rewards from './pages/Rewards';
+import Badges from './pages/Badges';
+import Blogs from './pages/Blogs';
 import Profile from './pages/Profile';
 import AdminDashboard from './pages/admin/AdminDashboard';
 import AdminUsers from './pages/admin/AdminUsers';
@@ -21,6 +23,8 @@ import AdminCertificates from './pages/admin/AdminCertificates';
 import AdminPoints from './pages/admin/AdminPoints';
 import AdminAnnouncements from './pages/admin/AdminAnnouncements';
 import AdminRewards from './pages/admin/AdminRewards';
+import AdminBlogs from './pages/admin/AdminBlogs';
+import AdminEmail from './pages/admin/AdminEmail';
 import AdminAudit from './pages/admin/AdminAudit';
 import AdminAwsLab from './pages/admin/AdminAwsLab';
 
@@ -68,6 +72,8 @@ export default function App() {
         <Route path="/certificates" element={<ProtectedRoute><Certificates /></ProtectedRoute>} />
         <Route path="/referrals" element={<ProtectedRoute><Referrals /></ProtectedRoute>} />
         <Route path="/rewards" element={<ProtectedRoute><Rewards /></ProtectedRoute>} />
+        <Route path="/badges" element={<ProtectedRoute><Badges /></ProtectedRoute>} />
+        <Route path="/blogs" element={<ProtectedRoute><Blogs /></ProtectedRoute>} />
         <Route path="/profile" element={<ProtectedRoute><Profile /></ProtectedRoute>} />
         {/* Admin */}
         <Route path="/admin" element={<AdminRoute><AdminDashboard /></AdminRoute>} />
@@ -77,6 +83,8 @@ export default function App() {
         <Route path="/admin/points" element={<AdminRoute><AdminPoints /></AdminRoute>} />
         <Route path="/admin/announcements" element={<AdminRoute><AdminAnnouncements /></AdminRoute>} />
         <Route path="/admin/rewards" element={<AdminRoute><AdminRewards /></AdminRoute>} />
+        <Route path="/admin/blogs" element={<AdminRoute><AdminBlogs /></AdminRoute>} />
+        <Route path="/admin/email" element={<AdminRoute><AdminEmail /></AdminRoute>} />
         <Route path="/admin/audit" element={<AdminRoute><AdminAudit /></AdminRoute>} />
         <Route path="/admin/aws-lab" element={<AdminRoute><AdminAwsLab /></AdminRoute>} />
         <Route path="/login" element={<Navigate to="/" replace />} />

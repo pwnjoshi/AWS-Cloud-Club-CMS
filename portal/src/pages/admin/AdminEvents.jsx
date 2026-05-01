@@ -76,6 +76,7 @@ function CheckinPanel({ eventId }) {
   const [countdown, setCountdown] = useState(0);
   const [loading, setLoading] = useState(true);
   const [starting, setStarting] = useState(false);
+  const [qrCode, setQrCode] = useState('');
   const intervalRef = useRef(null);
 
   // Config form
@@ -91,10 +92,10 @@ function CheckinPanel({ eventId }) {
       const data = await api.get(`/attendance/session/${eventId}`);
       setSession(data.session);
       if (data.session?.isActive) {
-        // Fetch current code
         const codeData = await api.get(`/attendance/session/${eventId}/code`);
         setCode(codeData.code);
         setExpiresAt(new Date(codeData.expiresAt));
+        setQrCode(codeData.qrCode || '');
       }
     } catch {}
     setLoading(false);
@@ -114,6 +115,7 @@ function CheckinPanel({ eventId }) {
         const data = await api.get(`/attendance/session/${eventId}/code`);
         setCode(data.code);
         setExpiresAt(new Date(data.expiresAt));
+        setQrCode(data.qrCode || '');
       } catch {}
     };
 
@@ -194,6 +196,13 @@ function CheckinPanel({ eventId }) {
         </div>
 
         <p className="text-xs text-gray-500">Display this code on a screen at the venue. It auto-rotates.</p>
+
+        {qrCode && (
+          <div className="flex flex-col items-center gap-2">
+            <img src={qrCode} alt="Check-in QR Code" className="w-48 h-48 rounded-xl border border-white/10" />
+            <p className="text-[10px] text-gray-500">Students can scan this QR to auto-fill the code</p>
+          </div>
+        )}
 
         <Button variant="danger" onClick={handleStop} className="w-full"><Square className="w-4 h-4" /> Stop Check-in</Button>
       </div>

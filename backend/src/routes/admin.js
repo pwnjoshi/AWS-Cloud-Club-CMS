@@ -1,8 +1,10 @@
 import { Router } from 'express';
+import bcrypt from 'bcryptjs';
 import prisma from '../lib/prisma.js';
 import { authenticate, requireAdmin } from '../middleware/auth.js';
-import { paginate } from '../utils/helpers.js';
+import { paginate, generateReferralCode } from '../utils/helpers.js';
 import { logAudit } from '../utils/audit.js';
+import { sendEmail, sendBulkEmails } from '../utils/email.js';
 
 const router = Router();
 
@@ -160,6 +162,119 @@ router.get('/audit', authenticate, requireAdmin, async (req, res, next) => {
   } catch (err) {
     next(err);
   }
+});
+
+// ═══════════════════════════════════════════════════════════
+// POST /api/admin/users/create — admin creates a single user
+// ═══════════════════════════════════════════════════════════
+router.post('/users/create', authenticate, requireAdmin, async (req, res, next) => {
+  try {
+    const { name, email, password, role } = req.body;
+    if (!name || !email) return res.status(400).json({ error: 'Name and email are required' });
+
+    const existing = await prisma.user.findUnique({ where: { email: email.toLowerCase() } });
+    if (existing) return res.status(409).json({ error: 'Email already registered' });
+
+    const pw = password || Math.random().toString(36).slice(-10);
+    const passwordHash = await bcrypt.hash(pw, 12);
+    const referralCode = generateReferralCode();
+
+    const user = await prisma.user.create({
+      data: { email: email.toLowerCase(), passwordHash, name, role: role || 'MEMBER', referralCode },
+      select: { id: true, email: true, name: true, role: true }
+    });
+
+    // Send welcome email with credentials
+    try {
+      await sendEmail(email, 'Welcome to AWS Student Builder Group GEU', `
+        <h2>Welcome, ${name}!</h2>
+        <p>Your account has been created on the AWS SBG GEU Member Portal.</p>
+        <p><strong>Email:</strong> ${email}<br><strong>Password:</strong> ${pw}</p>
+        <p>Please change your password after first login.</p>
+      `);
+    } catch (emailErr) {
+      console.warn('[EMAIL] Failed to send welcome email:', emailErr.message);
+    }
+
+    await logAudit(req.user.id, 'USER_CREATE', { targetType: 'USER', targetId: user.id, details: { name, email } });
+
+    res.status(201).json({ user, generatedPassword: password ? undefined : pw });
+  } catch (err) { next(err); }
+});
+
+// ═══════════════════════════════════════════════════════════
+// POST /api/admin/users/bulk — bulk create users from array
+// ═══════════════════════════════════════════════════════════
+router.post('/users/bulk', authenticate, requireAdmin, async (req, res, next) => {
+  try {
+    const { users } = req.body; // [{ name, email }]
+    if (!Array.isArray(users) || users.length === 0) return res.status(400).json({ error: 'Users array is required' });
+    if (users.length > 200) return res.status(400).json({ error: 'Max 200 users per batch' });
+
+    const results = { created: 0, skipped: 0, errors: [] };
+    const welcomeEmails = [];
+
+    for (const u of users) {
+      if (!u.name || !u.email) { results.errors.push(`Missing name/email: ${JSON.stringify(u)}`); results.skipped++; continue; }
+
+      const existing = await prisma.user.findUnique({ where: { email: u.email.toLowerCase() } });
+      if (existing) { results.skipped++; continue; }
+
+      const pw = Math.random().toString(36).slice(-10);
+      const passwordHash = await bcrypt.hash(pw, 12);
+      const referralCode = generateReferralCode();
+
+      await prisma.user.create({
+        data: { email: u.email.toLowerCase(), passwordHash, name: u.name, role: 'MEMBER', referralCode }
+      });
+
+      welcomeEmails.push({
+        to: u.email,
+        subject: 'Welcome to AWS Student Builder Group GEU',
+        html: `<h2>Welcome, ${u.name}!</h2><p>Your portal account has been created.</p><p><strong>Email:</strong> ${u.email}<br><strong>Password:</strong> ${pw}</p><p>Please change your password after first login.</p>`
+      });
+
+      results.created++;
+    }
+
+    // Send welcome emails in bulk
+    if (welcomeEmails.length > 0) {
+      try { await sendBulkEmails(welcomeEmails); } catch (e) { console.warn('[EMAIL] Bulk send error:', e.message); }
+    }
+
+    await logAudit(req.user.id, 'USER_BULK_CREATE', { details: { created: results.created, skipped: results.skipped } });
+
+    res.status(201).json(results);
+  } catch (err) { next(err); }
+});
+
+// ═══════════════════════════════════════════════════════════
+// POST /api/admin/email/send — send email to members
+// ═══════════════════════════════════════════════════════════
+router.post('/email/send', authenticate, requireAdmin, async (req, res, next) => {
+  try {
+    const { subject, html, filter } = req.body;
+    if (!subject || !html) return res.status(400).json({ error: 'Subject and HTML body are required' });
+
+    // Build user filter
+    const where = { isActive: true };
+    if (filter === 'admins') where.role = 'ADMIN';
+
+    const users = await prisma.user.findMany({ where, select: { email: true, name: true } });
+    if (users.length === 0) return res.json({ sent: 0, message: 'No matching users' });
+
+    const emails = users.map(u => ({
+      to: u.email,
+      subject,
+      html: html.replace(/\{\{name\}\}/g, u.name)
+    }));
+
+    const result = await sendBulkEmails(emails);
+
+    await logAudit(req.user.id, 'BULK_EMAIL', { details: { subject, recipientCount: users.length } });
+
+    res.json({ ...result, recipientCount: users.length });
+  } catch (err) { next(err); }
 });
 
 export default router;

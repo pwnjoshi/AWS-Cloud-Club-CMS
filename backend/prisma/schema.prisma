@@ -41,6 +41,9 @@ model User {
   attendanceMarkedBy Attendance[]      @relation("AttendanceMarker")
   checkinSessions   CheckinSession[]  @relation("CheckinSessionCreator")
   awsLabSessions    AwsLabSession[]
+  userBadges        UserBadge[]
+  blogSubmissions   BlogSubmission[]
+  blogReviews       BlogSubmission[]   @relation("BlogReviewer")
 }
 
 // ─── Events ──────────────────────────────────────────────
@@ -278,4 +281,49 @@ model AwsLabSession {
   config AwsLabConfig @relation(fields: [configId], references: [id], onDelete: Cascade)
 
   @@unique([userId, configId])
+}
+
+// ─── Badges ──────────────────────────────────────────────
+model Badge {
+  id          String   @id @default(cuid())
+  slug        String   @unique // e.g. "first-event", "power-builder"
+  name        String
+  description String
+  icon        String   @default("🏅") // emoji or icon name
+  category    String   @default("ACHIEVEMENT") // ACHIEVEMENT | EVENT | COMMUNITY | CERTIFICATION
+  criteria    String?  // JSON: { type: "attendance_count", threshold: 5 }
+  pointsReward Int     @default(0)
+  createdAt   DateTime @default(now())
+
+  userBadges UserBadge[]
+}
+
+model UserBadge {
+  id        String   @id @default(cuid())
+  userId    String
+  badgeId   String
+  earnedAt  DateTime @default(now())
+
+  user  User  @relation(fields: [userId], references: [id], onDelete: Cascade)
+  badge Badge @relation(fields: [badgeId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, badgeId])
+}
+
+// ─── Blog Submissions ────────────────────────────────────
+model BlogSubmission {
+  id           String    @id @default(cuid())
+  userId       String
+  title        String
+  url          String
+  platform     String    @default("other") // builder-center | devto | medium | hashnode | other
+  status       String    @default("PENDING") // PENDING | APPROVED | REJECTED
+  reviewedById String?
+  reviewNote   String?
+  pointsAwarded Int      @default(0)
+  createdAt    DateTime  @default(now())
+  reviewedAt   DateTime?
+
+  user       User  @relation(fields: [userId], references: [id], onDelete: Cascade)
+  reviewedBy User? @relation("BlogReviewer", fields: [reviewedById], references: [id])
 }

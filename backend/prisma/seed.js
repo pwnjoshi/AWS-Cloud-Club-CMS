@@ -1,6 +1,7 @@
 import { PrismaClient } from '@prisma/client';
 import bcrypt from 'bcryptjs';
 import crypto from 'crypto';
+import { BADGE_DEFINITIONS } from '../src/utils/badges.js';
 
 const prisma = new PrismaClient();
 
@@ -85,6 +86,16 @@ async function main() {
     }
   });
   console.log('✓ Sample announcement created');
+
+  // Seed badges
+  for (const badge of BADGE_DEFINITIONS) {
+    await prisma.badge.upsert({
+      where: { slug: badge.slug },
+      update: {},
+      create: badge
+    });
+  }
+  console.log(`✓ ${BADGE_DEFINITIONS.length} badges seeded`);
 
   console.log('\n✅ Seed complete!');
   console.log('─────────────────────────────────');
