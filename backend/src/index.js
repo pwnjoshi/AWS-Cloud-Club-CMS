@@ -18,6 +18,7 @@ import adminRoutes from './routes/admin.js';
 import awsLabRoutes from './routes/awsLab.js';
 import badgeRoutes from './routes/badges.js';
 import blogRoutes from './routes/blogs.js';
+import notificationRoutes from './routes/notifications.js';
 
 dotenv.config();
 
@@ -56,6 +57,7 @@ app.use('/api/admin', adminRoutes);
 app.use('/api/aws-lab', awsLabRoutes);
 app.use('/api/badges', badgeRoutes);
 app.use('/api/blogs', blogRoutes);
+app.use('/api/notifications', notificationRoutes);
 
 // ─── Health Check ────────────────────────────────────────
 app.get('/api/health', (req, res) => {

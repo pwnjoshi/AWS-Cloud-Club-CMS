@@ -83,20 +83,21 @@ npm run dev                  # → http://localhost:5173
 │
 ├── backend/                  # REST API (Express + Prisma)
 │   ├── prisma/
-│   │   ├── schema.prisma     # Database schema (15 models)
+│   │   ├── schema.prisma     # Database schema (20+ models)
 │   │   └── seed.js           # Seed script
 │   └── src/
 │       ├── routes/           # auth, users, events, attendance, certificates,
 │       │                     # points, referrals, resources, announcements,
-│       │                     # rewards, admin, awsLab
+│       │                     # rewards, admin, awsLab, badges, blogs, notifications
 │       ├── middleware/       # JWT auth, admin guard
-│       └── utils/            # audit logger, helpers
+│       └── utils/            # audit, helpers, badges, referral, email
 │
 ├── portal/                   # Member portal (React + Vite + Tailwind)
 │   └── src/
-│       ├── components/       # Shell (sidebar/bottom nav), UI primitives
+│       ├── components/       # Shell (sidebar/bottom nav), UI primitives, InstallBanner
 │       ├── context/          # Auth context (JWT)
-│       ├── pages/            # Member pages (11) + Admin pages (9)
+│       ├── hooks/            # PWA install, push notifications, service worker
+│       ├── pages/            # Member pages (13) + Admin pages (11)
 │       └── lib/              # API client
 │
 └── README.md
@@ -111,31 +112,37 @@ npm run dev                  # → http://localhost:5173
 - Events, team, blog, gallery, member ID verification
 - SEO optimized with structured data, OG tags, sitemap
 
-### Member Portal
+### Member Portal (PWA — installable on mobile)
 | Feature | Description |
 |---------|-------------|
 | **Dashboard** | Points balance, attendance count, certificates, announcements |
 | **Events** | Browse events, view details, register via external link |
-| **OTP Check-in** | Enter 6-digit code at events to mark attendance + earn points |
+| **Check-in** | Rotating OTP (30s default) + QR scan + optional geolocation verification |
 | **AWS Lab Access** | Request temporary AWS credentials scoped to specific services |
-| **Points** | Immutable ledger — earn via attendance, certs, referrals, resources |
+| **Points** | Immutable ledger — earn via attendance, certs, referrals, resources, blogs |
 | **Leaderboard** | Top 50 builders ranked by points |
 | **Resources** | Categorized learning materials (Cloud, AI, Full-Stack), completion tracking |
-| **Certificates** | View issued certs, unique verification codes |
-| **Referrals** | Shareable link, points credited after referred user's first event |
+| **Certificates** | View certs with unique QR codes, public verification page |
+| **Badges** | 9 achievement badges — auto-awarded on milestones |
+| **Blogs** | Submit blog posts for review, community feed of approved posts |
+| **Referrals** | Shareable link, anti-spoof (5/day cap, 1hr account age, geo-verified attendance) |
 | **Rewards Store** | Redeem points for rewards |
 | **Profile** | Edit name, bio |
+| **PWA** | Install as app on mobile, push notifications |
 
 ### Admin Panel
 | Feature | Description |
 |---------|-------------|
-| **Dashboard** | Total users, events, attendance, certificates, points stats |
-| **User Management** | Search, toggle role (Admin/Member), activate/deactivate |
-| **Event Management** | Create events, generate OTP codes for check-in |
-| **Certificate Issuance** | Issue to individual members with optional points |
+| **Dashboard** | 11 metrics + charts: signups/day, attendance/event, top builders |
+| **User Management** | Search, add user, bulk add (CSV), toggle role, activate/deactivate |
+| **Event Management** | Create events, rotating OTP + QR check-in with geo config |
+| **Certificate Issuance** | Issue single or **one-click bulk to all event attendees** with unique QR |
 | **Points Adjustment** | Manual credit/debit with required reason |
 | **Announcements** | Create with priority levels (Low/Normal/High/Urgent) |
-| **Rewards Store** | Add/manage rewards, view redemptions |
+| **Rewards Store** | Add, enable/disable, delete rewards |
+| **Blog Reviews** | Approve/reject blog submissions, award points |
+| **Bulk Email** | Send HTML emails to all members with `{{name}}` personalization |
+| **Push Notifications** | Send push notifications to all subscribed users |
 | **AWS Lab** | Enable/disable per event, configure services/duration, revoke sessions |
 | **Audit Log** | Full trail of every admin action |
 
@@ -149,6 +156,32 @@ npm run dev                  # → http://localhost:5173
 | Hackathon | 100 | Admin-issued only |
 
 Points are stored as an **immutable transaction ledger** — balance is always computed from `SUM(transactions)`, never stored as a field.
+
+### Certificate Verification
+Every certificate has a unique QR code and verification URL:
+- Public verify page at `/verify/CERT-XXXXXXXXXXXX` — no login required
+- Shows recipient name, certificate title, type, issue date
+- QR code on each certificate links to the verify page
+- Revoked certificates show as invalid
+
+### Badge System (9 badges)
+| Badge | Trigger |
+|---|---|
+| 🎯 First Event | Attend 1 event |
+| 🔥 Regular Builder | Attend 5 events |
+| ⚡ Power Builder | Attend 10 events |
+| 📝 Blog Writer | 1 approved blog post |
+| ✍️ Prolific Writer | 5 approved blog posts |
+| 🌟 Top Contributor | Reach 500 points |
+| 🚀 Referral Champion | 10 successful referrals |
+| 🎓 AWS Certified | Earn an AWS certification |
+| 🏆 Hackathon Winner | Admin-issued |
+
+### PWA (Progressive Web App)
+- Installable on mobile — "Add to Home Screen" prompt on first visit
+- Push notifications via Web Push API (VAPID)
+- Service worker for offline shell
+- Generate VAPID keys: `npx web-push generate-vapid-keys`
 
 ### AWS Lab Access
 Gives students temporary AWS Console credentials during events:

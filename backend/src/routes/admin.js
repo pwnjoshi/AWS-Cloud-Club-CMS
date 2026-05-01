@@ -11,28 +11,62 @@ const router = Router();
 // GET /api/admin/dashboard — admin dashboard stats
 router.get('/dashboard', authenticate, requireAdmin, async (req, res, next) => {
   try {
-    const [totalUsers, activeUsers, totalEvents, totalAttendances, totalCertificates, totalPoints] = await Promise.all([
+    const [totalUsers, activeUsers, totalEvents, totalAttendances, totalCertificates, totalPoints, totalBadges, totalBlogs, totalResources] = await Promise.all([
       prisma.user.count(),
       prisma.user.count({ where: { isActive: true } }),
       prisma.event.count({ where: { isActive: true } }),
       prisma.attendance.count(),
       prisma.certificate.count({ where: { revokedAt: null } }),
-      prisma.pointTransaction.aggregate({ _sum: { points: true } })
+      prisma.pointTransaction.aggregate({ _sum: { points: true } }),
+      prisma.userBadge.count(),
+      prisma.blogSubmission.count({ where: { status: 'APPROVED' } }),
+      prisma.resource.count({ where: { isActive: true } }),
     ]);
 
     // Recent signups (last 30 days)
     const thirtyDaysAgo = new Date(Date.now() - 30 * 24 * 60 * 60 * 1000);
+    const sevenDaysAgo = new Date(Date.now() - 7 * 24 * 60 * 60 * 1000);
     const recentSignups = await prisma.user.count({ where: { createdAt: { gte: thirtyDaysAgo } } });
+
+    // Signups per day (last 7 days)
+    const signupsByDay = [];
+    for (let i = 6; i >= 0; i--) {
+      const dayStart = new Date(); dayStart.setDate(dayStart.getDate() - i); dayStart.setHours(0, 0, 0, 0);
+      const dayEnd = new Date(dayStart); dayEnd.setDate(dayEnd.getDate() + 1);
+      const count = await prisma.user.count({ where: { createdAt: { gte: dayStart, lt: dayEnd } } });
+      signupsByDay.push({ date: dayStart.toISOString().slice(0, 10), count });
+    }
+
+    // Attendance per event (last 10 events)
+    const recentEvents = await prisma.event.findMany({
+      orderBy: { date: 'desc' }, take: 10,
+      select: { id: true, title: true, date: true, _count: { select: { attendances: true } } }
+    });
+
+    // Top 5 users by points
+    const topUsers = await prisma.pointTransaction.groupBy({
+      by: ['userId'], _sum: { points: true }, orderBy: { _sum: { points: 'desc' } }, take: 5
+    });
+    const topUserIds = topUsers.map(t => t.userId);
+    const topUserDetails = await prisma.user.findMany({ where: { id: { in: topUserIds } }, select: { id: true, name: true } });
+    const topUserMap = Object.fromEntries(topUserDetails.map(u => [u.id, u.name]));
+
+    // Active users (attended event in last 30 days)
+    const activeInLast30 = await prisma.attendance.groupBy({
+      by: ['userId'], where: { createdAt: { gte: thirtyDaysAgo } }
+    });
 
     res.json({
       stats: {
-        totalUsers,
-        activeUsers,
-        recentSignups,
-        totalEvents,
-        totalAttendances,
-        totalCertificates,
-        totalPointsIssued: totalPoints._sum.points || 0
+        totalUsers, activeUsers, recentSignups, totalEvents, totalAttendances,
+        totalCertificates, totalPointsIssued: totalPoints._sum.points || 0,
+        totalBadgesEarned: totalBadges, totalBlogsApproved: totalBlogs, totalResources,
+        activeInLast30Days: activeInLast30.length,
+      },
+      charts: {
+        signupsByDay,
+        attendanceByEvent: recentEvents.map(e => ({ title: e.title, date: e.date, attendees: e._count.attendances })),
+        topUsers: topUsers.map(t => ({ name: topUserMap[t.userId] || 'Unknown', points: t._sum.points || 0 })),
       }
     });
   } catch (err) {

@@ -327,3 +327,15 @@ model BlogSubmission {
   user       User  @relation(fields: [userId], references: [id], onDelete: Cascade)
   reviewedBy User? @relation("BlogReviewer", fields: [reviewedById], references: [id])
 }
+
+// ─── Push Subscriptions ──────────────────────────────────
+model PushSubscription {
+  id           String   @id @default(cuid())
+  userId       String
+  endpoint     String   @unique
+  p256dh       String
+  auth         String
+  createdAt    DateTime @default(now())
+
+  @@index([userId])
+}

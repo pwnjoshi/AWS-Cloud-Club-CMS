@@ -28,6 +28,10 @@ import AdminEmail from './pages/admin/AdminEmail';
 import AdminAudit from './pages/admin/AdminAudit';
 import AdminAwsLab from './pages/admin/AdminAwsLab';
 
+import CertificateVerify from './pages/CertificateVerify';
+import InstallBanner from './components/InstallBanner';
+import { useServiceWorker } from './hooks/usePWA';
+
 function ProtectedRoute({ children }) {
   const { user, loading } = useAuth();
   if (loading) return <div className="min-h-screen flex items-center justify-center"><div className="w-8 h-8 border-2 border-[var(--color-primary)] border-t-transparent rounded-full animate-spin" /></div>;
@@ -44,6 +48,7 @@ function AdminRoute({ children }) {
 
 export default function App() {
   const { user, loading } = useAuth();
+  useServiceWorker();
 
   if (loading) {
     return <div className="min-h-screen flex items-center justify-center bg-[var(--color-bg)]"><div className="w-8 h-8 border-2 border-[var(--color-primary)] border-t-transparent rounded-full animate-spin" /></div>;
@@ -54,6 +59,7 @@ export default function App() {
       <Routes>
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
+        <Route path="/verify/:code" element={<CertificateVerify />} />
         <Route path="*" element={<Navigate to="/login" replace />} />
       </Routes>
     );
@@ -62,6 +68,7 @@ export default function App() {
   return (
     <Shell>
       <Routes>
+        <Route path="/verify/:code" element={<CertificateVerify />} />
         <Route path="/" element={<ProtectedRoute><Dashboard /></ProtectedRoute>} />
         <Route path="/events" element={<ProtectedRoute><Events /></ProtectedRoute>} />
         <Route path="/events/:id" element={<ProtectedRoute><EventDetail /></ProtectedRoute>} />
@@ -91,6 +98,7 @@ export default function App() {
         <Route path="/register" element={<Navigate to="/" replace />} />
         <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>
+      <InstallBanner />
     </Shell>
   );
 }

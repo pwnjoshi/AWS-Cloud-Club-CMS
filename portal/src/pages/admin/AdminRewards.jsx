@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { api } from '../../lib/api';
 import { PageHeader, Card, Badge, Button, Input, Textarea, Modal, Spinner, EmptyState } from '../../components/UI';
-import { Gift, Plus, Star } from 'lucide-react';
+import { Gift, Plus, Star, Trash2, EyeOff, Eye } from 'lucide-react';
 
 export default function AdminRewards() {
   const [rewards, setRewards] = useState([]);
@@ -9,18 +9,29 @@ export default function AdminRewards() {
   const [showCreate, setShowCreate] = useState(false);
   const [form, setForm] = useState({ title: '', description: '', pointsCost: 100, stock: -1 });
 
-  const fetch = () => {
+  const fetchRewards = () => {
     api.get('/rewards').then(d => setRewards(d.rewards || [])).catch(() => {}).finally(() => setLoading(false));
   };
 
-  useEffect(() => { fetch(); }, []);
+  useEffect(() => { fetchRewards(); }, []);
 
   const handleCreate = async (e) => {
     e.preventDefault();
     await api.post('/rewards', form);
     setShowCreate(false);
     setForm({ title: '', description: '', pointsCost: 100, stock: -1 });
-    fetch();
+    fetchRewards();
+  };
+
+  const toggleActive = async (id, isActive) => {
+    await api.put(`/rewards/${id}`, { isActive: !isActive });
+    fetchRewards();
+  };
+
+  const handleDelete = async (id) => {
+    if (!confirm('Delete this reward? This cannot be undone.')) return;
+    await api.put(`/rewards/${id}`, { isActive: false });
+    fetchRewards();
   };
 
   return (
@@ -30,14 +41,26 @@ export default function AdminRewards() {
       {loading ? <Spinner /> : rewards.length === 0 ? (
         <EmptyState icon={<Gift className="w-8 h-8" />} title="No rewards" description="Add rewards for members to redeem." />
       ) : (
-        <div className="grid sm:grid-cols-2 gap-3">
+        <div className="space-y-2">
           {rewards.map(r => (
-            <Card key={r.id}>
-              <h3 className="text-sm font-bold text-white">{r.title}</h3>
-              {r.description && <p className="text-xs text-gray-400 mt-1">{r.description}</p>}
-              <div className="flex items-center gap-2 mt-2">
-                <Badge variant="primary"><Star className="w-3 h-3 mr-0.5" />{r.pointsCost} pts</Badge>
-                <Badge variant="default">{r.stock === -1 ? 'Unlimited' : `${r.stock} left`}</Badge>
+            <Card key={r.id} className={`flex items-center gap-4 ${!r.isActive ? 'opacity-50' : ''}`}>
+              <div className="w-10 h-10 rounded-lg bg-[var(--color-primary)]/10 flex items-center justify-center shrink-0">
+                <Gift className="w-5 h-5 text-[var(--color-primary)]" />
+              </div>
+              <div className="flex-1 min-w-0">
+                <p className="text-sm font-semibold text-white truncate">{r.title}</p>
+                {r.description && <p className="text-xs text-gray-500 truncate">{r.description}</p>}
+              </div>
+              <div className="flex items-center gap-2 shrink-0">
+                <Badge variant="primary"><Star className="w-3 h-3 mr-0.5" />{r.pointsCost}</Badge>
+                <Badge variant={r.isActive ? 'success' : 'danger'}>{r.isActive ? 'Active' : 'Disabled'}</Badge>
+                <Badge>{r.stock === -1 ? '∞' : r.stock}</Badge>
+              </div>
+              <div className="flex gap-1 shrink-0">
+                <Button size="sm" variant="ghost" onClick={() => toggleActive(r.id, r.isActive)} title={r.isActive ? 'Disable' : 'Enable'}>
+                  {r.isActive ? <EyeOff className="w-3.5 h-3.5" /> : <Eye className="w-3.5 h-3.5" />}
+                </Button>
+                <Button size="sm" variant="ghost" onClick={() => handleDelete(r.id)} title="Delete"><Trash2 className="w-3.5 h-3.5 text-red-400" /></Button>
               </div>
             </Card>
           ))}
