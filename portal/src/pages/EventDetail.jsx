@@ -1,13 +1,14 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useCallback } from 'react';
 import { useParams } from 'react-router-dom';
 import { api } from '../lib/api';
 import { PageHeader, Card, Badge, Button, Input, Spinner } from '../components/UI';
-import { Calendar, MapPin, Star, ExternalLink, Cloud, Copy, Check, AlertTriangle, Clock } from 'lucide-react';
+import { Calendar, MapPin, Star, ExternalLink, Cloud, Copy, Check, AlertTriangle, Clock, Navigation } from 'lucide-react';
 
 export default function EventDetail() {
   const { id } = useParams();
   const [event, setEvent] = useState(null);
   const [attended, setAttended] = useState(false);
+  const [checkinStatus, setCheckinStatus] = useState(null);
   const [labStatus, setLabStatus] = useState(null);
   const [labCreds, setLabCreds] = useState(null);
   const [otpCode, setOtpCode] = useState('');
@@ -15,29 +16,68 @@ export default function EventDetail() {
   const [checkinLoading, setCheckinLoading] = useState(false);
   const [labLoading, setLabLoading] = useState(false);
   const [msg, setMsg] = useState('');
+  const [msgType, setMsgType] = useState(''); // 'success' | 'error'
   const [copied, setCopied] = useState('');
+  const [geoStatus, setGeoStatus] = useState(''); // '' | 'getting' | 'got' | 'denied'
+  const [userCoords, setUserCoords] = useState(null);
 
   useEffect(() => {
     Promise.all([
       api.get(`/events/${id}`),
+      api.get(`/attendance/checkin-status/${id}`).catch(() => ({})),
       api.get(`/aws-lab/events/${id}/status`).catch(() => ({ available: false })),
-    ]).then(([eventData, lab]) => {
+    ]).then(([eventData, checkin, lab]) => {
       setEvent(eventData.event);
       setAttended(eventData.attended);
+      setCheckinStatus(checkin);
       setLabStatus(lab);
     }).catch(() => {}).finally(() => setLoading(false));
   }, [id]);
+
+  const getLocation = useCallback(() => {
+    if (!navigator.geolocation) {
+      setGeoStatus('denied');
+      return;
+    }
+    setGeoStatus('getting');
+    navigator.geolocation.getCurrentPosition(
+      (pos) => {
+        setUserCoords({ latitude: pos.coords.latitude, longitude: pos.coords.longitude });
+        setGeoStatus('got');
+      },
+      () => {
+        setGeoStatus('denied');
+      },
+      { enableHighAccuracy: true, timeout: 10000 }
+    );
+  }, []);
+
+  // Auto-request location if geo is required
+  useEffect(() => {
+    if (checkinStatus?.geoRequired && !attended && !userCoords) {
+      getLocation();
+    }
+  }, [checkinStatus, attended, userCoords, getLocation]);
 
   const handleCheckin = async (e) => {
     e.preventDefault();
     setCheckinLoading(true);
     setMsg('');
+
+    const body = { eventId: id, code: otpCode };
+    if (checkinStatus?.geoRequired && userCoords) {
+      body.latitude = userCoords.latitude;
+      body.longitude = userCoords.longitude;
+    }
+
     try {
-      await api.post('/attendance/checkin', { eventId: id, code: otpCode });
+      await api.post('/attendance/checkin', body);
       setAttended(true);
       setMsg('Checked in successfully! Points awarded.');
+      setMsgType('success');
     } catch (err) {
       setMsg(err.message);
+      setMsgType('error');
     } finally {
       setCheckinLoading(false);
     }
@@ -50,6 +90,7 @@ export default function EventDetail() {
       setLabCreds(data);
     } catch (err) {
       setMsg(err.message);
+      setMsgType('error');
     } finally {
       setLabLoading(false);
     }
@@ -128,13 +169,46 @@ export default function EventDetail() {
             <h3 className="text-sm font-bold text-white mb-3">Event Check-in</h3>
             {attended ? (
               <div className="flex items-center gap-2 text-emerald-400 text-sm"><Check className="w-4 h-4" /> You've checked in</div>
+            ) : !checkinStatus?.checkinActive ? (
+              <p className="text-xs text-gray-500">Check-in is not active for this event yet.</p>
             ) : (
-              <form onSubmit={handleCheckin} className="space-y-3">
-                <Input placeholder="Enter 6-digit OTP" value={otpCode} onChange={e => setOtpCode(e.target.value)} required maxLength={6} />
-                <Button type="submit" disabled={checkinLoading} className="w-full" size="sm">{checkinLoading ? 'Checking in...' : 'Check In'}</Button>
-              </form>
+              <div className="space-y-3">
+                {/* Geo status */}
+                {checkinStatus.geoRequired && (
+                  <div className={`flex items-center gap-2 text-xs rounded-lg px-3 py-2 border ${
+                    geoStatus === 'got' ? 'bg-emerald-500/10 border-emerald-500/20 text-emerald-400' :
+                    geoStatus === 'denied' ? 'bg-red-500/10 border-red-500/20 text-red-400' :
+                    'bg-amber-500/10 border-amber-500/20 text-amber-400'
+                  }`}>
+                    <Navigation className="w-3.5 h-3.5 shrink-0" />
+                    {geoStatus === 'got' && 'Location verified'}
+                    {geoStatus === 'getting' && 'Getting your location...'}
+                    {geoStatus === 'denied' && (
+                      <span>Location access denied. <button onClick={getLocation} className="underline font-semibold">Retry</button></span>
+                    )}
+                    {geoStatus === '' && (
+                      <span>Location required. <button onClick={getLocation} className="underline font-semibold">Enable</button></span>
+                    )}
+                  </div>
+                )}
+
+                <form onSubmit={handleCheckin}>
+                  <Input placeholder="Enter 6-digit code" value={otpCode} onChange={e => setOtpCode(e.target.value)} required maxLength={6} />
+                  <p className="text-[10px] text-gray-500 mt-1 mb-3">The code rotates every {checkinStatus.geoRequired ? `few seconds. You must be within ${checkinStatus.geoRadiusMeters}m of the venue.` : 'few seconds. Enter the code shown at the venue.'}</p>
+                  <Button
+                    type="submit"
+                    disabled={checkinLoading || (checkinStatus.geoRequired && geoStatus !== 'got')}
+                    className="w-full"
+                    size="sm"
+                  >
+                    {checkinLoading ? 'Checking in...' : 'Check In'}
+                  </Button>
+                </form>
+              </div>
             )}
-            {msg && <p className="text-xs text-gray-400 mt-2">{msg}</p>}
+            {msg && (
+              <p className={`text-xs mt-2 ${msgType === 'success' ? 'text-emerald-400' : 'text-red-400'}`}>{msg}</p>
+            )}
           </Card>
 
           {/* AWS Lab Access */}

@@ -1,4 +1,4 @@
-// Reusable UI primitives for the portal
+import { createPortal } from 'react-dom';
 
 export function PageHeader({ title, subtitle, action }) {
   return (
@@ -111,16 +111,17 @@ export function Spinner() {
 
 export function Modal({ open, onClose, title, children }) {
   if (!open) return null;
-  return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
+  return createPortal(
+    <div className="fixed inset-0 z-[200] flex items-center justify-center p-4 sm:p-6">
       <div className="absolute inset-0 bg-black/70 backdrop-blur-sm" onClick={onClose} />
-      <div className="relative w-full max-w-lg bg-[var(--color-surface)] border border-white/10 rounded-2xl shadow-2xl max-h-[90vh] overflow-y-auto animate-in">
-        <div className="sticky top-0 bg-[var(--color-surface)] border-b border-white/5 px-5 py-4 flex items-center justify-between">
+      <div className="relative w-full max-w-lg bg-[var(--color-surface)] border border-white/10 rounded-2xl shadow-2xl max-h-[85vh] overflow-y-auto animate-in">
+        <div className="sticky top-0 z-10 bg-[var(--color-surface)] border-b border-white/5 px-5 py-4 flex items-center justify-between rounded-t-2xl">
           <h2 className="text-lg font-bold text-white">{title}</h2>
           <button onClick={onClose} className="text-gray-400 hover:text-white transition-colors text-xl leading-none">&times;</button>
         </div>
         <div className="p-5">{children}</div>
       </div>
-    </div>
+    </div>,
+    document.body
   );
 }

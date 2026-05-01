@@ -39,6 +39,7 @@ model User {
   certVerifiedBy    Certificate[]      @relation("CertVerifier")
   pointsVerifiedBy  PointTransaction[] @relation("PointVerifier")
   attendanceMarkedBy Attendance[]      @relation("AttendanceMarker")
+  checkinSessions   CheckinSession[]  @relation("CheckinSessionCreator")
   awsLabSessions    AwsLabSession[]
 }
 
@@ -62,6 +63,7 @@ model Event {
   createdBy   User         @relation("EventCreator", fields: [createdById], references: [id])
   attendances Attendance[]
   otps        EventOTP[]
+  checkinSession CheckinSession?
   awsLabConfig AwsLabConfig?
 }
 
@@ -79,6 +81,26 @@ model Attendance {
   markedBy User? @relation("AttendanceMarker", fields: [markedById], references: [id])
 
   @@unique([userId, eventId])
+}
+
+// ─── Check-in Session (rotating OTP config) ─────────────
+model CheckinSession {
+  id               String   @id @default(cuid())
+  eventId          String   @unique
+  isActive         Boolean  @default(true)
+  rotationSeconds  Int      @default(30)
+  geoRequired      Boolean  @default(false)
+  venueLat         Float?
+  venueLng         Float?
+  geoRadiusMeters  Int      @default(200)
+  currentCode      String
+  codeExpiresAt    DateTime
+  createdById      String
+  createdAt        DateTime @default(now())
+  updatedAt        DateTime @updatedAt
+
+  event     Event @relation(fields: [eventId], references: [id], onDelete: Cascade)
+  createdBy User  @relation("CheckinSessionCreator", fields: [createdById], references: [id])
 }
 
 // ─── Event OTP (time-limited check-in codes) ─────────────

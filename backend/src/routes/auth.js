@@ -28,7 +28,8 @@ router.post('/register', async (req, res, next) => {
     let referredById = null;
     if (referralCode) {
       const referrer = await prisma.user.findUnique({ where: { referralCode: referralCode.toUpperCase() } });
-      if (referrer) {
+      if (referrer && referrer.email !== email.toLowerCase()) {
+        // Block self-referral
         referredById = referrer.id;
       }
     }

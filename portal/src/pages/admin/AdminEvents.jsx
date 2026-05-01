@@ -1,14 +1,13 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useRef, useCallback } from 'react';
 import { api } from '../../lib/api';
 import { PageHeader, Card, Badge, Button, Input, Textarea, Modal, Spinner } from '../../components/UI';
-import { Calendar, Plus, Key, Users } from 'lucide-react';
+import { Calendar, Plus, Radio, Square, MapPin, Clock, Users, Settings } from 'lucide-react';
 
 export default function AdminEvents() {
   const [events, setEvents] = useState([]);
   const [loading, setLoading] = useState(true);
   const [showCreate, setShowCreate] = useState(false);
-  const [otpModal, setOtpModal] = useState(null);
-  const [otp, setOtp] = useState(null);
+  const [checkinModal, setCheckinModal] = useState(null); // eventId
   const [form, setForm] = useState({ title: '', description: '', date: '', location: '', registrationLink: '', pointsReward: 50 });
 
   const fetchEvents = () => {
@@ -23,12 +22,6 @@ export default function AdminEvents() {
     setShowCreate(false);
     setForm({ title: '', description: '', date: '', location: '', registrationLink: '', pointsReward: 50 });
     fetchEvents();
-  };
-
-  const generateOtp = async (eventId) => {
-    const data = await api.post('/attendance/otp', { eventId, expiresInMinutes: 10 });
-    setOtp(data.otp);
-    setOtpModal(eventId);
   };
 
   return (
@@ -46,13 +39,15 @@ export default function AdminEvents() {
                 <p className="text-sm font-semibold text-white truncate">{ev.title}</p>
                 <p className="text-xs text-gray-500">{new Date(ev.date).toLocaleDateString()} · {ev._count?.attendances || 0} attended</p>
               </div>
-              <Button size="sm" variant="secondary" onClick={() => generateOtp(ev.id)}><Key className="w-3.5 h-3.5" /> OTP</Button>
+              <Button size="sm" variant="secondary" onClick={() => setCheckinModal(ev.id)}>
+                <Radio className="w-3.5 h-3.5" /> Check-in
+              </Button>
             </Card>
           ))}
         </div>
       )}
 
-      {/* Create Modal */}
+      {/* Create Event Modal */}
       <Modal open={showCreate} onClose={() => setShowCreate(false)} title="Create Event">
         <form onSubmit={handleCreate} className="space-y-3">
           <Input label="Title" value={form.title} onChange={e => setForm({ ...form, title: e.target.value })} required />
@@ -65,16 +60,175 @@ export default function AdminEvents() {
         </form>
       </Modal>
 
-      {/* OTP Modal */}
-      <Modal open={!!otpModal} onClose={() => { setOtpModal(null); setOtp(null); }} title="Event Check-in OTP">
-        {otp && (
-          <div className="text-center py-4">
-            <p className="text-5xl font-bold text-[var(--color-primary)] font-mono tracking-widest mb-4">{otp.code}</p>
-            <p className="text-sm text-gray-400">Expires: {new Date(otp.expiresAt).toLocaleTimeString()}</p>
-            <p className="text-xs text-gray-500 mt-2">Show this code to students for check-in</p>
-          </div>
-        )}
+      {/* Check-in Session Modal */}
+      <Modal open={!!checkinModal} onClose={() => setCheckinModal(null)} title="Event Check-in">
+        {checkinModal && <CheckinPanel eventId={checkinModal} />}
       </Modal>
+    </div>
+  );
+}
+
+// ─── Check-in Panel (rotating OTP + geo config) ──────────
+function CheckinPanel({ eventId }) {
+  const [session, setSession] = useState(null);
+  const [code, setCode] = useState('');
+  const [expiresAt, setExpiresAt] = useState(null);
+  const [countdown, setCountdown] = useState(0);
+  const [loading, setLoading] = useState(true);
+  const [starting, setStarting] = useState(false);
+  const intervalRef = useRef(null);
+
+  // Config form
+  const [rotationSeconds, setRotationSeconds] = useState(30);
+  const [geoRequired, setGeoRequired] = useState(false);
+  const [venueLat, setVenueLat] = useState('');
+  const [venueLng, setVenueLng] = useState('');
+  const [geoRadius, setGeoRadius] = useState(200);
+
+  // Fetch session status
+  const fetchSession = useCallback(async () => {
+    try {
+      const data = await api.get(`/attendance/session/${eventId}`);
+      setSession(data.session);
+      if (data.session?.isActive) {
+        // Fetch current code
+        const codeData = await api.get(`/attendance/session/${eventId}/code`);
+        setCode(codeData.code);
+        setExpiresAt(new Date(codeData.expiresAt));
+      }
+    } catch {}
+    setLoading(false);
+  }, [eventId]);
+
+  useEffect(() => { fetchSession(); }, [fetchSession]);
+
+  // Poll for new code when session is active
+  useEffect(() => {
+    if (!session?.isActive) {
+      clearInterval(intervalRef.current);
+      return;
+    }
+
+    const poll = async () => {
+      try {
+        const data = await api.get(`/attendance/session/${eventId}/code`);
+        setCode(data.code);
+        setExpiresAt(new Date(data.expiresAt));
+      } catch {}
+    };
+
+    intervalRef.current = setInterval(poll, 3000); // poll every 3s
+    return () => clearInterval(intervalRef.current);
+  }, [session?.isActive, eventId]);
+
+  // Countdown timer
+  useEffect(() => {
+    if (!expiresAt) return;
+    const tick = () => {
+      const remaining = Math.max(0, Math.ceil((expiresAt.getTime() - Date.now()) / 1000));
+      setCountdown(remaining);
+    };
+    tick();
+    const id = setInterval(tick, 200);
+    return () => clearInterval(id);
+  }, [expiresAt]);
+
+  const handleStart = async () => {
+    setStarting(true);
+    try {
+      const body = {
+        eventId,
+        rotationSeconds,
+        geoRequired,
+        geoRadiusMeters: geoRadius,
+      };
+      if (geoRequired) {
+        body.venueLat = parseFloat(venueLat);
+        body.venueLng = parseFloat(venueLng);
+      }
+      const data = await api.post('/attendance/session/start', body);
+      setSession(data.session);
+      setCode(data.session.currentCode);
+      setExpiresAt(new Date(data.session.codeExpiresAt));
+    } catch (err) {
+      alert(err.message);
+    }
+    setStarting(false);
+  };
+
+  const handleStop = async () => {
+    await api.post('/attendance/session/stop', { eventId });
+    setSession({ ...session, isActive: false });
+    setCode('');
+    clearInterval(intervalRef.current);
+  };
+
+  const useMyLocation = () => {
+    if (!navigator.geolocation) return alert('Geolocation not supported');
+    navigator.geolocation.getCurrentPosition(
+      (pos) => { setVenueLat(pos.coords.latitude.toFixed(6)); setVenueLng(pos.coords.longitude.toFixed(6)); },
+      () => alert('Could not get location')
+    );
+  };
+
+  if (loading) return <div className="flex justify-center py-8"><Spinner /></div>;
+
+  // Active session — show live code
+  if (session?.isActive) {
+    return (
+      <div className="text-center space-y-6">
+        <div>
+          <p className="text-[10px] uppercase tracking-widest text-gray-500 mb-2">Current Code</p>
+          <p className="text-6xl font-bold text-[var(--color-primary)] font-mono tracking-[0.3em]">{code}</p>
+        </div>
+
+        <div className="flex items-center justify-center gap-2 text-sm">
+          <Clock className="w-4 h-4 text-gray-400" />
+          <span className={`font-mono font-bold ${countdown <= 5 ? 'text-red-400' : 'text-white'}`}>{countdown}s</span>
+          <span className="text-gray-500">until rotation</span>
+        </div>
+
+        <div className="flex flex-wrap justify-center gap-2">
+          <Badge variant="primary">Every {session.rotationSeconds}s</Badge>
+          {session.geoRequired && <Badge variant="accent"><MapPin className="w-3 h-3 mr-0.5" />Geo: {session.geoRadiusMeters}m</Badge>}
+        </div>
+
+        <p className="text-xs text-gray-500">Display this code on a screen at the venue. It auto-rotates.</p>
+
+        <Button variant="danger" onClick={handleStop} className="w-full"><Square className="w-4 h-4" /> Stop Check-in</Button>
+      </div>
+    );
+  }
+
+  // No active session — show config form
+  return (
+    <div className="space-y-4">
+      <p className="text-sm text-gray-400">Configure and start a check-in session. The OTP code will rotate automatically.</p>
+
+      <Input label="Rotation Interval (seconds)" type="number" value={rotationSeconds} onChange={e => setRotationSeconds(Math.max(10, parseInt(e.target.value) || 30))} min={10} max={300} />
+
+      <div>
+        <label className="flex items-center gap-3 cursor-pointer">
+          <input type="checkbox" checked={geoRequired} onChange={e => setGeoRequired(e.target.checked)} className="w-4 h-4 rounded border-white/20 bg-[var(--color-bg)] text-[var(--color-primary)] focus:ring-[var(--color-primary)]" />
+          <span className="text-sm text-white font-medium">Require geolocation</span>
+        </label>
+        <p className="text-[10px] text-gray-500 mt-1 ml-7">Students must be physically near the venue to check in</p>
+      </div>
+
+      {geoRequired && (
+        <div className="space-y-3 pl-7 border-l-2 border-white/5">
+          <div className="grid grid-cols-2 gap-2">
+            <Input label="Venue Latitude" value={venueLat} onChange={e => setVenueLat(e.target.value)} placeholder="30.3165" required />
+            <Input label="Venue Longitude" value={venueLng} onChange={e => setVenueLng(e.target.value)} placeholder="78.0322" required />
+          </div>
+          <Button variant="ghost" size="sm" onClick={useMyLocation}><MapPin className="w-3.5 h-3.5" /> Use My Current Location</Button>
+          <Input label="Radius (meters)" type="number" value={geoRadius} onChange={e => setGeoRadius(parseInt(e.target.value) || 200)} min={50} max={2000} />
+        </div>
+      )}
+
+      <Button onClick={handleStart} disabled={starting} className="w-full">
+        <Radio className="w-4 h-4" /> {starting ? 'Starting...' : 'Start Check-in Session'}
+      </Button>
     </div>
   );
 }
