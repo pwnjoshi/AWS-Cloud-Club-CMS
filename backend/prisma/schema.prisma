@@ -39,6 +39,7 @@ model User {
   certVerifiedBy    Certificate[]      @relation("CertVerifier")
   pointsVerifiedBy  PointTransaction[] @relation("PointVerifier")
   attendanceMarkedBy Attendance[]      @relation("AttendanceMarker")
+  awsLabSessions    AwsLabSession[]
 }
 
 // ─── Events ──────────────────────────────────────────────
@@ -61,6 +62,7 @@ model Event {
   createdBy   User         @relation("EventCreator", fields: [createdById], references: [id])
   attendances Attendance[]
   otps        EventOTP[]
+  awsLabConfig AwsLabConfig?
 }
 
 // ─── Attendance ──────────────────────────────────────────
@@ -222,4 +224,36 @@ model AuditLog {
   createdAt DateTime @default(now())
 
   actor User @relation("AuditActor", fields: [actorId], references: [id])
+}
+
+// ─── AWS Lab Access ──────────────────────────────────────
+model AwsLabConfig {
+  id               String   @id @default(cuid())
+  eventId          String   @unique
+  enabled          Boolean  @default(true)
+  maxDurationHours Int      @default(2)
+  maxSessions      Int      @default(50)
+  allowedServices  String   @default("s3,lambda,dynamodb,sns,sqs,apigateway,logs,cloudwatch") // comma-separated
+  sessionPolicy    String?  // optional JSON policy override
+  roleArn          String?  // override per-event, falls back to env
+  createdAt        DateTime @default(now())
+  updatedAt        DateTime @updatedAt
+
+  event    Event          @relation(fields: [eventId], references: [id], onDelete: Cascade)
+  sessions AwsLabSession[]
+}
+
+model AwsLabSession {
+  id          String    @id @default(cuid())
+  userId      String
+  configId    String
+  sessionName String    @unique
+  expiresAt   DateTime
+  revokedAt   DateTime?
+  createdAt   DateTime  @default(now())
+
+  user   User         @relation(fields: [userId], references: [id], onDelete: Cascade)
+  config AwsLabConfig @relation(fields: [configId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, configId])
 }

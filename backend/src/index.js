@@ -15,6 +15,7 @@ import resourceRoutes from './routes/resources.js';
 import announcementRoutes from './routes/announcements.js';
 import rewardRoutes from './routes/rewards.js';
 import adminRoutes from './routes/admin.js';
+import awsLabRoutes from './routes/awsLab.js';
 
 dotenv.config();
 
@@ -50,6 +51,7 @@ app.use('/api/resources', resourceRoutes);
 app.use('/api/announcements', announcementRoutes);
 app.use('/api/rewards', rewardRoutes);
 app.use('/api/admin', adminRoutes);
+app.use('/api/aws-lab', awsLabRoutes);
 
 // ─── Health Check ────────────────────────────────────────
 app.get('/api/health', (req, res) => {
