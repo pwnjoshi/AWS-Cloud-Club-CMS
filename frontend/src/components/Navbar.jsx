@@ -35,6 +35,12 @@ export default function Navbar() {
             <NavLink to="/blog">Blog</NavLink>
             
             <a 
+              href="/portal" 
+              className="px-4 py-2 bg-white/5 border border-white/10 rounded-md font-semibold text-white hover:bg-white/10 hover:border-white/20 transition-all duration-300 text-sm"
+            >
+              Member Portal
+            </a>
+            <a 
               href="https://www.meetup.com/aws-sbg-at-graphic-era/" 
               target="_blank" 
               rel="noopener noreferrer"
@@ -66,10 +72,16 @@ export default function Navbar() {
             <MobileNavLink to="/blog" onClick={() => setIsOpen(false)}>Blog</MobileNavLink>
             
             <a 
+              href="/portal" 
+              className="px-8 py-3 bg-white/5 border border-white/10 rounded-md font-bold text-white w-full text-center hover:bg-white/10 transition-colors"
+            >
+              Member Portal
+            </a>
+            <a 
               href="https://www.meetup.com/aws-sbg-at-graphic-era/" 
               target="_blank" 
               rel="noopener noreferrer"
-              className="mt-4 px-8 py-3 bg-[var(--color-primary)] rounded-md font-bold text-white w-full text-center hover:bg-[#e68a00] transition-colors"
+              className="mt-2 px-8 py-3 bg-[var(--color-primary)] rounded-md font-bold text-white w-full text-center hover:bg-[#e68a00] transition-colors"
             >
               Join the Builders
             </a>

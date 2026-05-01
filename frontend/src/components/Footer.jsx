@@ -34,6 +34,12 @@ export default function Footer() {
               <FooterLink to="/team">Our Team</FooterLink>
               <FooterLink to="/blog">Tech Blog</FooterLink>
               <FooterLink to="/verify">Verify Member ID</FooterLink>
+              <li>
+                <a href="/portal" className="text-gray-400 hover:text-[var(--color-primary)] transition-colors text-sm flex items-center gap-2 group w-fit">
+                  <span className="w-1.5 h-1.5 rounded-full bg-[var(--color-primary)]/50 group-hover:bg-[var(--color-primary)] transition-colors"></span>
+                  <span className="group-hover:translate-x-1 transition-transform duration-300">Member Portal</span>
+                </a>
+              </li>
             </ul>
           </div>
 

@@ -1,0 +1,42 @@
+{
+  "name": "aws-sbg-geu-backend",
+  "version": "1.0.0",
+  "description": "Backend API for AWS Student Builder Group GEU Portal",
+  "main": "src/index.js",
+  "type": "module",
+  "scripts": {
+    "dev": "node --watch src/index.js",
+    "start": "node src/index.js",
+    "db:generate": "npx prisma generate",
+    "db:push": "npx prisma db push",
+    "db:seed": "node prisma/seed.js",
+    "db:studio": "npx prisma studio"
+  },
+  "keywords": [
+    "aws",
+    "student-builder-group",
+    "geu"
+  ],
+  "author": "Pawan Joshi",
+  "license": "ISC",
+  "dependencies": {
+    "@aws-sdk/client-sts": "^3.1040.0",
+    "@prisma/client": "^6.19.3",
+    "bcryptjs": "^3.0.3",
+    "cors": "^2.8.6",
+    "crypto-js": "^4.2.0",
+    "dotenv": "^17.4.2",
+    "express": "^5.2.1",
+    "express-rate-limit": "^8.4.1",
+    "google-auth-library": "^10.6.2",
+    "helmet": "^8.1.0",
+    "jsonwebtoken": "^9.0.3",
+    "multer": "^2.1.1",
+    "qrcode": "^1.5.4",
+    "resend": "^6.12.2",
+    "web-push": "^3.6.7"
+  },
+  "devDependencies": {
+    "prisma": "^6.19.3"
+  }
+}
